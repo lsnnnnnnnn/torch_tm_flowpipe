@@ -1,0 +1,27 @@
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/layer.py:29: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:206.)
+  layer.weight.data = torch.from_numpy(numpy_helper.to_array(weight))
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/model.py:167: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if not self.experimental and inputs[0].shape[self.batch_dim] > 1:
+Server started.
+/srv/local/shengenli/auto_LiRPA/auto_LiRPA/operators/base.py:441: UserWarning: Constant operand of node [96mBoundSub(name=/input, inputs=[/0, /1], perturbed=True)[0m has batch dimension. Please check your model implementation. Constant operands [93mSHOULD NOT[0m have batch dimension.
+  warnings.warn(f"Constant operand of node \033[96m{self}\033[0m has batch dimension. "
+127.0.0.1 - - [2026-10-02 12:14:48] "POST / HTTP/1.1" 200 1871 0.636760
+127.0.0.1 - - [2026-10-02 12:14:49] "POST / HTTP/1.1" 200 1873 0.024844
+127.0.0.1 - - [2026-10-02 12:14:49] "POST / HTTP/1.1" 200 1886 0.147364
+127.0.0.1 - - [2026-10-02 12:14:49] "POST / HTTP/1.1" 200 1881 0.020058
+127.0.0.1 - - [2026-10-02 12:14:49] "POST / HTTP/1.1" 200 1881 0.018063
+127.0.0.1 - - [2026-10-02 12:14:50] "POST / HTTP/1.1" 200 1900 0.019115
+127.0.0.1 - - [2026-10-02 12:14:50] "POST / HTTP/1.1" 200 1882 0.018654
+127.0.0.1 - - [2026-10-02 12:14:50] "POST / HTTP/1.1" 200 1848 0.018954
+127.0.0.1 - - [2026-10-02 12:14:51] "POST / HTTP/1.1" 200 1859 0.018966
+127.0.0.1 - - [2026-10-02 12:14:51] "POST / HTTP/1.1" 200 1853 0.018713
+127.0.0.1 - - [2026-10-02 12:14:51] "POST / HTTP/1.1" 200 1849 0.018899
+127.0.0.1 - - [2026-10-02 12:14:52] "POST / HTTP/1.1" 200 1880 0.018742
+127.0.0.1 - - [2026-10-02 12:14:52] "POST / HTTP/1.1" 200 1884 0.018637
+127.0.0.1 - - [2026-10-02 12:14:53] "POST / HTTP/1.1" 200 1850 0.018435
+127.0.0.1 - - [2026-10-02 12:14:53] "POST / HTTP/1.1" 200 1857 0.019304
+127.0.0.1 - - [2026-10-02 12:14:54] "POST / HTTP/1.1" 200 1844 0.020535
+127.0.0.1 - - [2026-10-02 12:14:55] "POST / HTTP/1.1" 200 1856 0.019104
+127.0.0.1 - - [2026-10-02 12:14:55] "POST / HTTP/1.1" 200 1847 0.019417
+127.0.0.1 - - [2026-10-02 12:14:56] "POST / HTTP/1.1" 200 1871 0.018955
+127.0.0.1 - - [2026-10-02 12:14:57] "POST / HTTP/1.1" 200 1861 0.020521

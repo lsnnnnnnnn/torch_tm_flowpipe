@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "-B",
+    "archcomp26_tora_remain_p3_nohash.py",
+    "--mode",
+    "full",
+    "--ode-step-size",
+    "0.05",
+    "--output",
+    "full20_001/payload"
+  ],
+  "contract_label": "tora-remain-2026-b12-order3-h005-p3-diagnostic",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_tora_remain_h005_probe_20261002",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "tora-remain",
+  "method": "ours",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "CUDA_VISIBLE_DEVICES": "3",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+  },
+  "started_utc": "2026-10-02T11:58:24.634998+00:00",
+  "timeout_s": 120.0
+}

@@ -1,5 +1,17 @@
 # ARCH-COMP26 阶段报告交付说明
 
+## 当前 189 条尝试截点
+
+[16 节完整阶段稿 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_189_20261002.docx)及[同版 PDF](ARCHCOMP26_FULL_STAGE_DRAFT_189_20261002.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_189_20261002.py)从[最新 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)重建。固定覆盖为 189 条新尝试、38 格本轮完整数值时域、8 格同合同历史全程、14 格无完整时域及 4 格 Airplane discrete 合同阻塞；旧 187 条截点文件保留在下节。13 幅图均来自保存范围，MATLAB 脚本仍未实跑；“完整数值时域”不等于性质证明或稳定速度排名。
+
+本版已纳入[原生 QUAD 符号余项短步门禁](../../../../ARCHCOMP26_NATIVE_OCTAGON_PRODUCTION_GATE_20261002.md)：隔离首盒/一步的冻结库保存末界漏包 CROWN 仿射余项放松集内的数值样本；该样本未证实为真实神经网络输出，不能直接判原 50 期闭环性质错误。PDF 于 2026-10-02 经 Word 从上述 DOCX 导出，为 **21 页 A4**；PDFium 逐页渲染并目视检查中文、13 幅图、表格及分页，无截断。此稿仍为可审阅阶段稿。
+
+## 187 条尝试阶段快照
+
+新增的[16 节完整阶段稿 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_20261002.docx)与[同版 PDF](ARCHCOMP26_FULL_STAGE_DRAFT_20261002.pdf)由本目录的[生成脚本](build_archcomp26_full_draft_docx_20261002.py)从 [Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)构建。两者明确标为可审阅阶段稿，固定在 187 条新尝试及 37 格新全程、9 格审计旧全程、14 格无全程、4 格 Airplane discrete 合同阻塞；不把数值全程写成性质证明或稳定速度排名。DOCX 包含 16 个实例小节和 10 幅保存数据图，包括 TORA reach-sigmoid 官方 `u=11f` 四方 500 小步 x1/x2 图。PDF 于 2026-10-02 20:06 CST 经 Word 导出，为 18 页；PDFium 逐页渲染目视核查了中文、图表和分页。PDF 已收入 [Unicycle 保存端点时间窗审计](../unicycle_paper_speed_w_constant_v1/SAVED_ENDPOINT_WINDOW_AUDIT_20261002.md)的结论；此后完成的 [TORA remain 四方 `h=0.05` 补充对照](../tora_remain_h005_fourway_saved_20261002/SUMMARY.md)与[原生八方向失败门禁](../../../../ARCHCOMP26_NATIVE_OCTAGON_PRODUCTION_GATE_20261002.md)见最新 Markdown 与证据目录。LibreOffice 的本机字体环境会丢失中文，故应阅读 Word 导出的 PDF。旧版两页状态报告和 105/26 长篇快照均保留。
+
+## 较早的阶段快照
+
 本目录的 `ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx` 是可编辑稿；同名 `.pdf` 由 Microsoft Word 导出。封面和页脚标为 2026-10-02 阶段更新版。固定文件名沿用 20261001 的工作目录命名。
 
 新增的 [2026-10-02 当前截点 DOCX](ARCHCOMP26_STATUS_20261002.docx)和[同版 PDF](ARCHCOMP26_STATUS_20261002.pdf)是单独的两页状态报告，由[只读生成脚本](../../../../../tools/build_archcomp26_status_docx_20261002.py)从当前无哈希工作矩阵及[历史覆盖附表](../../../archcomp26_coverage_overlay_20261002.md)生成。它固定在 187 条新尝试：37 格新完整数值时域、9 格已审计的同合同旧全程、14 格无全程、4 格 Airplane discrete 合同阻塞。旧长篇阶段稿下述 105/26 数字只代表原快照。新版 DOCX 在 Word 中逐页查看；PDF 由 Word 导出，再用 PDFium 渲染两页逐页核查中文、表格和截断。两份文件均不是最终完整实验报告。

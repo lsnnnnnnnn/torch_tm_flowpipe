@@ -15,3 +15,14 @@ This is the **existing** `native_quad_paper_full50_001` job. It was monitored an
 - [terminal_12states.csv](terminal_12states.csv) gives each physical state's terminal tube and endpoint union bounds and widths, plus mean/max per-box widths. [pooled_x3_1000steps.csv](pooled_x3_1000steps.csv) gives each step's `x3` tube and endpoint union for plotting. `SCAN.json` also contains all 12 states' pooled bounds for every saved step.
 
 The source's `VERIFIED` branch calls `fp_end_of_time.isInTarget(targetSet, setting)` for each initial box; it checks the terminal `x3` target. This is the native implementation's endpoint result under this selected contract, not an independent end-to-end floating-point neural-network certificate or a resolved temporal interpretation of the 2026 paper's reach-and-remain wording. A single outer-wall sample does not support a stable speed ranking.
+
+**Subsequent validity gate (2026-10-02):** An [isolated first-box, one-control,
+one-step test of the same frozen Flow* symbolic-remainder path](../native_quad_sr_octagon_gate_20261002_005/README.md)
+returned numerical `COMPLETED_SAFE` but missed finite DOP853/Radau samples
+drawn from the C++ program's CROWN affine-plus-residual relaxed control set
+in the `x7/x8` terminal bounds (maximum excess `1.98259e-6`). The control
+chosen for that witness was not established as the actual NN output. This
+short result does not prove every saved bound in this full run incorrect, but
+it blocks treating the above `VERIFIED` and accepted numerical coverage as
+independent evidence of sound relaxed-set enclosure or a full NNCS proof.
+The frozen full-run receipt, count and wall time remain unchanged.

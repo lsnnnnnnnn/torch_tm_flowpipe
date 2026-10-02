@@ -1,0 +1,11 @@
+{
+  "purpose": "isolated Flow* native TORA remain h=0.05 diagnostic after author Huan/Xiangru h=0.05 complete runs",
+  "contract_scope": "2026 TORA remain, 12 full-initial-box lanes, four physical states, official ONNX, x4'=u-10, 1 s control period, all-time [-2,2]^4 safe set",
+  "sole_numerical_change_from_old_native_build": "setting.setFixedStepsize(0.1, 3) -> setting.setFixedStepsize(0.05, 3)",
+  "run_order": "compile isolated one-period and 20-period binaries; one-period gate first; full run only if gate has exit 0, 12x20 complete ranges, finite ordered intervals, endpoint within each tube, safe saved tubes, and expected RPC count",
+  "first_failure_policy": "stop at the first gate failure; no old binary or old run directory is rerun or mutated",
+  "resources": "GPU2, CPU10-13 for runner, CPU18 for compilation, RPC port 5100; only after idle check",
+  "supervisor_timeout_s": {"smoke1": 120, "full20": 240},
+  "evidence_policy": "preserve START/RESULT/log/ranges/source/build logs; independently scan saved boxes; no content digest or hash verification",
+  "main_table_policy": "h=0.05 is a separate numerical profile and does not replace fixed h=0.1 main-table cells"
+}

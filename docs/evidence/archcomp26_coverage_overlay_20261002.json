@@ -8,13 +8,13 @@
     "docs/ARCHCOMP26_NAV_XIANGRU_HISTORICAL_CONTRACT_AUDIT_20261002.md",
     "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_firstperiod_diag_001/HISTORICAL_REUSE_AUDIT.json"
   ],
-  "new_attempt_count": 187,
+  "new_attempt_count": 189,
   "cell_count": 64,
   "coverage_counts": {
-    "current_numeric_full": 37,
+    "current_numeric_full": 38,
     "no_full_numeric_evidence": 14,
     "contract_blocked": 4,
-    "historical_same_contract_numeric_full": 9
+    "historical_same_contract_numeric_full": 8
   },
   "qualification": "Full means recorded numerical horizon under each cell's named contract; it does not establish that every participant model identity matches the 2026 paper, an end-to-end floating-point NNCS certificate, or timing-rank qualification. Historical runs remain outside the new attempt index.",
   "cells": [
@@ -693,9 +693,9 @@
     {
       "instance_id": "tora-reach-tanh",
       "method": "pytorch_gpu",
-      "new_work_status": "not_attempted",
-      "new_selected_run_dir": null,
-      "coverage_status": "historical_same_contract_numeric_full",
+      "new_work_status": "completed",
+      "new_selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001",
+      "coverage_status": "current_numeric_full",
       "historical_result_path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_ours/result.json",
       "historical_audit_path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_firstperiod_diag_001/HISTORICAL_REUSE_AUDIT.json",
       "historical_contract_scope": "fixed official 2026 MAT ReLU/ReLU/ReLU/tanh controller with plant u=11f; the paper's sigmoid-hidden prose is a different, unresolved identity",

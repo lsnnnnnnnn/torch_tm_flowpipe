@@ -1,0 +1,62 @@
+{
+  "raw_records_per_method": 500,
+  "raw_record_bytes": 152,
+  "all_record_grids_valid": true,
+  "all_intervals_finite_ordered_and_endpoints_within_same_step_tube": true,
+  "huan_xiangru_all_saved_bounds_identical": true,
+  "all_four_saved_T5_x1_x2_endpoints_inside_target": {
+    "huan": true,
+    "xiangru": true,
+    "old_p3": true,
+    "native": true
+  },
+  "archived_trajectory_comparison": {
+    "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v2/width_trajectory_tora_relu_tanh_matched.csv.gz",
+    "compared_rows": 12000,
+    "compared_interval_bounds": 48000,
+    "maximum_allowed_difference": 1e-12
+  },
+  "result_receipts": {
+    "huan": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_huan/result.json",
+      "status": "completed",
+      "complete": true,
+      "returncode": 0,
+      "attempted_steps": 500,
+      "accepted_lane_steps": 500,
+      "engine_root": "/srv/local/shengenli/flowstar-gpu",
+      "property_label": "no property verdict in this result"
+    },
+    "xiangru": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_xiangru/result.json",
+      "status": "completed",
+      "complete": true,
+      "returncode": 0,
+      "attempted_steps": 500,
+      "accepted_lane_steps": 500,
+      "engine_root": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream",
+      "property_label": "no property verdict in this result"
+    },
+    "old_p3": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_ours/result.json",
+      "status": "completed",
+      "complete": true,
+      "returncode": 0,
+      "attempted_steps": 500,
+      "accepted_lane_steps": 500,
+      "engine_root": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_linear_leaf_v2",
+      "property_label": "no property verdict in this result"
+    },
+    "native": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v2/native_matched/tora_relu_tanh/result.json",
+      "native_log": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v2/native_matched/tora_relu_tanh/native.log",
+      "status": "completed",
+      "complete": true,
+      "returncode": 0,
+      "control_periods_started": 10,
+      "range_records": 500,
+      "property_label": "author endpoint checker printed VERIFIED"
+    }
+  },
+  "provenance_limit": "Copied raw ranges and adjacent result receipts are compared numerically; no content binding is claimed."
+}

@@ -1,0 +1,298 @@
+{
+  "schema": "unicycle-paper-speed-constant-w-saved-endpoint-window-audit-nohash-v1",
+  "contract": "2026 paper RHS; w only in speed derivative and constant along each trajectory",
+  "target_physical_box": [
+    [
+      -0.6,
+      0.6
+    ],
+    [
+      -0.2,
+      0.2
+    ],
+    [
+      -0.06,
+      0.06
+    ],
+    [
+      -0.3,
+      0.3
+    ]
+  ],
+  "steps": 500,
+  "step_s": 0.02,
+  "test": "all four physical coordinates of one full-initial-box saved endpoint lie in target at the same accepted step; whole-step tube checked separately",
+  "methods": [
+    {
+      "method": "huan",
+      "source": {
+        "ranges": "unicycle_paper_speed_w_constant_v1/huan_full50_001/payload/ranges.jsonl",
+        "bytes": 414293,
+        "result": "unicycle_paper_speed_w_constant_v1/huan_full50_001/payload/RESULT.json",
+        "acceptance": "500/500 accepted observations"
+      },
+      "saved_endpoint_target_step_spans": [],
+      "first_saved_endpoint_target_t_s": null,
+      "saved_whole_step_tube_target_step_spans": [],
+      "first_saved_whole_step_tube_target_interval_s": null,
+      "per_coordinate_endpoint_target_step_spans": {
+        "x1": [
+          [
+            486,
+            500
+          ]
+        ],
+        "x2": [
+          [
+            424,
+            500
+          ]
+        ],
+        "x3": [
+          [
+            216,
+            234
+          ]
+        ],
+        "x4": [
+          [
+            200,
+            224
+          ]
+        ]
+      },
+      "last_saved_endpoint": [
+        [
+          0.4365198254149698,
+          0.527761792977419
+        ],
+        [
+          -0.18593756132856945,
+          -0.05078071568303631
+        ],
+        [
+          -0.10359529583284816,
+          0.018901992650268623
+        ],
+        [
+          -0.3227584415426446,
+          -0.20886213310873564
+        ]
+      ]
+    },
+    {
+      "method": "xiangru",
+      "source": {
+        "ranges": "unicycle_paper_speed_w_constant_v1/xiangru_full50_001/payload/ranges.jsonl",
+        "bytes": 414293,
+        "result": "unicycle_paper_speed_w_constant_v1/xiangru_full50_001/payload/RESULT.json",
+        "acceptance": "500/500 accepted observations"
+      },
+      "saved_endpoint_target_step_spans": [],
+      "first_saved_endpoint_target_t_s": null,
+      "saved_whole_step_tube_target_step_spans": [],
+      "first_saved_whole_step_tube_target_interval_s": null,
+      "per_coordinate_endpoint_target_step_spans": {
+        "x1": [
+          [
+            486,
+            500
+          ]
+        ],
+        "x2": [
+          [
+            424,
+            500
+          ]
+        ],
+        "x3": [
+          [
+            216,
+            234
+          ]
+        ],
+        "x4": [
+          [
+            200,
+            224
+          ]
+        ]
+      },
+      "last_saved_endpoint": [
+        [
+          0.4365198254149698,
+          0.527761792977419
+        ],
+        [
+          -0.18593756132856945,
+          -0.05078071568303631
+        ],
+        [
+          -0.10359529583284816,
+          0.018901992650268623
+        ],
+        [
+          -0.3227584415426446,
+          -0.20886213310873564
+        ]
+      ]
+    },
+    {
+      "method": "p3",
+      "source": {
+        "ranges": "unicycle_paper_speed_w_constant_v1/p3_full50_001/payload/ranges.jsonl",
+        "bytes": 416584,
+        "result": "unicycle_paper_speed_w_constant_v1/p3_full50_001/payload/RESULT.json",
+        "acceptance": "500/500 accepted observations"
+      },
+      "saved_endpoint_target_step_spans": [
+        [
+          486,
+          500
+        ]
+      ],
+      "first_saved_endpoint_target_t_s": 9.72,
+      "saved_whole_step_tube_target_step_spans": [
+        [
+          487,
+          500
+        ]
+      ],
+      "first_saved_whole_step_tube_target_interval_s": [
+        9.72,
+        9.74
+      ],
+      "per_coordinate_endpoint_target_step_spans": {
+        "x1": [
+          [
+            483,
+            500
+          ]
+        ],
+        "x2": [
+          [
+            380,
+            500
+          ]
+        ],
+        "x3": [
+          [
+            215,
+            240
+          ],
+          [
+            426,
+            500
+          ]
+        ],
+        "x4": [
+          [
+            200,
+            225
+          ],
+          [
+            486,
+            500
+          ]
+        ]
+      },
+      "last_saved_endpoint": [
+        [
+          0.4739261690041136,
+          0.501609432907934
+        ],
+        [
+          -0.14663053064954754,
+          -0.11264753611216459
+        ],
+        [
+          -0.03616859801479514,
+          -0.016281470079929045
+        ],
+        [
+          -0.2664441173434879,
+          -0.24584274954935312
+        ]
+      ]
+    },
+    {
+      "method": "flowstar_native",
+      "source": {
+        "ranges": "native_unicycle_paper_speed_full50_001/ranges.bin",
+        "bytes": 76000,
+        "result": "native_unicycle_paper_speed_full50_001/RESULT.json",
+        "acceptance": "500-record one-box grid; native binary has no accepted field"
+      },
+      "saved_endpoint_target_step_spans": [
+        [
+          490,
+          500
+        ]
+      ],
+      "first_saved_endpoint_target_t_s": 9.8,
+      "saved_whole_step_tube_target_step_spans": [
+        [
+          490,
+          500
+        ]
+      ],
+      "first_saved_whole_step_tube_target_interval_s": [
+        9.78,
+        9.8
+      ],
+      "per_coordinate_endpoint_target_step_spans": {
+        "x1": [
+          [
+            483,
+            500
+          ]
+        ],
+        "x2": [
+          [
+            389,
+            500
+          ]
+        ],
+        "x3": [
+          [
+            216,
+            238
+          ],
+          [
+            441,
+            500
+          ]
+        ],
+        "x4": [
+          [
+            200,
+            224
+          ],
+          [
+            490,
+            500
+          ]
+        ]
+      },
+      "last_saved_endpoint": [
+        [
+          0.4671955350851057,
+          0.5065349953846583
+        ],
+        [
+          -0.15616953941683476,
+          -0.09758284503434796
+        ],
+        [
+          -0.04883265165704273,
+          -0.00956843390302745
+        ],
+        [
+          -0.27512570159052746,
+          -0.24138433133530823
+        ]
+      ]
+    }
+  ],
+  "qualification": "No observed common endpoint inclusion is not proof of unreachability. Saved axis boxes and adjacent run outcomes are not an independent end-to-end floating-point NNCS certificate."
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "supplemental_direct_source_and_cpu_preflight_audit",
+  "fixed_official_mat_source": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/tora_reach_official_2026/nn_tora_relu_tanh.mat",
+  "historical_same_contract_mat_copy": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_firstperiod_diag_001/nn_tora_relu_tanh.mat",
+  "new_run_mat": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_firstperiod_20261002_001/nn_tora_relu_tanh.mat",
+  "mat_bytes": 3948,
+  "all_three_mat_files_directly_byte_equal": true,
+  "controller_export_receipt": "controller_plant_u.onnx.json",
+  "cpu_preflight_receipt": "PREFLIGHT_CPU_ONLY.json",
+  "controller_activations": [
+    "relu",
+    "relu",
+    "relu",
+    "tanh"
+  ],
+  "internal_scale": 11.0,
+  "internal_offset": 0.0,
+  "independent_point_count": 22,
+  "maximum_mat_vs_onnx_point_difference": 9.992007221626409e-16,
+  "cpu_preflight_cuda_initialized": false,
+  "limitation": "Direct source comparison and finite point checks establish the selected file/graph contract for this run, not interval-controller soundness or an end-to-end certificate."
+}

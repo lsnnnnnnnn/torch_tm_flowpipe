@@ -143,6 +143,8 @@ def run(args):
             author.SOURCE_CONFIG, author.BOXES, MODEL, check_model=False)
         config["model_dir"] = str(MODEL)
         config["steps"] = 1 if args.mode == "smoke1" else 20
+        config["ode_step_size"] = args.ode_step_size
+        expected = config["steps"] * round(config["step_size"] / config["ode_step_size"])
         config_path = output / "config.yaml"
         config_path.write_text(yaml.safe_dump(config, sort_keys=False))
         torch, driver, cap = prepare()
@@ -152,7 +154,8 @@ def run(args):
         driver.make_cells = lambda _config: cells.clone()
         driver.SR_QUEUE = 1000
         record.update(generated_config=str(config_path),
-                      expected_substeps=config["steps"] * 10,
+                      expected_substeps=expected,
+                      numerical_profile={"ode_step_size": args.ode_step_size},
                       cuda_memory_cap_bytes=cap)
         (output / "START.json").write_text(json.dumps(record, indent=2) + "\n")
 
@@ -204,6 +207,9 @@ def run(args):
                 observations.append(row)
                 log.write(json.dumps(row) + "\n")
                 log.flush()
+                if not valid.all():
+                    raise RuntimeError(f"first rejected P3 lane at substep {step_number}: "
+                                       f"{row['rejected_lanes']}")
                 return state, accepted
 
             driver.advance_sparse = observed
@@ -224,7 +230,6 @@ def run(args):
             finally:
                 sys.argv = previous
 
-        expected = config["steps"] * 10
         complete = (driver_code == 0 and len(observations) == expected and
                     all(row["accepted_count"] == 12 for row in observations))
         safe = complete and prefix_safe_substeps == expected
@@ -279,6 +284,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=("smoke1", "full"), required=True)
+    parser.add_argument("--ode-step-size", type=float, choices=(0.1, 0.05), default=0.1)
     parser.add_argument("--output", type=Path, required=True)
     return run(parser.parse_args())
 

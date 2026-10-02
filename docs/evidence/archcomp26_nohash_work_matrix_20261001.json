@@ -10,13 +10,13 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 187,
+  "attempt_count": 189,
   "status_counts": {
-    "completed": 37,
+    "completed": 38,
     "running": 0,
     "early_stopped": 10,
     "failed": 4,
-    "not_attempted": 10,
+    "not_attempted": 9,
     "short_prefix_only": 3
   },
   "methods": [
@@ -2164,17 +2164,32 @@
     {
       "instance_id": "tora-reach-tanh",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 189,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001",
+      "selected_wall_s": 13.45662879012525,
+      "selected_property_verdict": "NOT_EVALUATED",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 188,
+          "status": "completed_short_prefix",
+          "role": "official 2026 ReLU-three/tanh u=11f full-initial-box new working P3 first-period gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_firstperiod_20261002_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_firstperiod_20261002_001/SUMMARY.md"
+        },
+        {
+          "index": 189,
+          "status": "completed",
+          "role": "official 2026 ReLU-three/tanh u=11f full-initial-box new working P3 500-step numerical run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "tora-reach-tanh",

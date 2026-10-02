@@ -1,0 +1,16 @@
+{
+  "schema": "archcomp26-isolated-nohash-intent-v1",
+  "instance": "tora-remain",
+  "method": "working-p3",
+  "profile": "h=0.05 diagnostic, separate from fixed h=0.1 main table",
+  "change_from_saved_p3_contract": "ode_step_size only: 0.1 to 0.05",
+  "initial_boxes": 12,
+  "control_period_s": 1.0,
+  "horizon_s": 20.0,
+  "expected_full_substeps": 400,
+  "property": "all four physical states in [-2,2] throughout T=20",
+  "resource": "physical GPU 3, CPU 14-17, at most 11 GiB GPU process allocation",
+  "plan": "new smoke1 directory first, then a distinct full20 directory only if all 12 lanes accept 20/20 substeps; preserve first rejection and stop",
+  "original_h01_run": "p3_tora_remain_v1/full20_001; read-only, never restart",
+  "certificate_scope": "saved numeric interval observation only, not independent end-to-end floating-point NNCS proof"
+}

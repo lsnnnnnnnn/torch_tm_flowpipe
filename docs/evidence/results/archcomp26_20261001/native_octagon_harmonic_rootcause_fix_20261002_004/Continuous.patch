@@ -1,0 +1,11 @@
+--- /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_octagon_harmonic_rootcause_fix_20261002_004/Continuous.cpp	2026-10-02 12:34:12.805498209 +0000
++++ /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_octagon_harmonic_rootcause_fix_20261002_004/Continuous_patched.cpp	2026-10-02 12:36:03.544469123 +0000
+@@ -1005,7 +1005,7 @@
+ 		}
+ 	}
+ 
+-	bool bfinished = false;
++	bool bfinished = true; // isolated probe: keep initial Picard truncation remainder
+ 	for(int rSteps = 0; !bfinished && (rSteps <= MAX_REFINEMENT_STEPS); ++rSteps)
+ 	{
+ 		bfinished = true;

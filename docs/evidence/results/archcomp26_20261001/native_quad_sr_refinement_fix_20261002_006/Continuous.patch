@@ -1,0 +1,11 @@
+--- /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_sr_refinement_fix_20261002_006/build/Continuous_frozen.cpp	2026-09-07 03:26:37.420362295 +0000
++++ /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_sr_refinement_fix_20261002_006/build/Continuous_patched.cpp	2026-10-02 13:08:53.590839261 +0000
+@@ -2379,7 +2379,7 @@
+ 		}
+ 	}
+ 
+-	bool bfinished = false;
++	bool bfinished = true; // isolated probe: keep initial Picard truncation remainder
+ 	for(int rSteps = 0; !bfinished && (rSteps <= MAX_REFINEMENT_STEPS); ++rSteps)
+ 	{
+ 		bfinished = true;

@@ -165,7 +165,7 @@ def main():
         "",
         "NAV 的历史合同是固定官方 point/set ONNX 加作者可执行 `[x,y,v,θ]` 顺序；作者另一仓库 Git LFS 模型与官方模型的二进制身份尚未建立。Huan/Xiangru NAV 的相应保存范围使用共享数值核心且直接逐字节相同，不能当作两份独立证明。旧 NAV `ours` 的全程记录另见[审计](../ARCHCOMP26_NAV_P3_NATIVE_HISTORICAL_AUDIT_20261002.md)，本附表的 P3 格优先采用当前工作 P3 新全程。",
         "",
-        "TORA reach-tanh 的旧四方只复用于固定官方 ReLU³/tanh、`u=11f` 合同；论文合并文字的 sigmoid 隐层是来源冲突。原生旧 `VERIFIED` 是作者终点 checker 标签，不能提升为独立端到端浮点 NNCS 证明。Airplane discrete 的两个方法外 CPU 前缀诊断也不填四方格。",
+        "TORA reach-tanh 的旧四方记录只属于固定官方 ReLU³/tanh、`u=11f` 合同；其中 P3 格现优先采用另立的当前 working P3 新全程，旧 `engine_linear_leaf_v2` P3 不改名或并入新尝试。Huan、Xiangru、原生三格继续复用同合同历史全程。论文合并文字的 sigmoid 隐层是来源冲突；原生旧 `VERIFIED` 仅是作者终点 checker 标签。Airplane discrete 的两个方法外 CPU 前缀诊断也不填四方格。",
         "",
         "重算：`python3 tools/build_archcomp26_coverage_overlay_nohash.py`。脚本只读本轮矩阵、九条旧 result 和已保存的 TORA 复用审计，不启动实验；生成本页、[CSV]({})及[JSON]({})。".format(OUT.with_suffix(".csv").name, OUT.with_suffix(".json").name),
         "",

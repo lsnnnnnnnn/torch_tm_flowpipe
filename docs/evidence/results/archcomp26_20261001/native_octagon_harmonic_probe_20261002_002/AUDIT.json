@@ -1,0 +1,151 @@
+{
+  "status": "fail",
+  "accepted_steps": 3,
+  "direction_rows": 24,
+  "native_plot_segments": 3,
+  "exact_solution_direction_checks": 1512,
+  "minimum_sample_margin": -9.384136712142777e-08,
+  "sample_failures": 28,
+  "sample_failures_by_view": {
+    "tube": 6,
+    "propagated_endpoint": 22
+  },
+  "first_sample_failure": {
+    "step": 1,
+    "view": "propagated_endpoint",
+    "form": 0,
+    "x0": 1.0,
+    "t": 0.05,
+    "exact_value": 0.9987502603949663,
+    "saved_lo": 0.9987502864583334,
+    "saved_hi": 1.1985002864583336
+  },
+  "first_failure_by_step_view": {
+    "1:1": {
+      "step": 1,
+      "view": "propagated_endpoint",
+      "form": 0,
+      "x0": 1.0,
+      "t": 0.05,
+      "exact_value": 0.9987502603949663,
+      "saved_lo": 0.9987502864583334,
+      "saved_hi": 1.1985002864583336
+    },
+    "2:0": {
+      "step": 2,
+      "view": "tube",
+      "form": 3,
+      "x0": 1.0,
+      "t": 0.05,
+      "exact_value": 1.0487294296656446,
+      "saved_lo": 1.048729453125,
+      "saved_hi": 1.3154015507812504
+    },
+    "2:1": {
+      "step": 2,
+      "view": "propagated_endpoint",
+      "form": 0,
+      "x0": 1.0,
+      "t": 0.1,
+      "exact_value": 0.9950041652780258,
+      "saved_lo": 0.995004217599901,
+      "saved_hi": 1.1940049466797624
+    },
+    "3:0": {
+      "step": 3,
+      "view": "tube",
+      "form": 3,
+      "x0": 1.0,
+      "t": 0.1,
+      "exact_value": 1.094837581924854,
+      "saved_lo": 1.094837631650465,
+      "saved_hi": 1.367515280589879
+    },
+    "3:1": {
+      "step": 3,
+      "view": "propagated_endpoint",
+      "form": 0,
+      "x0": 1.0,
+      "t": 0.15000000000000002,
+      "exact_value": 0.9887710779360422,
+      "saved_lo": 0.98877115651555,
+      "saved_hi": 1.186525216802364
+    }
+  },
+  "diagonal_ratios": [
+    {
+      "step": 1,
+      "view": "tube",
+      "form": "x+y",
+      "width_ratio_to_axis_sum": 1.0000000000000002
+    },
+    {
+      "step": 1,
+      "view": "tube",
+      "form": "x-y",
+      "width_ratio_to_axis_sum": 0.9942638623326964
+    },
+    {
+      "step": 1,
+      "view": "propagated_endpoint",
+      "form": "x+y",
+      "width_ratio_to_axis_sum": 0.9046862273783742
+    },
+    {
+      "step": 1,
+      "view": "propagated_endpoint",
+      "form": "x-y",
+      "width_ratio_to_axis_sum": 1.0000000000000009
+    },
+    {
+      "step": 2,
+      "view": "tube",
+      "form": "x+y",
+      "width_ratio_to_axis_sum": 0.9268089066209357
+    },
+    {
+      "step": 2,
+      "view": "tube",
+      "form": "x-y",
+      "width_ratio_to_axis_sum": 0.9726604383781485
+    },
+    {
+      "step": 2,
+      "view": "propagated_endpoint",
+      "form": "x+y",
+      "width_ratio_to_axis_sum": 0.8176287746820878
+    },
+    {
+      "step": 2,
+      "view": "propagated_endpoint",
+      "form": "x-y",
+      "width_ratio_to_axis_sum": 0.9999999999999999
+    },
+    {
+      "step": 3,
+      "view": "tube",
+      "form": "x+y",
+      "width_ratio_to_axis_sum": 0.8599228332172456
+    },
+    {
+      "step": 3,
+      "view": "tube",
+      "form": "x-y",
+      "width_ratio_to_axis_sum": 0.9529180235404796
+    },
+    {
+      "step": 3,
+      "view": "propagated_endpoint",
+      "form": "x+y",
+      "width_ratio_to_axis_sum": 0.7374153037011831
+    },
+    {
+      "step": 3,
+      "view": "propagated_endpoint",
+      "form": "x-y",
+      "width_ratio_to_axis_sum": 1.0000000000000016
+    }
+  ],
+  "qualification": "finite samples and structural cross-check only; no neural controller or independent certificate",
+  "content_digest_policy": "none computed"
+}

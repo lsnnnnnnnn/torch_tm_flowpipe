@@ -1,0 +1,17 @@
+{
+  "schema": "native-flowstar-octagon-plant-probe-nohash-v1",
+  "source_repo_path": "tools/native_flowstar_octagon_probe_nohash.cpp",
+  "server_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_octagon_harmonic_probe_20261002_001/native_flowstar_octagon_probe_nohash.cpp",
+  "server_binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_octagon_harmonic_probe_20261002_001/probe",
+  "flowstar_include_and_library": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_paper_build_001/flowstar/flowstar-toolbox",
+  "build_command_template": "taskset -c 10 /usr/bin/g++-15 -O2 -std=c++11 -fpermissive -Wno-template-body -fopenmp -I FLOWSTAR_DIR -I /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/author_nncs_reproduction_v1/native_build/deps/extracted/usr/include -I /usr/include/jsoncpp SOURCE FLOWSTAR_DIR/libflowstar.a -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -lcolamd -lamd -lz -lltdl -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -l:libboost_thread.so.1.90.0 -o BINARY",
+  "run_commands": [
+    "timeout 60s BINARY /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_octagon_harmonic_probe_20261002_001 periodic",
+    "timeout 60s BINARY /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_octagon_harmonic_probe_20261002_002 single"
+  ],
+  "build_exit_code": 0,
+  "periodic_exit_code": 0,
+  "single_exit_code": 0,
+  "analytic_audit_exit_code_each": 1,
+  "content_digest_policy": "none computed"
+}

@@ -138,3 +138,17 @@ correlated Taylor models before `arch_ranges::record` reduces them to boxes;
 the P3 GPU driver would need a per-lane directional range before its current
 `hull_ranges_s`/endpoint range union. Neither adapter is present, and no
 saved native/P3 `ranges.bin` or JSONL row can be relabeled as an octagon.
+
+An isolated [native Flow* eight-direction production gate](ARCHCOMP26_NATIVE_OCTAGON_PRODUCTION_GATE_20261002.md)
+located the C++ accepted-step interface and matched the original MATLAB
+plotter's tube support values, but its order-4 harmonic probe failed analytic
+containment: 28 violations among 1,512 finite exact-sample/direction checks.
+An additional actual paper-equation QUAD symbolic-remainder first-box,
+first-`0.005 s`-step gate found `x7/x8` terminal bounds missing numerical
+trajectories from the CROWN affine-plus-residual relaxed control set by up to
+`1.98259e-6`; its sampled `x1/x2` directions passed. An isolated copied
+library's refinement-skip mechanism check removed finite-sample violations
+but widened bounds substantially and is not a production fix. This blocks
+native octagon promotion pending a sound repaired propagation path. The
+sampled control has not been established as the actual NN output, and the
+existing QUAD box plots and original run receipts remain unchanged.
