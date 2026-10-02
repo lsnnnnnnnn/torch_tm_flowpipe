@@ -1,6 +1,6 @@
 # Airplane discrete：新 paper-Euler-controller-first 一次转移诊断
 
-独立运行目录：`/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_discrete_paper_euler_interval_smoke1_001`。原始 [`RESULT.json`](RESULT.json) 已原样镜像。入口为 [`tools/archcomp26_airplane_discrete_euler_interval_smoke_nohash.py`](../../../../tools/archcomp26_airplane_discrete_euler_interval_smoke_nohash.py)。没有再次启动已有连续 Airplane 实验。
+独立运行目录：`/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_discrete_paper_euler_interval_smoke1_001`。原始 [`RESULT.json`](RESULT.json) 已原样镜像。入口为 [`tools/archcomp26_airplane_discrete_euler_interval_smoke_nohash.py`](../../../../../tools/archcomp26_airplane_discrete_euler_interval_smoke_nohash.py)。没有再次启动已有连续 Airplane 实验。
 
 本运行采用**新比较配置**：固定 2026 官方完整 12 维初盒，在旧状态调用固定 12→6 ONNX，再依固定 `dynamics.m` 的 12 个方程同步计算 `x₁=x₀+(1/10)f(x₀,NN(x₀))`。区间网络与物理转移使用服务器现有 CPU directed 区间算术；`cos(theta)` 初盒 `[0.5403023058681393,1]`，已排除零。只执行 `k=0→1`，不是已核实的参赛者离散执行次序，也不是 P3/Huan/Xiangru/Flow* native 任一方法的成绩。
 

@@ -156,7 +156,7 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 ## 10 月 2 日补记：DP more 首周期与独立数值点诊断
 
 - 固定官方 more-robust ONNX、官方四态 ODE 和完整 `5×5×3×3=225` 初盒的新[P3 首控制期诊断](evidence/results/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001/SUMMARY.md)只运行 `T=0.02`，4 个 0.005 s 小步、900/900 盒步均数值接受。作者驱动打印 `Step 0`、`Unknown.`；原始 JSONL 独立重扫的四步安全盒数依次为 `[225,225,181,120]`，第 3 步首次有 44 盒的 `θ̇₁` 上界超过 1.5，第 4 步增至 105 盒。首例 lane 6 保存区间 `[0.9912745512752368,1.5106057605641459]` 只表示区间无法证明安全，非实际轨迹反例。未启动 P3 `T=0.4` 全程，也未重复旧 Huan/Xiangru/原生区间作业。当前矩阵由 **104 条**尝试重算：25 格完整、1 格运行中、6 格早停、4 格失败、**3 格仅短前缀**、25 格未尝试。
-- 另用固定官方 ONNX 对初点 `(1.3)^4` 作[独立数值点轨迹重放](evidence/results/archcomp26_20261001/dp_more_point_candidate_20261002/SUMMARY.md)。按每 0.02 s float32 控制后持值、官方 ODE 积分，DOP853 估计 `θ̇₁=-1.5` 的下穿在 `t=0.3245365091`；`t=0.325` 网格值为 `-1.5014798296`，`t=0.36` 值为 `-1.6082814694`，且位于已保存的 Huan lane 224 endpoint 区间内。两档 RK4 固定步积分与 DOP853 的保存端点差小于 `1.05e-14`。这是可能违反安全性质的**数值候选**，没有经过严格误差界和控制器浮点语义的端到端验证，不称为严格反例，也不作为第五种 flowpipe 方法计入四方索引。
+- 先前固定官方 ONNX 的[名义角点 `(1.3)^4` 数值重放](evidence/results/archcomp26_20261001/dp_more_point_candidate_20261002/SUMMARY.md)显示越界，但 binary64 `1.3` 比精确初盒上界 `13/10` 大约 `4.44e-17`，故单凭这条记录不能称为精确初盒内的候选反例。为修正初点资格，另做唯一[严格内点 `(1.299)^4` 数值重放](evidence/results/archcomp26_20261001/dp_more_interior_point_candidate_20261002/SUMMARY.md)：每 0.02 s 以 float32 ONNX 控制后持值、官方 ODE 积分；DOP853 估计 `θ̇₁=-1.5` 下穿在 `t=0.3248652630`，`t=0.325` 网格值为 `-1.5004299419`，`t=0.36` 值为 `-1.6071729076`，位于已保存 Huan lane 224 endpoint 区间内。两档 RK4 与 DOP853 的保存期末差小于 `1.05e-14`。这是**合同内初点的数值候选**，一致性不是严格误差界，控制器浮点语义与 ODE 逐期包络仍需验证，不称为严格反例，也不作为第五种 flowpipe 方法计入四方索引。
 - 已将 103 条截点的可编辑 [DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx)和同名 [PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.pdf) 更新到 DP less 四方完整数值记录和六幅图；Word 导出的 17 页 PDF 已逐页目视检查，避免替代排版器漏中文。新 DP more 诊断晚于该固定阶段快照，先记在本进展和 Markdown 完整草稿中。
 
 ## 10 月 2 日补记：Airplane 离散命名约定的有界入口
@@ -166,6 +166,7 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 ## 10 月 2 日补记：TORA reach-sigmoid 官方文件 profile 的一期结果
 
 - 为避免把旧 `u=22(f−0.5)` 成绩误认成 2026 官方 `u=11f`，另建唯一[TORA 官方文件一期 Huan 诊断](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag/SUMMARY.md)。固定 `.mat` 四层 sigmoid 经显式构造后，ONNX 图内 `Mul(11)+Add(0)`，外部 `output_scale=1/output_offset=0`，完整单初盒的一个 0.5 秒控制期、50/50 ODE 小步全部接受。原始 `START/RESULT`、50 条范围、日志与独立有限/有序扫描均保存；`T=0.5` 末端 `x1∈[-0.8850144075,-0.8573825037]`、`x2∈[-0.0066841850,0.0219011293]`，外层单次 wall `5.345883 s`。没有判定 5 秒内到达目标，没有启动旧 500 步或 tanh，且没有速度排名资格。由于论文和官方网络激活冲突，仍须用户选主合同；本结果按官方文件 profile 单列。纳入此短前缀后工作矩阵为 **105 条**尝试、25 格完整、1 格运行中、6 格早停、4 格失败、**4 格仅短前缀**、24 格未尝试。
+- 原有论文方程 QUAD native 长作业在 2026-10-02 00:26:29 UTC 的只读复核仍为 `RESULT_PENDING`：日志在第 49 个控制期的 Flow* 计算，原始 `ranges.bin` 已写前 **980/1000** 小步，native 与 RPC 进程仍存活且 CPU 时间持续增长。未启动副本、重启或干预；没有第 50 期的完整时间、终点宽度或性质结论。
 
 ### 仍需外部材料或明确选择的字段
 

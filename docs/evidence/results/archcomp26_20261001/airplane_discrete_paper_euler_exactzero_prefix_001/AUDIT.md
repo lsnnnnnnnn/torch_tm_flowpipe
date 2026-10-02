@@ -1,6 +1,6 @@
 # Airplane discrete：精确零恒等式后的有界前缀
 
-新运行目录：`/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_discrete_paper_euler_exactzero_prefix_001`。原始 [`RESULT.json`](RESULT.json) 和 [`EVENTS.jsonl`](EVENTS.jsonl) 已保存；旧的一步 [`RESULT.json`](../airplane_discrete_paper_euler_interval_smoke1_001/RESULT.json) 保持原样。新入口为 [`tools/archcomp26_airplane_discrete_euler_exact_zero_nohash.py`](../../../../tools/archcomp26_airplane_discrete_euler_exact_zero_nohash.py)。
+新运行目录：`/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_discrete_paper_euler_exactzero_prefix_001`。原始 [`RESULT.json`](RESULT.json) 和 [`EVENTS.jsonl`](EVENTS.jsonl) 已保存；旧的一步 [`RESULT.json`](../airplane_discrete_paper_euler_interval_smoke1_001/RESULT.json) 保持原样。新入口为 [`tools/archcomp26_airplane_discrete_euler_exact_zero_nohash.py`](../../../../../tools/archcomp26_airplane_discrete_euler_exact_zero_nohash.py)。
 
 固定官方 `dynamics.m` 先定义 `a3=[p;q;r]`，再用 `mat_2*a3` 赋值 `dphi,dtheta,dpsi`。完整初盒有 `p=q=r=[0,0]`，且 `cos(theta)∈[0.5403023058681393,1]` 排除零，故首步三个角度导数**代数上恰为零**。新入口只在旧态这三个分量均为精确 `[0,0]` 时，对它们应用 `x+0=x` 恒等式；其余状态与控制器的转移没有改变。此处理消除了旧一步运行在闭带边界产生的一格外舍入溢出。
 

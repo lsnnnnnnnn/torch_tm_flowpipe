@@ -2,7 +2,7 @@
 
 This is a **single point trajectory**, not an interval proof, an end-to-end floating-point NN certificate, or a four-method runtime sample. It uses the fixed 2026 `controller_double_pendulum_more_robust.onnx` copied here from the server's `native_dp_more_prep_001` directory. Its graph is float32 `[N,4]→[N,2]`, with MatMul/Add/ReLU/MatMul/Add/ReLU/MatMul/Add and no preprocessing nodes. No content digest was calculated.
 
-The initial point `(θ₁,θ₂,θ̇₁,θ̇₂)=(1.3,1.3,1.3,1.3)` belongs to the full `[1,1.3]^4` set and to the saved 225-box grid's last cell. The [script](replay.py) evaluates the ONNX operators in NumPy float32 at each `0.02 s` period start, holds `(T₁,T₂)` fixed, and integrates the official continuous four-state ODE for 20 periods. DOP853 uses `rtol=1e-12`, `atol=1e-14`, `max_step=0.001`; separate fixed-step RK4 integrations use `h=0.0001` and `0.00005 s`.
+The initial point `(θ₁,θ₂,θ̇₁,θ̇₂)=(1.3,1.3,1.3,1.3)` is the binary64 value written by the replay script. It lies in the outward numerical cover of the saved 225-box grid's last cell, but each binary64 `1.3` exceeds the exact rational upper endpoint `13/10` by `1/22517998136852480` (about `4.44e-17`). Consequently this corner replay alone is **not a counterexample candidate within an exact-real `[1,13/10]^4` initial set**. A separate strict-interior point replay or exact-rational initial enclosure is needed for that claim. The [script](replay.py) evaluates the ONNX operators in NumPy float32 at each `0.02 s` period start, holds `(T₁,T₂)` fixed, and integrates the official continuous four-state ODE for 20 periods. DOP853 uses `rtol=1e-12`, `atol=1e-14`, `max_step=0.001`; separate fixed-step RK4 integrations use `h=0.0001` and `0.00005 s`.
 
 | Check | Numerical result |
 | --- | ---: |
