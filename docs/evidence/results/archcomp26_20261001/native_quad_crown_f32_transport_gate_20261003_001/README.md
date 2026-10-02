@@ -1,0 +1,21 @@
+# QUAD first-call CROWN coefficient transport: exact arithmetic sufficiency gate
+
+**Outcome: direct transport is unqualified.** This isolated, read-only audit uses only the already saved [1,024-box first-call RPC](../native_quad_allbox_firststep_recenter_gate_20261003_003/run/rpc.json). It ran no CROWN, neural-network inference, Flow*, ODE integration, or earlier experiment. The native octagon production gate remains **CLOSED**.
+
+The frozen server's `crown_paper.py` requests `same-slope` bounds and returns `T=A['lA']`, `u_min=A['lbias']`, `u_max=A['ubias']`; it does not save `A['uA']`. The native [C++ consumer](../native_quad_allbox_firststep_recenter_gate_20261003_003/quad_allbox.cpp) reads each value with JsonCpp `.asFloat()` before constructing the control set. The saved RPC alone thus leaves two separate questions: whether the upper and lower CROWN slopes actually coincide, and whether the **transported** slope and biases preserve the ideal affine inequalities. This audit addresses only the second question, conditionally assuming `uA=lA` for the upper side.
+
+For one saved RPC box `X=[L,U]`, raw slope `A`, raw biases `bL,bU`, and binary32-transferred `A',bL',bU'`, suppose the ideal real-arithmetic CROWN certificate is valid: `A·x+bL ≤ f(x) ≤ A·x+bU` for every `x∈X`. Define `d=A−A'`. Exact rational arithmetic then gives a sufficient lower margin `bL+min(d·X)−bL'` and a sufficient upper margin `bU'−bU−max(d·X)`. Nonnegative margins would transfer those ideal inequalities to the native control set. The lower margin uses saved `lA/lbias`; the upper calculation **additionally assumes** unsaved `uA=lA`. Each linear extremum is the sum of its twelve endpointwise minima or maxima. Every saved JSON number is first parsed as binary64 and lifted exactly to a rational; every `.asFloat()` result is lifted exactly from binary32. Decimal text in [RESULT.json](RESULT.json) is for display; all signs and counts come from exact rational comparisons.
+
+| Output | Lower margin fails | Upper margin fails if same slope | Either fails if same slope | Largest lower expansion | Largest upper expansion |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 573/1,024 | 562/1,024 | 833/1,024 | 6.5882×10⁻⁷ | 6.5244×10⁻⁷ |
+| 2 | 615/1,024 | 539/1,024 | 828/1,024 | 2.1445×10⁻¹⁰ | 9.3490×10⁻¹⁰ |
+| 3 | 533/1,024 | 567/1,024 | 795/1,024 | 2.5547×10⁻¹⁰ | 4.8363×10⁻¹⁰ |
+
+For source lane 0, direct transfer would require lowering the transported output-1 bias by at least `3.2396904002366×10⁻⁷`, raising the output-2 upper bias by at least `3.7472714198392×10⁻¹⁰`, and lowering the output-3 bias by at least `2.0370588659765×10⁻¹⁰`. These are **minimum changes for this sufficient affine-certificate transfer**, not measured neural-network errors. A negative margin says the old ideal affine bound plus this interval calculation cannot certify the native float32-injected bound. It does **not** show that any actual network output violates that bound; the affine bound may have slack. The floating-point CROWN calculation itself is also not independently certified here.
+
+Run [`check_saved_rpc.py`](check_saved_rpc.py) with `python3 -B` from the repository root to regenerate `RESULT.json`. It reads no model and changes no old evidence. The script checks all 12,288 saved input intervals and all 3,072 output rows.
+
+## Smallest useful follow-up
+
+An isolated `crown_paper.py` diagnostic can export `uA` together with `lA/lbias/ubias`, with tensor shapes, finiteness, and elementwise equality checked before JSON conversion. A one-box call would test the code path but **cannot be attached to the old batched RPC** if batch-dependent CROWN bounds differ. To qualify the saved first-call batch, the diagnostic would need one new, explicitly labeled 1,024-box **controller-only** call on exactly the saved inputs, then exact value comparison of its three existing coefficient arrays against the old RPC before using its `uA`; this is not a repeat of the full ODE experiment. If the arrays differ, it must remain a separate new certificate. Even `uA=lA` would leave the transport failures above and CROWN numerical soundness open. The next controller proof needs either independently enclosing `f(x)−A'·x` inside the existing transported biases or safely enlarged biases followed by a new isolated plant check; neither follows from this audit.

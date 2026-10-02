@@ -1,0 +1,54 @@
+{
+  "scope": "one controller-only 1024-box replay of the saved first QUAD RPC batch",
+  "status": "RECORDED",
+  "old_coefficient_arrays_exactly_match": true,
+  "uA_equals_lA_exactly": true,
+  "new_uA_attachable_to_saved_rpc": true,
+  "tensor_shapes": {
+    "lA": [
+      1024,
+      3,
+      12
+    ],
+    "uA": [
+      1024,
+      3,
+      12
+    ],
+    "lbias": [
+      1024,
+      3
+    ],
+    "ubias": [
+      1024,
+      3
+    ]
+  },
+  "all_tensors_finite": true,
+  "comparison": {
+    "lA_vs_saved_T": {
+      "mismatches": 0,
+      "first_mismatch": null,
+      "max_abs_difference": 0.0
+    },
+    "lbias_vs_saved_u_min": {
+      "mismatches": 0,
+      "first_mismatch": null,
+      "max_abs_difference": 0.0
+    },
+    "ubias_vs_saved_u_max": {
+      "mismatches": 0,
+      "first_mismatch": null,
+      "max_abs_difference": 0.0
+    },
+    "uA_vs_lA": {
+      "mismatches": 0,
+      "first_mismatch": null,
+      "max_abs_difference": 0.0
+    }
+  },
+  "elapsed_seconds": 0.8482717555016279,
+  "torch_version": "2.5.1+cu121",
+  "device": "cuda",
+  "limits": "No independent CROWN soundness, NN residual, float32 transport, plant, or full-horizon proof."
+}

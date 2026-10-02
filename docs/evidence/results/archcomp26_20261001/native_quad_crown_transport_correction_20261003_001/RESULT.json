@@ -1,0 +1,268 @@
+{
+  "scope": "saved QUAD first 1024-box CROWN call, 3072 output rows; no new solver/model/plant execution",
+  "basis": "recorded uA=lA and old lA/lbias/ubias numerically identical in one same-batch controller replay",
+  "condition": "assume the original real-arithmetic CROWN affine inequalities are sound on the recorded RPC boxes",
+  "formula": "required bias interval = [lbias + min_X((lA-f32(lA))\u00b7x), ubias + max_X((uA-f32(lA))\u00b7x)]",
+  "selection": "keep old transported endpoint if already outward; otherwise choose nearest outward binary32 endpoint",
+  "arithmetic": "all signs and extrema use exact Fractions lifted from parsed binary64 and chosen binary32 values",
+  "source_boxes_with_any_correction": 1014,
+  "source_boxes_with_all_three_outputs_corrected": 523,
+  "output_rows_with_correction": 2456,
+  "per_output": [
+    {
+      "output": 1,
+      "boxes_requiring_lower_change": 573,
+      "boxes_requiring_upper_change": 562,
+      "boxes_requiring_either_change": 833,
+      "minimum_real_lower_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "5.7752663343800802824642935E-8",
+        "p75": "2.8025990094159536182635163E-7",
+        "p90": "4.2169629338926996445971947E-7",
+        "p95": "4.8076341227063945036072108E-7",
+        "p99": "5.3916947347946392441546650E-7",
+        "max": "6.5881851534294522820316722E-7"
+      },
+      "minimum_real_upper_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "4.2329549643238284779768963E-8",
+        "p75": "2.7503129933124060068927357E-7",
+        "p90": "4.2308487656424372775034668E-7",
+        "p95": "4.7461319806572229388544942E-7",
+        "p99": "5.7522323806016679481749943E-7",
+        "max": "6.5243808175694757384893000E-7"
+      },
+      "minimum_f32_lower_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "9.5367431640625E-7",
+        "p75": "9.5367431640625E-7",
+        "p90": "9.5367431640625E-7",
+        "p95": "9.5367431640625E-7",
+        "p99": "9.5367431640625E-7",
+        "max": "9.5367431640625E-7"
+      },
+      "minimum_f32_upper_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "9.5367431640625E-7",
+        "p75": "9.5367431640625E-7",
+        "p90": "9.5367431640625E-7",
+        "p95": "9.5367431640625E-7",
+        "p99": "9.5367431640625E-7",
+        "max": "9.5367431640625E-7"
+      },
+      "minimum_f32_width_increase_distribution": {
+        "min": "0",
+        "p25": "9.5367431640625E-7",
+        "median": "9.5367431640625E-7",
+        "p75": "0.0000019073486328125",
+        "p90": "0.0000019073486328125",
+        "p95": "0.0000019073486328125",
+        "p99": "0.0000019073486328125",
+        "max": "0.0000019073486328125"
+      },
+      "f32_relative_width_increase_distribution": {
+        "min": "0",
+        "p25": "0.000014097413124691619087897371",
+        "median": "0.000014393252443254602242468731",
+        "p75": "0.000028194826249383238175794742",
+        "p90": "0.000028786919223904657723530428",
+        "p95": "0.000029013679950096470485834071",
+        "p99": "0.000029016626526999970983373473",
+        "max": "0.000029016626526999970983373473"
+      },
+      "max_f32_lower_lane": 0,
+      "max_f32_upper_lane": 1
+    },
+    {
+      "output": 2,
+      "boxes_requiring_lower_change": 615,
+      "boxes_requiring_upper_change": 539,
+      "boxes_requiring_either_change": 828,
+      "minimum_real_lower_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "1.6394470657887971679869041E-11",
+        "p75": "6.6473752721632041993510498E-11",
+        "p90": "1.1405517566097541355010580E-10",
+        "p95": "1.3786784337592711037007621E-10",
+        "p99": "1.7303823867753730275084797E-10",
+        "max": "2.1445445039475036560106902E-10"
+      },
+      "minimum_real_upper_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "2.9614844265584385877602492E-11",
+        "p75": "2.6841629185563346698222994E-10",
+        "p90": "4.2254441893129976658443355E-10",
+        "p95": "4.7029494516402302847148537E-10",
+        "p99": "7.7841416951812420706617639E-10",
+        "max": "9.3489689359754595046622146E-10"
+      },
+      "minimum_f32_lower_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "1.16415321826934814453125E-10",
+        "p75": "2.3283064365386962890625E-10",
+        "p90": "2.3283064365386962890625E-10",
+        "p95": "2.3283064365386962890625E-10",
+        "p99": "2.3283064365386962890625E-10",
+        "max": "2.3283064365386962890625E-10"
+      },
+      "minimum_f32_upper_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "9.31322574615478515625E-10",
+        "p75": "9.31322574615478515625E-10",
+        "p90": "9.31322574615478515625E-10",
+        "p95": "1.86264514923095703125E-9",
+        "p99": "1.86264514923095703125E-9",
+        "max": "1.86264514923095703125E-9"
+      },
+      "minimum_f32_width_increase_distribution": {
+        "min": "0",
+        "p25": "2.3283064365386962890625E-10",
+        "median": "9.31322574615478515625E-10",
+        "p75": "1.16415321826934814453125E-9",
+        "p90": "1.16415321826934814453125E-9",
+        "p95": "1.86264514923095703125E-9",
+        "p99": "1.979060471057891845703125E-9",
+        "max": "1.979060471057891845703125E-9"
+      },
+      "f32_relative_width_increase_distribution": {
+        "min": "0",
+        "p25": "1.2891174637387371418589976E-8",
+        "median": "5.2593122302728852003111619E-8",
+        "p75": "6.5742069327089554806671574E-8",
+        "p90": "6.9109676213012000245643433E-8",
+        "p95": "1.1082032473568936974320326E-7",
+        "p99": "1.1774646372911265177510517E-7",
+        "max": "1.1774764301599283811736120E-7"
+      },
+      "max_f32_lower_lane": 4,
+      "max_f32_upper_lane": 0
+    },
+    {
+      "output": 3,
+      "boxes_requiring_lower_change": 533,
+      "boxes_requiring_upper_change": 567,
+      "boxes_requiring_either_change": 795,
+      "minimum_real_lower_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "8.5873409816676045079928878E-12",
+        "p75": "1.1597017606613342362841927E-10",
+        "p90": "1.8519403883752766818021039E-10",
+        "p95": "2.1337064585273397834718943E-10",
+        "p99": "2.3270759263381265048003399E-10",
+        "max": "2.5546795037485054135039196E-10"
+      },
+      "minimum_real_upper_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "3.6890000632000672580423742E-11",
+        "p75": "2.5199356313508050348777534E-10",
+        "p90": "3.7480304170201721774789534E-10",
+        "p95": "4.2552680228606252897268728E-10",
+        "p99": "4.6203987439155918601120897E-10",
+        "max": "4.8362604596248210650942163E-10"
+      },
+      "minimum_f32_lower_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "4.656612873077392578125E-10",
+        "p75": "4.656612873077392578125E-10",
+        "p90": "4.656612873077392578125E-10",
+        "p95": "4.656612873077392578125E-10",
+        "p99": "4.656612873077392578125E-10",
+        "max": "4.656612873077392578125E-10"
+      },
+      "minimum_f32_upper_expansion_distribution": {
+        "min": "0",
+        "p25": "0",
+        "median": "9.31322574615478515625E-10",
+        "p75": "9.31322574615478515625E-10",
+        "p90": "9.31322574615478515625E-10",
+        "p95": "9.31322574615478515625E-10",
+        "p99": "9.31322574615478515625E-10",
+        "max": "9.31322574615478515625E-10"
+      },
+      "minimum_f32_width_increase_distribution": {
+        "min": "0",
+        "p25": "4.656612873077392578125E-10",
+        "median": "9.31322574615478515625E-10",
+        "p75": "1.3969838619232177734375E-9",
+        "p90": "1.3969838619232177734375E-9",
+        "p95": "1.3969838619232177734375E-9",
+        "p99": "1.3969838619232177734375E-9",
+        "max": "1.3969838619232177734375E-9"
+      },
+      "f32_relative_width_increase_distribution": {
+        "min": "0",
+        "p25": "2.6405848008097300479987021E-8",
+        "median": "5.3685407965212714605069604E-8",
+        "p75": "8.0526555631462272865790604E-8",
+        "p90": "8.4473214895128193171996251E-8",
+        "p95": "8.4842934235187328673834801E-8",
+        "p99": "8.4937611342591268719329382E-8",
+        "max": "8.4938044208666500452351711E-8"
+      },
+      "max_f32_lower_lane": 0,
+      "max_f32_upper_lane": 1
+    }
+  ],
+  "lane0": [
+    {
+      "lane": 0,
+      "output": 1,
+      "native_lower_f32": 9.930038452148438,
+      "native_upper_f32": 9.997137069702148,
+      "required_lower_real": "9.9300381281793974763412248",
+      "required_upper_real": "9.9971369340100390273951403",
+      "corrected_lower_f32": 9.930037498474121,
+      "corrected_upper_f32": 9.997137069702148,
+      "minimum_real_lower_expansion": "3.2396904002365877517275376E-7",
+      "minimum_real_upper_expansion": "0",
+      "minimum_f32_lower_expansion": "9.5367431640625E-7",
+      "minimum_f32_upper_expansion": "0",
+      "f32_width_increase": "9.5367431640625E-7",
+      "f32_relative_width_increase": "0.000014213024815941328633559794"
+    },
+    {
+      "lane": 0,
+      "output": 2,
+      "native_lower_f32": -0.0011073967907577753,
+      "native_upper_f32": 0.015700342133641243,
+      "required_lower_real": "-0.0011073967722195698768676915",
+      "required_upper_real": "0.015700342508368384964877359",
+      "corrected_lower_f32": -0.0011073967907577753,
+      "corrected_upper_f32": 0.015700343996286392,
+      "minimum_real_lower_expansion": "0",
+      "minimum_real_upper_expansion": "3.7472714198392032754304402E-10",
+      "minimum_f32_lower_expansion": "0",
+      "minimum_f32_upper_expansion": "1.86264514923095703125E-9",
+      "f32_width_increase": "1.86264514923095703125E-9",
+      "f32_relative_width_increase": "1.1082068549547976969078909E-7"
+    },
+    {
+      "lane": 0,
+      "output": 3,
+      "native_lower_f32": -0.005758021492511034,
+      "native_upper_f32": 0.01068907417356968,
+      "required_lower_real": "-0.0057580216962169206094935269",
+      "required_upper_real": "0.010689073880045012398208859",
+      "corrected_lower_f32": -0.005758021958172321,
+      "corrected_upper_f32": 0.01068907417356968,
+      "minimum_real_lower_expansion": "2.0370588659765270661243977E-10",
+      "minimum_real_upper_expansion": "0",
+      "minimum_f32_lower_expansion": "4.656612873077392578125E-10",
+      "minimum_f32_upper_expansion": "0",
+      "f32_width_increase": "4.656612873077392578125E-10",
+      "f32_relative_width_increase": "2.8312675791634448021310611E-8"
+    }
+  ],
+  "limits": "A conditional correction plan, not independent CROWN/NN soundness or native Taylor-model enclosure. Plant first-step receipts must be repeated if controls are widened."
+}

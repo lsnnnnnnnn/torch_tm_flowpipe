@@ -1,0 +1,65 @@
+{
+  "schema": "quad-old-author-p3-weighted256-saved-comparison-v1",
+  "candidate": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_v1/run_001",
+  "candidate_completed_substeps": 40,
+  "candidate_accepted_lane_substeps": 40960,
+  "candidate_weighted_counters": {
+    "refine_calls": 40,
+    "graph_map_calls": 320,
+    "target_rows": 81920,
+    "padded_rows": 0,
+    "chunk_size": 256
+  },
+  "candidate_outer_wall_s": 49.62029544170946,
+  "candidate_driver_elapsed_s": 42.80281063914299,
+  "candidate_cuda_peak_reserved_bytes": 10183770112,
+  "references": {
+    "observer_on_002": {
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/huan_quad_stage_a_40_20261001/observer_pair_v1/observer_on_002",
+      "saved_40_observation_rows_direct_bytes_equal": true,
+      "numerical_metric_fields_direct_equal": {
+        "B": true,
+        "steps": true,
+        "substeps": true,
+        "broken": true,
+        "ctrl_steps": true,
+        "final_hull": true,
+        "final_hull_width_sum_mean": true,
+        "order": true,
+        "coupling": true,
+        "crown_input_layout": true,
+        "crown_transport": true,
+        "engine": true
+      },
+      "final_arrays_direct_bytes_equal": {
+        "final_tube_12x2": true,
+        "final_endpoint_12x2": true,
+        "final_status": true
+      }
+    },
+    "weighted_round_gate": {
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/huan_quad_stage_a_40_20261001/weighted_round_gate_v1/run_001",
+      "saved_40_observation_rows_direct_bytes_equal": true,
+      "numerical_metric_fields_direct_equal": {
+        "B": true,
+        "steps": true,
+        "substeps": true,
+        "broken": true,
+        "ctrl_steps": true,
+        "final_hull": true,
+        "final_hull_width_sum_mean": true,
+        "order": true,
+        "coupling": true,
+        "crown_input_layout": true,
+        "crown_transport": true,
+        "engine": true
+      },
+      "final_arrays_direct_bytes_equal": {
+        "final_tube_12x2": true,
+        "final_endpoint_12x2": true,
+        "final_status": true
+      }
+    }
+  },
+  "status": "all_saved_values_direct_equal"
+}

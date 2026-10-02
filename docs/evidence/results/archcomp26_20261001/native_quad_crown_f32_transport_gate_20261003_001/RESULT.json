@@ -1,0 +1,80 @@
+{
+  "scope": "saved 1024-box first-call RPC only; no CROWN, NN, or plant execution",
+  "input": "native_quad_allbox_firststep_recenter_gate_20261003_003/run/rpc.json",
+  "input_interpretation": "RPC JSON numbers parsed as binary64, then lifted exactly to rational values",
+  "transport": "each saved slope and bias is rounded to IEEE binary32 as C++ JsonCpp .asFloat() does",
+  "assumption_for_upper": "unsaved uA equals saved lA; same-slope option alone is not a saved equality witness",
+  "ideal_certificate_assumption": "CROWN real-arithmetic affine lower/upper inequalities are valid on each RPC input box",
+  "lower_formula": "L_raw + min_X((lA - f32(lA)) dot x) - f32(L_raw)",
+  "upper_formula_if_same_slope": "f32(U_raw) - U_raw - max_X((lA - f32(lA)) dot x)",
+  "passing_rule": "both slacks >= 0; a failed rule only means this direct certificate transfer is inconclusive",
+  "boxes": 1024,
+  "lane0": [
+    {
+      "output": 1,
+      "raw_lower": "9.9300381736494287565619743",
+      "raw_upper": "9.9971369324067715922410571",
+      "transported_lower": "9.9300384521484375",
+      "transported_upper": "9.9971370697021484375",
+      "lower_slack": "-3.2396904002365877517275376E-7",
+      "upper_slack_assuming_same_slope": "1.3569210941010485968094906E-7",
+      "minimum_lower_expansion": "3.2396904002365877517275376E-7",
+      "minimum_upper_expansion_assuming_same_slope": "0"
+    },
+    {
+      "output": 2,
+      "raw_lower": "-0.0011073967650438998333584095",
+      "raw_upper": "0.015700342503218722711721966",
+      "transported_lower": "-0.0011073967907577753067016602",
+      "transported_upper": "0.015700342133641242980957031",
+      "lower_slack": "1.8538205429833968668504041E-11",
+      "upper_slack_assuming_same_slope": "-3.7472714198392032754304402E-10",
+      "minimum_lower_expansion": "0",
+      "minimum_upper_expansion_assuming_same_slope": "3.7472714198392032754304402E-10"
+    },
+    {
+      "output": 3,
+      "raw_lower": "-0.0057580216548586138358700737",
+      "raw_upper": "0.010689073900917445136826700",
+      "transported_lower": "-0.0057580214925110340118408203",
+      "transported_upper": "0.010689074173569679260253906",
+      "lower_slack": "-2.0370588659765270661243977E-10",
+      "upper_slack_assuming_same_slope": "2.9352466686204504732330480E-10",
+      "minimum_lower_expansion": "2.0370588659765270661243977E-10",
+      "minimum_upper_expansion_assuming_same_slope": "0"
+    }
+  ],
+  "per_output": [
+    {
+      "output": 1,
+      "lower_failures": 573,
+      "upper_failures_assuming_same_slope": 562,
+      "either_failures_assuming_same_slope": 833,
+      "max_lower_expansion": "6.5881851534294522820316722E-7",
+      "max_lower_lane": 241,
+      "max_upper_expansion_assuming_same_slope": "6.5243808175694757384893000E-7",
+      "max_upper_lane_assuming_same_slope": 143
+    },
+    {
+      "output": 2,
+      "lower_failures": 615,
+      "upper_failures_assuming_same_slope": 539,
+      "either_failures_assuming_same_slope": 828,
+      "max_lower_expansion": "2.1445445039475036560106902E-10",
+      "max_lower_lane": 382,
+      "max_upper_expansion_assuming_same_slope": "9.3489689359754595046622146E-10",
+      "max_upper_lane_assuming_same_slope": 304
+    },
+    {
+      "output": 3,
+      "lower_failures": 533,
+      "upper_failures_assuming_same_slope": 567,
+      "either_failures_assuming_same_slope": 795,
+      "max_lower_expansion": "2.5546795037485054135039196E-10",
+      "max_lower_lane": 768,
+      "max_upper_expansion_assuming_same_slope": "4.8362604596248210650942163E-10",
+      "max_upper_lane_assuming_same_slope": 625
+    }
+  ],
+  "conclusion": "Sufficient direct transport conditions fail for many boxes; no actual network violation is shown."
+}

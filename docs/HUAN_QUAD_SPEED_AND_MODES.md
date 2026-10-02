@@ -1,7 +1,7 @@
 # Huan QUAD speed and mode audit
 
-Status: **evidence-backed draft; 40-step mode, Huan phase, P3 observer, and early-weighted round diagnostics completed**
-Date: 2026-10-02
+Status: **evidence-backed draft; 40-step mode, Huan phase, P3 observer, and early-weighted diagnostics completed**
+Date: 2026-10-03
 
 ## Plain-language answer
 
@@ -452,3 +452,9 @@ does not predict a 1,000-step speedup or establish end-to-end strictness.
 The [new single-factor run and saved-array audit](evidence/results/huan_quad_stage_a_40_20261001/weighted_one_round40_v1/README.md) changed only `refine_accepted` from two rounds to one. It kept the old-author equations, all 1,024 boxes, P3/P2/P4, strict arithmetic boundary, `h=0.005`, two controller calls, full host K20 SR, trig reuse, and per-step observation. The old two-round intermediate arrays could not answer how a one-round state propagates after its first step, so this distinct 40-step run was necessary; no old full run was restarted.
 
 All 40 steps and 40,960 lane-steps were accepted, with no rejected lane. Every saved step was wider than the two-round reference. At step 40, the sum of per-box twelve-state tube widths was `2697.8759514297453` versus `2697.875935884544`; all 22,528 changed tube endpoints and all 22,528 changed endpoint endpoints moved outward, with a maximum endpoint difference of `3.836081063912644e-09`. Thus one round is a **numerically different, slightly wider algorithm variant**, not an implementation-equivalent optimization. Its single outer wall was 45.207353 s, versus a differently instrumented two-round process on another date; this is not a measured net saving or a prediction of a 1,000-step result. The shortened runner's `FALSIFIED` is the original T=5 target check applied at `t=0.2`, not a full-time property verdict. This candidate has no complete 1,000-step or end-to-end certificate qualification.
+
+## Old-author P3 weighted graph block: isolated 256-row 40-step candidate (2026-10-03)
+
+The [new candidate and original receipts](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_v1/README.md) change only the active early-weighted CUDA graph block from 128 to 256 rows. Both refinement rounds, ordinary validation, all 1,024 old-author initial boxes, P3/P2/P4 orders, strict boundary, full host K20 SR, controller, trig reuse, and per-step observer remain. The new process completed 40/40 steps and 40,960/40,960 box-steps, with two controller calls and no rejection. Weighted map calls fell from the old 128-row run's 640 to 320, with the same 81,920 target rows and no padding; the ordinary validation route remained 128 rows.
+
+The candidate's 40 saved observation rows directly matched both `observer_on_002` and `weighted_round_gate_v1/run_001` byte for byte. Selected controller/terminal metrics and final per-box 1,024×12 tube, endpoint, and status arrays also directly matched both saved references. This checks the saved 40-step outputs, not every intermediate plant/SR tensor. Its single outer wall was 49.620295 s and driver time 42.802811 s, with 10,183,770,112 bytes peak reserved on GPU. Older single runs were on other dates and had different diagnostic instrumentation, so these times do **not** establish a causal speedup or a full 1,000-step improvement. No archived full run was restarted, and no content digest was computed or checked.

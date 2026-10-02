@@ -1,0 +1,32 @@
+{
+  "scope": "local readback of copied new four-array receipt versus saved first-call RPC",
+  "arrays": {
+    "lA": [
+      1024,
+      3,
+      12
+    ],
+    "uA": [
+      1024,
+      3,
+      12
+    ],
+    "lbias": [
+      1024,
+      3
+    ],
+    "ubias": [
+      1024,
+      3
+    ]
+  },
+  "all_values_finite": true,
+  "exact_numeric_mismatch_counts": {
+    "lA_vs_T_mismatches": 0,
+    "lbias_vs_u_min_mismatches": 0,
+    "ubias_vs_u_max_mismatches": 0,
+    "uA_vs_lA_mismatches": 0
+  },
+  "no_digest_verification": true,
+  "limits": "Equality of recorded numbers is not a proof of CROWN numerical soundness or native float32 transfer."
+}
