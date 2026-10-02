@@ -1,0 +1,37 @@
+{
+  "schema": "quad-old-author-p3-weighted256-full1000-preflight-v1",
+  "status": "passed",
+  "archived_full_steps": 1000,
+  "archived_full_accepted_box_steps": 1024000,
+  "archived_full_controller_calls": 50,
+  "archived_observer_pt_files": 1000,
+  "short_candidate_matches_archived_pooled_steps": 40,
+  "full_yaml_direct_equal_to_archived": true,
+  "full_contract_same_as_short_except_steps_and_sr_queue": true,
+  "weighted_adapter_direct_equal_to_40_step_candidate": true,
+  "precompiled_extensions_present": 8,
+  "candidate_run_id_unused": true,
+  "gpu3_used_mib": 0,
+  "related_processes": [],
+  "adapter_cpu_check": {
+    "status": "passed_CPU_padding_only",
+    "row_counts": [
+      1,
+      2,
+      10,
+      255,
+      256
+    ],
+    "target_bytes_preserved": true,
+    "last_row_padding_bytes_equal": true,
+    "owned_clones_survive_replay": true,
+    "invalid_counts_rejected": [
+      0,
+      257
+    ],
+    "actual_weighted_map_run": false,
+    "actual_refinement_run": false,
+    "CUDA_run": false
+  },
+  "qualification": "direct saved-value checks only; no full numerical qualification yet; no content digest"
+}
