@@ -1,0 +1,38 @@
+{
+  "schema": "archcomp26-airplane-p3-xyz-rem0p1-preflight-v1",
+  "checked_utc": "2026-10-02T04:29:13.826185+00:00",
+  "base_contract_preflight": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/PREFLIGHT.json",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_xyz_rem0p1_observer_prep_20261002/config.yaml",
+  "declared_variable_count": 19,
+  "changed_field_only": "remainder_estimation",
+  "changed_variable_indices": [
+    0,
+    1,
+    2
+  ],
+  "changed_variable_names": [
+    "x",
+    "y",
+    "z"
+  ],
+  "old_uniform_remainder_estimation": [
+    -0.01,
+    0.01
+  ],
+  "new_first_three_remainder_estimation": [
+    -0.1,
+    0.1
+  ],
+  "new_other_sixteen_remainder_estimation": [
+    -0.01,
+    0.01
+  ],
+  "other_config_fields_equal": true,
+  "remote_driver_per_variable_parser": "parse_rem_est(config[\"remainder_estimation\"], n), crown_reach.py:396,962",
+  "remote_engine_per_variable_materialization": "flowpipe.py:237-280",
+  "gpu_initialized": false,
+  "numerical_run_started": false,
+  "content_digest_performed": false,
+  "previous_profile": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_xyz_rem0p1_prep_20261002",
+  "observer_change_only": "Before existing combined validity guard, save 1x12x4 float64 bounds in .npy and four predicate vectors in JSON; original guard and model arithmetic unchanged."
+}

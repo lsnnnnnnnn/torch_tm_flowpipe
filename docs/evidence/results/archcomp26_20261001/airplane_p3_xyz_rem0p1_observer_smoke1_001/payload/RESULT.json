@@ -1,0 +1,11 @@
+{
+  "schema": "archcomp26-airplane-continuous-fullbox-result-v1",
+  "status": "exception",
+  "backend": "p3",
+  "mode": "smoke1",
+  "error_type": "FloatingPointError",
+  "error": "invalid accepted interval at 1",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_xyz_rem0p1_observer_prep_20261002/run.py\", line 170, in run\n    driver_code = driver.main()\n                  ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1446, in main\n    st, ok = advance_sparse(st, code, eng, sched, settings, rem_est, sr)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_xyz_rem0p1_observer_prep_20261002/run.py\", line 136, in observed\n    raise FloatingPointError(f\"invalid accepted interval at {step_number}\")\nFloatingPointError: invalid accepted interval at 1\n",
+  "observed_substeps": 0,
+  "wall_s": 10.646709064021707
+}

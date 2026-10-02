@@ -1,0 +1,109 @@
+{
+  "schema": "archcomp26-airplane-p3-xyz-rem0p1-observer-check-v1",
+  "run_dir": "docs/evidence/results/archcomp26_20261001/airplane_p3_xyz_rem0p1_observer_smoke1_001",
+  "config_equal_previous_widened_profile": true,
+  "raw_bounds_shape": [
+    1,
+    12,
+    4
+  ],
+  "raw_bounds_dtype": "float64",
+  "raw_bounds_all_finite": true,
+  "endpoint_ordered_all_states": true,
+  "failed_validity_predicates": {
+    "tube_lo_le_endpoint_lo": [
+      "phi"
+    ],
+    "endpoint_hi_le_tube_hi": [
+      "y",
+      "z",
+      "theta",
+      "psi"
+    ]
+  },
+  "failing_intervals": [
+    {
+      "index": 1,
+      "state": "y",
+      "tube": [
+        -0.08172050665884471,
+        0.0867929493774228
+      ],
+      "endpoint": [
+        -0.07595288692010356,
+        0.08679294937742281
+      ],
+      "upper_gap": 1.3877787807814457e-17,
+      "upper_gap_binary64_steps": 1
+    },
+    {
+      "index": 2,
+      "state": "z",
+      "tube": [
+        -0.05403103984587355,
+        0.05695675141820998
+      ],
+      "endpoint": [
+        -0.050395909665170935,
+        0.056956751418209994
+      ],
+      "upper_gap": 1.3877787807814457e-17,
+      "upper_gap_binary64_steps": 2
+    },
+    {
+      "index": 6,
+      "state": "phi",
+      "tube": [
+        -0.005828386693158816,
+        1.0057957490109044
+      ],
+      "endpoint": [
+        -0.0058283866931588164,
+        1.0057620650357124
+      ],
+      "lower_gap": 8.673617379884035e-19,
+      "lower_gap_binary64_steps": 1
+    },
+    {
+      "index": 7,
+      "state": "theta",
+      "tube": [
+        -0.004496708519178493,
+        1.004525454048824
+      ],
+      "endpoint": [
+        -0.004467252879644872,
+        1.0045254540488242
+      ],
+      "upper_gap": 2.220446049250313e-16,
+      "upper_gap_binary64_steps": 1
+    },
+    {
+      "index": 8,
+      "state": "psi",
+      "tube": [
+        -0.003978738558544626,
+        1.003989249232481
+      ],
+      "endpoint": [
+        -0.003970613171181633,
+        1.0039892492324811
+      ],
+      "upper_gap": 2.220446049250313e-16,
+      "upper_gap_binary64_steps": 1
+    }
+  ],
+  "engine_advance_return": {
+    "accepted": true,
+    "status_code": 0
+  },
+  "saved_validated_substeps": 0,
+  "saved_ranges_bytes": 0,
+  "outer_status": "failed",
+  "outer_exit_code": 1,
+  "outer_wall_s": 11.651067547500134,
+  "outer_timed_out": false,
+  "property_status": "unassessed: no interval passed observer validity guard",
+  "engine_trace_event_count": 43,
+  "engine_trace_recorded_numbers_finite": true
+}
