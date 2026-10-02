@@ -1,0 +1,139 @@
+{
+  "status": "READ_ONLY_ALL_THREE_OUTPUTS_ANALYZED",
+  "basis": "already saved lane-0 full-precision native TM trace; no new native execution",
+  "condition": "original real-affine CROWN inequalities hold on the saved first RPC box",
+  "rows": [
+    {
+      "output": 1,
+      "lower_margin": {
+        "numerator": "-206145013049",
+        "denominator": "618970019642690137449562112",
+        "decimal": "-3.33045230798093170392235691843309600135292214E-16"
+      },
+      "upper_margin": {
+        "numerator": "68374571007",
+        "denominator": "618970019642690137449562112",
+        "decimal": "1.10465077204337395133459459394638033091773366E-16"
+      },
+      "lower_outward_deficit": {
+        "numerator": "206145013049",
+        "denominator": "618970019642690137449562112",
+        "decimal": "3.33045230798093170392235691843309600135292214E-16"
+      },
+      "upper_outward_deficit": {
+        "numerator": "0",
+        "denominator": "1",
+        "decimal": "0"
+      },
+      "minimum_binary64_lower_remainder_endpoint": {
+        "binary64_ulps": 48,
+        "endpoint_hex": "-0x1.12d7000000030p-5",
+        "actual_outward_shift": {
+          "numerator": "3",
+          "denominator": "9007199254740992",
+          "decimal": "3.3306690738754696212708950042724609375E-16"
+        }
+      },
+      "minimum_binary64_upper_remainder_endpoint": {
+        "binary64_ulps": 0,
+        "endpoint_hex": "0x1.12d7000000000p-5",
+        "actual_outward_shift": {
+          "numerator": "0",
+          "denominator": "1",
+          "decimal": "0"
+        }
+      },
+      "current_same_symbol_inclusion": false
+    },
+    {
+      "output": 2,
+      "lower_margin": {
+        "numerator": "-638661561",
+        "denominator": "1237940039285380274899124224",
+        "decimal": "-5.15906700431692236435131200728877731709332011E-19"
+      },
+      "upper_margin": {
+        "numerator": "156571469",
+        "denominator": "309485009821345068724781056",
+        "decimal": "5.05909701702138216610432988346729432649340197E-19"
+      },
+      "lower_outward_deficit": {
+        "numerator": "638661561",
+        "denominator": "1237940039285380274899124224",
+        "decimal": "5.15906700431692236435131200728877731709332011E-19"
+      },
+      "upper_outward_deficit": {
+        "numerator": "0",
+        "denominator": "1",
+        "decimal": "0"
+      },
+      "minimum_binary64_lower_remainder_endpoint": {
+        "binary64_ulps": 1,
+        "endpoint_hex": "-0x1.1360c64000001p-7",
+        "actual_outward_shift": {
+          "numerator": "1",
+          "denominator": "576460752303423488",
+          "decimal": "1.73472347597680709441192448139190673828125E-18"
+        }
+      },
+      "minimum_binary64_upper_remainder_endpoint": {
+        "binary64_ulps": 0,
+        "endpoint_hex": "0x1.1360c64000000p-7",
+        "actual_outward_shift": {
+          "numerator": "0",
+          "denominator": "1",
+          "decimal": "0"
+        }
+      },
+      "current_same_symbol_inclusion": false
+    },
+    {
+      "output": 3,
+      "lower_margin": {
+        "numerator": "-16436499",
+        "denominator": "309485009821345068724781056",
+        "decimal": "-5.31091926212782297851415394367158295807485047E-20"
+      },
+      "upper_margin": {
+        "numerator": "10207437",
+        "denominator": "309485009821345068724781056",
+        "decimal": "3.29820077744392154316655754904552555473173925E-20"
+      },
+      "lower_outward_deficit": {
+        "numerator": "16436499",
+        "denominator": "309485009821345068724781056",
+        "decimal": "5.31091926212782297851415394367158295807485047E-20"
+      },
+      "upper_outward_deficit": {
+        "numerator": "0",
+        "denominator": "1",
+        "decimal": "0"
+      },
+      "minimum_binary64_lower_remainder_endpoint": {
+        "binary64_ulps": 1,
+        "endpoint_hex": "-0x1.0d781f0000001p-7",
+        "actual_outward_shift": {
+          "numerator": "1",
+          "denominator": "576460752303423488",
+          "decimal": "1.73472347597680709441192448139190673828125E-18"
+        }
+      },
+      "minimum_binary64_upper_remainder_endpoint": {
+        "binary64_ulps": 0,
+        "endpoint_hex": "0x1.0d781f0000000p-7",
+        "actual_outward_shift": {
+          "numerator": "0",
+          "denominator": "1",
+          "decimal": "0"
+        }
+      },
+      "current_same_symbol_inclusion": false
+    }
+  ],
+  "native_rows_satisfying_same_symbol_gate": 0,
+  "interpretation": "Endpoint shifts refer only to holding the saved native polynomial and input TMs fixed while widening its final remainder; changing source biases would reconstruct the TM and needs a new isolated gate.",
+  "limits": "Not an NN counterexample, independent CROWN proof, plant check, later-control result, or full-time property proof.",
+  "no_crown_calls": true,
+  "no_ode_calls": true,
+  "no_digest_verification": true
+}

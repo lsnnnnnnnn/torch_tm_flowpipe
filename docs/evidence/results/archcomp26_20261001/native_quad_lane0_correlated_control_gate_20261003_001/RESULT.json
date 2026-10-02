@@ -1,0 +1,45 @@
+{
+  "input_audit": {
+    "status": "SAVED_LANE0_INPUTS_AND_CONDITIONAL_CORRECTIONS_VALID",
+    "source_coordinates": 12,
+    "rpc_coordinates": 12,
+    "outputs": [
+      {
+        "output": 1,
+        "conditional_transfer_lower_margin": "6.29705276382591224827246241212969862566163180E-7",
+        "conditional_transfer_upper_margin": "1.35692109410104859680949057967218388278836746E-7"
+      },
+      {
+        "output": 2,
+        "conditional_transfer_lower_margin": "1.85382054298339686685040414868249223786504628E-11",
+        "conditional_transfer_upper_margin": "1.48791800724703670370695598404524750591308156E-9"
+      },
+      {
+        "output": 3,
+        "conditional_transfer_lower_margin": "2.61955400710086551200060232578075563451258629E-10",
+        "conditional_transfer_upper_margin": "2.93524666862045047323304801220797744289287725E-10"
+      }
+    ],
+    "scope": "saved first lane only; assumes original real-affine CROWN inequalities",
+    "no_crown_calls": true,
+    "no_ode_calls": true,
+    "no_digest_verification": true
+  },
+  "construction": {
+    "status": "UNDECIDED_FIRST_REFUSAL",
+    "rows_checked": 1,
+    "rows": [
+      {
+        "output": 1,
+        "lower_margin": "-3.33045230798093170392235691843309600135292214E-16",
+        "upper_margin": "1.10465077204337395133459459394638033091773366E-16",
+        "same_symbol_inclusion": false
+      }
+    ],
+    "condition": "original real-affine CROWN inequalities hold on saved RPC box",
+    "limits": "No independent NN/CROWN soundness, later control, plant step or full-time property",
+    "no_crown_calls": true,
+    "no_ode_calls": true,
+    "no_digest_verification": true
+  }
+}

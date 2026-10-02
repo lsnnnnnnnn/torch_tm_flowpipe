@@ -1,0 +1,27 @@
+{
+  "schema": "quad-old-author-p3-weighted128-vs-256-final-arrays-direct-bytes-v1",
+  "method": "read each saved array file and compare bytes directly; no digest",
+  "weighted128": "run_001/data",
+  "weighted256": "../weighted_chunk256_full1000_v1/run_001/data",
+  "arrays": [
+    {
+      "file": "final_tube_12x2.npy",
+      "weighted128_bytes": 196736,
+      "weighted256_bytes": 196736,
+      "direct_bytes_equal": true
+    },
+    {
+      "file": "final_endpoint_12x2.npy",
+      "weighted128_bytes": 196736,
+      "weighted256_bytes": 196736,
+      "direct_bytes_equal": true
+    },
+    {
+      "file": "final_status.npy",
+      "weighted128_bytes": 1152,
+      "weighted256_bytes": 1152,
+      "direct_bytes_equal": true
+    }
+  ],
+  "all_direct_bytes_equal": true
+}

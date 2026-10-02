@@ -1,0 +1,76 @@
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/layer.py:29: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:206.)
+  layer.weight.data = torch.from_numpy(numpy_helper.to_array(weight))
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/model.py:167: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if not self.experimental and inputs[0].shape[self.batch_dim] > 1:
+Step 0
+/srv/local/shengenli/auto_LiRPA/auto_LiRPA/operators/s_shaped.py:217: UserWarning: torch.searchsorted(): input value tensor is non-contiguous, this will lower the performance due to extra data copy when converting non-contiguous tensor to contiguous, please use contiguous input value tensor if possible. This message will only appear once per program. (Triggered internally at ../aten/src/ATen/native/BucketizationUtils.h:32.)
+  d_indices = torch.searchsorted(torch.flip(self.dfunc_values, [0]), k, right=False)
+Step 1
+Step 2
+Step 3
+Step 4
+Step 5
+Step 6
+Step 7
+Step 8
+Step 9
+Step 10
+Step 11
+Step 12
+Step 13
+Step 14
+Step 15
+Step 16
+Step 17
+Step 18
+Step 19
+Step 20
+Step 21
+Step 22
+Step 23
+Step 24
+Step 25
+Step 26
+Step 27
+Step 28
+Step 29
+Step 30
+Step 31
+Step 32
+Step 33
+Step 34
+Step 35
+Step 36
+Step 37
+Step 38
+Step 39
+Step 40
+Step 41
+Step 42
+Step 43
+Step 44
+Step 45
+Step 46
+Step 47
+Step 48
+Step 49
+VERIFIED
+HULL x1 -3.35104946557 3.27257188631
+HULL x2 -3.57668092646 3.67687275474
+HULL x3 0.956757940577 1.02573032265
+HULL x4 -0.775052394757 0.728903865971
+HULL x5 -0.887554001335 0.834504524788
+HULL x6 -0.101462577966 0.0784644067132
+HULL x7 -0.00342305338733 0.00743008635466
+HULL x8 -0.00395353596636 0.00575729185151
+HULL x9 -0.00307030830487 0.00307317933949
+HULL x10 -0.0778010846275 0.0778553754882
+HULL x11 -0.0653530171707 0.0654881535676
+HULL x12 -2.22507385851e-308 2.22507385851e-308
+HULL t 5 5
+HULL u1 -0.326374749623 0.441260719366
+HULL u2 -0.0857779981924 0.0857466001172
+HULL u3 -0.0721188254052 0.0720874538178
+time cost: 1343.874426
+/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/tempfile.py:934: ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/tmp/tmptde5c2mm'>
+  _warnings.warn(warn_message, ResourceWarning)
