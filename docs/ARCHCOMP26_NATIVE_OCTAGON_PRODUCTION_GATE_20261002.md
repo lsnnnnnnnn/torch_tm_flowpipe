@@ -261,6 +261,16 @@ The next [adaptive first-exit gate](evidence/results/archcomp26_20261001/native_
 
 This is a **conditional plant containment check** under the saved first-call CROWN affine-plus-residual control sets. It does not independently show that those sets contain every true neural-network output or certify Flow*'s parser/internal floating-point implementation. The first control period requires 20 ODE steps, so the remaining 19 steps and all later controls are untouched. Observer on/off equivalence beyond the first box, `T=5`, and the reach-and-remain property remain open. The original-library counterexample and the native octagon production decision remain unchanged: **CLOSED**.
 
+## Lane 0 second small step under the same saved first-call control
+
+A new [isolated two-step replay](evidence/results/archcomp26_20261001/native_quad_lane0_secondstep_replay_20261003_008/README.md) reads the saved 1,024-box RPC response without calling CROWN again. It checks all 12,288 constructed RPC input interval pairs against the saved request, injects the original float32-transferred coefficients once, and propagates **only source lane 0** through one `reach(...,0.010,...)` call with `u'=0`. A separate one-step control replay first reproduced lane 0's original binary range, eight direction rows and twelve terminal axes exactly; the two-step run's first range and eight directions agree again. The new call returned `status=2`, **2/2 accepted** small steps, two finite ordered range records, sixteen direction rows and twelve final terminal axes.
+
+The [independent second-step plant audit](evidence/results/archcomp26_20261001/native_quad_lane0_secondstep_replay_20261003_008/PLANT_AUDIT.json) starts from the original source/RPC box and the same constant saved control hull. It propagates two consecutive sets of 1,000 strict directed-Decimal Picard substeps; only substeps 1,001–2,000 form the **second** whole-step tube. It re-derives all seven strict first-exit inequalities for `H=0.010` and recomputes the correlated `x6` and closed-form `x10/x11` terminal bounds at that horizon. All **20/20** second-step composed physical comparisons lie inside the saved **unexpanded binary64** observer bounds: four tube directions, four endpoint directions and twelve final axes. A separate read-only Fraction audit confirmed those comparisons and the seven strict inequalities; the smallest positive raw margin is about `1.024×10⁻¹⁸` for `x11`, while `x12=0` is exact equality. This covers only lane 0 through `t=0.010`, conditional on the saved control hull; the other 1,023 boxes' second steps and the remaining eighteen steps of the first period are untouched. It is not a full-period or full-horizon proof, and the production gate remains **CLOSED**.
+
+The [saved first-call NN contract audit](evidence/results/archcomp26_20261001/native_quad_saved_crown_nn_contract_audit_20261003_001/README.md) identifies a separate controller certificate gap. The frozen CROWN source saves `lA`, `lbias` and `ubias` as the injected slope and bias interval, but does not save `uA` or an independently checked same-slope equality. For source lane 0, output 1 has `width(T·X)=3.3901568215` after native float32 transport, while the saved residual width is `0.06709861755`. Separately interval-enclosing `f(X)` and `T·X` therefore cannot fit the residual band, in any of the 1,024 first-call boxes. This is a limitation of that independent method, **not** a network counterexample; a correlated, directed sigmoid residual check is still needed. The 1,024-box and lane-0 plant audits above explicitly assume the saved CROWN control hull is valid.
+
+A bounded [one-box correlated affine/sigmoid check](evidence/results/archcomp26_20261001/native_quad_lane0_nn_affine_certificate_20261003_009/README.md) now evaluates the selected local ONNX mathematical map with exact lifted binary32 parameters and the native-transported first-call RPC coefficients. Its 80-digit directed interval enclosure for lane 0 remains **UNDECIDED**: the first output residual enclosure has width `0.09846842618`, exceeding the saved width `0.06709861755`, with both enclosure endpoints outside the saved band. The other two output enclosures are also too broad. A planned 64-subbox exploratory refinement was stopped before completion and gives no coverage result. This is enclosure overestimation, not a demonstrated network counterexample or a proof of the saved CROWN bounds. It does not establish identity of the server model bytes or float32 runtime behavior. The production gate remains **CLOSED**.
+
 ## Gate to continue
 
 1. Preserve both original-library counterexamples, both refinement-skip
@@ -272,8 +282,9 @@ This is a **conditional plant containment check** under the saved first-call CRO
 2. The isolated recentering candidate closes the identified one-ULP gap.
    All 1,024 source boxes now pass saved-input coverage, numerical acceptance,
    and the conditional independent plant check for the first small step.
-   Qualify the remaining 19 steps of the first control period, later control
-   calls, CROWN/NN output coverage, and parser/runtime floating-point behavior
+   Qualify lane 0's remaining 18 steps and the other 1,023 boxes' remaining
+   19 steps of the first control period, later control calls, CROWN/NN output
+   coverage, and parser/runtime floating-point behavior
    before considering production.
    Compare observer on/off on an isolated short subset after any candidate repair. Do not alter
    the frozen full50 source or its original receipt; do not infer from this

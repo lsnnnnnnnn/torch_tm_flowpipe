@@ -315,9 +315,7 @@ def build():
         if line.startswith("## "):
             numbered = NUMBERED_SECTION.match(line)
             current_numbered_section = int(numbered.group(1)) if numbered else None
-            heading = doc.add_heading(line[3:], level=1)
-            if line == "## 最终发布门":
-                heading.paragraph_format.page_break_before = True
+            doc.add_heading(line[3:], level=1)
         elif line.startswith("### "):
             doc.add_heading(line[4:], level=2)
         elif line.startswith("> "):

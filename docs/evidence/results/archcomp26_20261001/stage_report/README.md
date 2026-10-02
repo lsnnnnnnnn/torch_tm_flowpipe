@@ -2,9 +2,9 @@
 
 ## 当前 200 条尝试截点
 
-[16 节可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_200_20261003.py)从[200 条截点 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。64 格按证据来源为 38 格本轮新完整数值时域、8 格同合同历史完整时域、14 格无完整时域、4 格 Airplane discrete 合同阻塞。新增的 DP more P3 20 期请求因作者 checker `Unsafe.` 停于 72/80 小步，不计完整时域。原生 QUAD 复制库全 1,024 初盒首个 0.005 秒小步与独立 plant 条件性门检已写入报告；它们不计入 200 条 benchmark 尝试，也不构成完整闭环或性质证明。
+[16 节可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_200_20261003.py)从[200 条截点 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。64 格按证据来源为 38 格本轮新完整数值时域、8 格同合同历史完整时域、14 格无完整时域、4 格 Airplane discrete 合同阻塞。新增的 DP more P3 20 期请求因作者 checker `Unsafe.` 停于 72/80 小步，不计完整时域。原生 QUAD 复制库全 1,024 初盒首个 0.005 秒小步、首盒第二步与独立 plant 条件性门检已写入报告；首盒 NN 相关仿射门结果为 `UNDECIDED`。它们不计入 200 条 benchmark 尝试，也不构成完整闭环或性质证明。
 
-PDF 于 2026-10-03 经 Microsoft Word 从该 DOCX 导出，为 **22 页 A4**，含 **14 幅保存数据图、10 个表格**。PDFium 逐页检查中文字形、图表、页码与页边界；第 16 页 QUAD 段末标点及第 22 页独立结尾版面均已复验，无截断或空白孤页。文档技能的 `render_docx.py` 也已运行，但本机 LibreOffice 输出缺中文字形且排成 17 页，故交付版面以 Word PDF 为准。本稿仍是可审阅阶段稿，不是完整四方最终成绩；旧 189/187 截点文件继续保留。
+PDF 于 2026-10-03 经 Microsoft Word 从更新后的 DOCX 导出，为 **22 页 A4**，含 **14 幅保存数据图、10 个表格**。首次加入新诊断时的 23 页导出在第 22 页留下大块空白；生成脚本已取消“最终发布门”前的强制分页，再次导出回 22 页。PDFium 逐页检查中文字形、图表、页码与页边界，末页两个结尾小节同页且无孤页或截断；本机 Poppler 缺 Adobe-GB1 语言包，不能用其中文字形渲染结果评价此 Word PDF。文档技能的 `render_docx.py` 也已运行，但本机 LibreOffice 输出缺中文字形，故交付版面以 Word PDF 为准。本稿仍是可审阅阶段稿，不是完整四方最终成绩；旧 189/187 截点文件继续保留。
 
 ## 当前 189 条尝试截点
 

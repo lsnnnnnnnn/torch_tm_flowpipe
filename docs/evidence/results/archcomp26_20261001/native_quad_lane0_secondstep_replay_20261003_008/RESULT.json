@@ -1,0 +1,207 @@
+{
+  "schema": "native-quad-lane0-secondstep-replay-result-nohash-v1",
+  "run_id": "native_quad_lane0_secondstep_replay_20261003_008",
+  "finished_utc": "2026-10-02T20:25:05.558967+00:00",
+  "contract": "2026 paper QUAD ODE; saved first-call float32 CROWN affine-plus-residual response; source-defined lane 0; u held constant for first two h=.005 steps",
+  "first_step_replay": {
+    "mode": "first",
+    "saved_rpc_numeric_equal": true,
+    "status": 2,
+    "accepted_steps": 1,
+    "range_records": 1,
+    "octagon_rows": 8,
+    "terminal_axes_rows": 12,
+    "comparisons": {
+      "first_step_range_equal_original": true,
+      "first_step_octagon_equal_original": true,
+      "first_step_terminal_axes_equal_original": true
+    },
+    "first_issue": null
+  },
+  "two_step_replay": {
+    "mode": "two",
+    "saved_rpc_numeric_equal": true,
+    "status": 2,
+    "accepted_steps": 2,
+    "range_records": 2,
+    "octagon_rows": 16,
+    "terminal_axes_rows": 12,
+    "comparisons": {
+      "first_step_range_equal_original": true,
+      "first_step_octagon_equal_original": true,
+      "first_step_range_equal_first_replay": true,
+      "first_step_octagon_equal_first_replay": true
+    },
+    "first_issue": null
+  },
+  "two_step_range_scan": {
+    "schema": "archcomp26-native-range-scan-nohash-v1",
+    "input": "docs/evidence/results/archcomp26_20261001/native_quad_lane0_secondstep_replay_20261003_008/two/ranges.bin",
+    "record_bytes": 408,
+    "records": 2,
+    "expected_records": 2,
+    "boxes": 1,
+    "steps": 2,
+    "physical": 12,
+    "complete_grid": true,
+    "out_of_grid": 0,
+    "nonfinite_records": 0,
+    "reversed_component_intervals": 0,
+    "endpoint_outside_same_step_tube_components": 0,
+    "largest_endpoint_excursion": 0.0,
+    "safe_band": null,
+    "safe_tube_crossing_components": 0,
+    "first_safe_crossing_step": null,
+    "tube_union": [
+      [
+        -0.4045409516603305,
+        -0.29945905141092694
+      ],
+      [
+        -0.40452281942884705,
+        -0.2954771752948197
+      ],
+      [
+        -0.4041198305951313,
+        -0.29503895679124953
+      ],
+      [
+        -0.4049042103093738,
+        0.004904305389513788
+      ],
+      [
+        -0.40490772632473976,
+        0.40490741620101106
+      ],
+      [
+        -0.5004509642492183,
+        0.4002494603947477
+      ],
+      [
+        -7.05202277468406e-06,
+        1.8577363176168316e-05
+      ],
+      [
+        -1.070310147274028e-05,
+        1.3506566935005136e-05
+      ],
+      [
+        -4.78580933065344e-07,
+        4.785993342695656e-07
+      ],
+      [
+        -0.0002753104614654429,
+        0.002909673981775997
+      ],
+      [
+        -0.0012664819951169201,
+        0.0019072741008669804
+      ],
+      [
+        -0.0,
+        0.0
+      ]
+    ],
+    "final_endpoint_lanes": 1,
+    "final_endpoint_union": [
+      [
+        -0.4045409516603305,
+        -0.29945905146003765
+      ],
+      [
+        -0.40452281902908455,
+        -0.2954771752948197
+      ],
+      [
+        -0.4039996573059819,
+        -0.29503895679124953
+      ],
+      [
+        -0.40490419145051304,
+        0.004904305389513788
+      ],
+      [
+        -0.40490772632473976,
+        0.4049073386702575
+      ],
+      [
+        -0.5004509642492183,
+        0.3081730608085634
+      ],
+      [
+        -5.405545574489963e-06,
+        1.8577363176168316e-05
+      ],
+      [
+        -1.0302606406647035e-05,
+        1.3506566935005136e-05
+      ],
+      [
+        -4.78580933065344e-07,
+        4.785993342695656e-07
+      ],
+      [
+        -0.0002753104614654429,
+        0.002909673981775997
+      ],
+      [
+        -0.0012664819951169201,
+        0.0019072741008669804
+      ],
+      [
+        -0.0,
+        0.0
+      ]
+    ],
+    "final_endpoint_partition_mean_width": [
+      0.10508190020029284,
+      0.10904564373426484,
+      0.10896070051473239,
+      0.40980849684002685,
+      0.8098150649949973,
+      0.8086240250577816,
+      2.398290875065828e-05,
+      2.380917334165217e-05,
+      9.571802673349096e-07,
+      0.00318498444324144,
+      0.0031737560959839003,
+      0.0
+    ],
+    "final_endpoint_partition_max_width": [
+      0.10508190020029284,
+      0.10904564373426484,
+      0.10896070051473239,
+      0.40980849684002685,
+      0.8098150649949973,
+      0.8086240250577816,
+      2.398290875065828e-05,
+      2.380917334165217e-05,
+      9.571802673349096e-07,
+      0.00318498444324144,
+      0.0031737560959839003,
+      0.0
+    ],
+    "interpretation": "saved intervals and their observed coverage only; no independent NNCS floating-point proof"
+  },
+  "independent_plant_status": "conditional_contained",
+  "strict_bootstrap_inequalities_at_h_0_010": 7,
+  "strict_picard_substeps": 2000,
+  "step2_physical_composed_inside_raw_binary64": [
+    20,
+    20
+  ],
+  "step2_physical_composed_inside_outward": [
+    20,
+    20
+  ],
+  "smallest_positive_raw_binary64_margin": 1.0240467774058394e-18,
+  "checker_elapsed_seconds": 3.739070208015619,
+  "native_cap_seconds_each": 120,
+  "checker_cap_seconds": 30,
+  "crown_server_or_gpu_called": false,
+  "property_checked": false,
+  "original_library_modified": false,
+  "old_experiment_restarted": false,
+  "production_gate": "CLOSED",
+  "limits": "Single source lane 0 and first two plant steps only; conditional on saved CROWN control relaxation enclosing actual NN controls. No CROWN/NN independent certificate, later 18 steps, later controls, Flow* parser/internal floating-point proof, full T=5, or reach-and-remain proof."
+}
