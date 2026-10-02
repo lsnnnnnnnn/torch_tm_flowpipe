@@ -1,0 +1,18 @@
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/model.py:167: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if not self.experimental and inputs[0].shape[self.batch_dim] > 1:
+Traceback (most recent call last):
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/source/archcomp26_dp_p3_nohash.py", line 541, in <module>
+    main()
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/source/archcomp26_dp_p3_nohash.py", line 537, in main
+    execute(args)
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/source/archcomp26_dp_p3_nohash.py", line 487, in execute
+    code = driver.main()
+           ^^^^^^^^^^^^^
+  File "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py", line 1446, in main
+    st, ok = advance_sparse(st, code, eng, sched, settings, rem_est, sr)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/source/archcomp26_dp_p3_nohash.py", line 473, in observed_advance
+    raise RuntimeError("first P3 DP more substep rejection; stopped after saving raw observation")
+RuntimeError: first P3 DP more substep rejection; stopped after saving raw observation
+/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/tempfile.py:934: ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/tmp/tmpymu70d51'>
+  _warnings.warn(warn_message, ResourceWarning)

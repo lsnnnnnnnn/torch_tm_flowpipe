@@ -10,14 +10,14 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 114,
+  "attempt_count": 117,
   "status_counts": {
-    "completed": 28,
+    "completed": 29,
     "running": 0,
-    "early_stopped": 6,
+    "early_stopped": 8,
     "failed": 4,
-    "not_attempted": 21,
-    "short_prefix_only": 5
+    "not_attempted": 20,
+    "short_prefix_only": 3
   },
   "methods": [
     "pytorch_gpu",
@@ -638,16 +638,16 @@
     {
       "instance_id": "balancing-reach",
       "method": "pytorch_gpu",
-      "work_status": "short_prefix_only",
-      "attempt_count": 1,
-      "selected_attempt_number": 106,
-      "selected_attempt_status": "completed_short_prefix",
-      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_p3_smoke1_001",
-      "selected_wall_s": 5.230873153544962,
-      "selected_property_verdict": "NOT_APPLICABLE_SHORT_PREFIX",
+      "work_status": "early_stopped",
+      "attempt_count": 2,
+      "selected_attempt_number": 116,
+      "selected_attempt_status": "early_stopped_numerical_rejection",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_p3_full500_001",
+      "selected_wall_s": 13.806936142966151,
+      "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
       "attempts": [
         {
           "index": 106,
@@ -655,6 +655,13 @@
           "role": "fixed-repository raw-four-state full-initial-box first-period P3 diagnostic",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_p3_smoke1_001",
           "local_summary": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_p3_smoke1_001/SUMMARY.md"
+        },
+        {
+          "index": 116,
+          "status": "early_stopped_numerical_rejection",
+          "role": "full 500-period, 2000-substep working-P3 attempt under the four-input fixed-repository profile, first numerical rejection stop",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_p3_full500_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_p3_full500_001/SUMMARY.md"
         }
       ]
     },
@@ -989,16 +996,16 @@
     {
       "instance_id": "double-pendulum-more-robust",
       "method": "pytorch_gpu",
-      "work_status": "short_prefix_only",
-      "attempt_count": 1,
-      "selected_attempt_number": 104,
-      "selected_attempt_status": "completed_short_prefix",
-      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001",
-      "selected_wall_s": 7.385546431876719,
-      "selected_property_verdict": "Unknown.",
+      "work_status": "early_stopped",
+      "attempt_count": 2,
+      "selected_attempt_number": 117,
+      "selected_attempt_status": "early_stopped_numerical_rejection",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001",
+      "selected_wall_s": 16.6163630746305,
+      "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
       "attempts": [
         {
           "index": 104,
@@ -1006,6 +1013,13 @@
           "role": "full 225-box first-control-period diagnostic; stop after four 0.005 s plant substeps",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001",
           "local_summary": "docs/evidence/results/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001/SUMMARY.md"
+        },
+        {
+          "index": 117,
+          "status": "early_stopped_numerical_rejection",
+          "role": "full 225-box, 20-period T=0.4 attempt under the fixed 2026 more-robust continuous contract, first numerical rejection stop",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/SUMMARY.md"
         }
       ]
     },
@@ -1193,17 +1207,25 @@
     {
       "instance_id": "nav-robust",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 1,
+      "selected_attempt_number": 115,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_working_p3_full30_001",
+      "selected_wall_s": 18.70389783103019,
+      "selected_property_verdict": "VERIFIED",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 115,
+          "status": "completed",
+          "role": "full 25-box and 30-period working-P3 run with first-rejection stop and full-completion guard",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_working_p3_full30_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/nav_author_robust_working_p3_full30_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "nav-robust",

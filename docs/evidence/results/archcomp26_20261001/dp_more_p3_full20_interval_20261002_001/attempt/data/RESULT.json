@@ -1,0 +1,128 @@
+{
+  "status": "exception",
+  "completed_substeps": 9,
+  "error_type": "RuntimeError",
+  "error": "first P3 DP more substep rejection; stopped after saving raw observation",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/source/archcomp26_dp_p3_nohash.py\", line 487, in execute\n    code = driver.main()\n           ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1446, in main\n    st, ok = advance_sparse(st, code, eng, sched, settings, rem_est, sr)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/source/archcomp26_dp_p3_nohash.py\", line 473, in observed_advance\n    raise RuntimeError(\"first P3 DP more substep rejection; stopped after saving raw observation\")\nRuntimeError: first P3 DP more substep rejection; stopped after saving raw observation\n",
+  "accepted_lane_substeps": 1800,
+  "controller_audit": [
+    {
+      "period": 0,
+      "envelope": "interval",
+      "crown_bias_inversion_count": 8,
+      "crown_bias_min_gap": -8.881784197001252e-16,
+      "directed_residual_width_max": 1.8001910679174644,
+      "directed_residual_width_median": 1.1351929346435963,
+      "directed_network_first_lane": [
+        [
+          -4.9973849133492045,
+          -4.08032954502438
+        ],
+        [
+          -5.102630923138578,
+          -4.0704065789651045
+        ]
+      ],
+      "directed_linear_first_lane": [
+        [
+          -2.9589101737509567,
+          -2.698197979807589
+        ],
+        [
+          -4.386974442753829,
+          -3.8044888235776804
+        ]
+      ],
+      "directed_residual_first_lane": [
+        [
+          -2.2991869335416157,
+          -1.1214193712734235
+        ],
+        [
+          -1.2981420995608972,
+          0.31656786378872415
+        ]
+      ],
+      "affine_layer_diagnostics": null
+    },
+    {
+      "period": 1,
+      "envelope": "interval",
+      "crown_bias_inversion_count": 0,
+      "crown_bias_min_gap": 0.028782945419680406,
+      "directed_residual_width_max": 5.8371181668611385,
+      "directed_residual_width_median": 4.567074545626447,
+      "directed_network_first_lane": [
+        [
+          -6.344509189088849,
+          -2.2657810586545106
+        ],
+        [
+          -5.305577938465938,
+          -1.5923580434902873
+        ]
+      ],
+      "directed_linear_first_lane": [
+        [
+          -4.137883560889124,
+          -3.0086272451117604
+        ],
+        [
+          -3.3631113912952895,
+          -1.7563760015699492
+        ]
+      ],
+      "directed_residual_first_lane": [
+        [
+          -3.3358819439770886,
+          1.8721025022346134
+        ],
+        [
+          -3.5492019368959893,
+          1.7707533478050022
+        ]
+      ],
+      "affine_layer_diagnostics": null
+    },
+    {
+      "period": 2,
+      "envelope": "interval",
+      "crown_bias_inversion_count": 0,
+      "crown_bias_min_gap": 1.6149668278845848,
+      "directed_residual_width_max": 22.95178739274622,
+      "directed_residual_width_median": 15.935593892139352,
+      "directed_network_first_lane": [
+        [
+          -9.998092018668116,
+          5.268817720328894
+        ],
+        [
+          -10.308985805946124,
+          5.624530377136004
+        ]
+      ],
+      "directed_linear_first_lane": [
+        [
+          -5.568092730184545,
+          -2.6109240154413373
+        ],
+        [
+          -5.266649966353105,
+          0.3859274060606426
+        ]
+      ],
+      "directed_residual_first_lane": [
+        [
+          -7.387168003226779,
+          10.83691045051344
+        ],
+        [
+          -10.694913212006767,
+          10.89118034348911
+        ]
+      ],
+      "affine_layer_diagnostics": null
+    }
+  ],
+  "wall_s": 15.594604306854308
+}

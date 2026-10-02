@@ -157,8 +157,8 @@ def main():
         lines.append("| " + " | ".join([instance] + [LABELS[by_key[instance, method]["work_status"]] for method in methods]) + " |")
     lines += [
         "",
-        "“完成”仅表示所选尝试记录了完整数值时域，包括 Docking 原生数值完成但性质 UNKNOWN/外层 exit 2 的独立状态；“早停”包含 native DP more 的 UNKNOWN、Huan/Xiangru DP more 的 checker Unsafe 和 Balancing raw4 的数值拒绝；“失败”包括 P3 DP less 诊断、Airplane 完整初盒首步拒绝及入口/资源失败；“仅短前缀”未覆盖完整时域，其中 DP more P3 首周期覆盖全部 225 初盒、4 个小步但性质 Unknown，TORA reach-sigmoid Huan 官方文件 profile 覆盖完整初盒一期、50 小步但未检查 5 秒目标，Balancing P3 raw4 一期 4 小步不进入 8–10 秒性质窗。较早 smoke 和各尝试原始状态保存在 JSON。",
-        "Balancing Huan 的早停及 P3 的短前缀属于明确命名的固定仓库四原态 `balancing-fixed-repo-raw4` profile；论文五特征控制器仍缺，不可把这些状态当作论文主合同结果。Airplane P3 回调 trace 把原数值 profile 的首步拒绝定位为自映射收缩失败；仅放宽 x/y/z 余项初猜的 profile 首步引擎接受后，观察器因 endpoint 越出 tube 1–2 个 binary64 相邻值而拒绝，0 个可用保存步，也无全时安全结论。NAV standard 当前 P3 与原生各自有独立 640 盒×600 小步全程运行和保存范围扫描；旧 NAV `ours` 是另一代引擎，其同合同记录只作历史审计，不并入新 attempt。",
+        "“完成”仅表示所选尝试记录了完整数值时域，包括 Docking 原生数值完成但性质 UNKNOWN/外层 exit 2 的独立状态；“早停”包含 DP more 原生的 UNKNOWN、Huan/Xiangru 的 checker Unsafe、P3 第 9 小步的数值拒绝，以及 Balancing raw4 Huan/P3 各自的数值拒绝；“失败”包括 P3 DP less 诊断和 Airplane 完整初盒首步入口/资源失败。“仅短前缀”仍不覆盖完整时域，例如 TORA reach-sigmoid Huan 官方文件 profile 仅有完整初盒一期、50 小步，未检查 5 秒目标。较早 smoke 和各尝试原始状态保存在 JSON。",
+        "Balancing Huan/P3 的早停属于明确命名的固定仓库四原态 `balancing-fixed-repo-raw4` profile，分别在第 99/87 小步拒绝；论文五特征控制器仍缺，不可把这些状态当作论文主合同结果。Airplane P3 回调 trace 把原数值 profile 的首步拒绝定位为自映射收缩失败；仅放宽 x/y/z 余项初猜的 profile 首步引擎接受后，观察器因 endpoint 越出 tube 1–2 个 binary64 相邻值而拒绝，0 个可用保存步，也无全时安全结论。NAV standard 当前 P3 与原生各自有独立 640 盒×600 小步全程运行和扫描，NAV robust 当前 P3 另有独立 25 盒×600 小步全程运行和扫描；旧 NAV `ours` 是另一代引擎，其同合同记录只作历史审计，不并入新 attempt。",
         "",
         "所有 64 个单元在本索引中均不具备四方法排名资格。重复次数按各条 attempt 计，不能从完成状态推断计时资格；保存的数值结果不构成端到端浮点 NNCS 证明。标为运行中的尝试尚无终点时间或宽度；DP more 早停没有完整 T=0.4 结果。",
         "",

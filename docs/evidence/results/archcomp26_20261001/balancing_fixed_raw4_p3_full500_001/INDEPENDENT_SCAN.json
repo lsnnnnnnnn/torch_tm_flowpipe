@@ -1,0 +1,59 @@
+{
+  "schema": "archcomp26-balancing-raw4-p3-full-independent-scan-nohash-v1",
+  "source": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_p3_full500_001",
+  "planned_substeps": 2000,
+  "observed_substeps": 87,
+  "accepted_substeps": 86,
+  "first_rejection": {
+    "substep": 87,
+    "status_code": 1,
+    "status": "FAILED_CONTRACTION"
+  },
+  "last_accepted_t_s": 0.43,
+  "complete_numeric_horizon": false,
+  "checked_property_substeps": 0,
+  "planned_property_substeps": 400,
+  "property_verdict": "UNKNOWN_INCOMPLETE",
+  "accepted_tube_union": [
+    [
+      -0.35273341045771706,
+      0.3566493619687928
+    ],
+    [
+      -1.124456841920661,
+      1.1423714229525816
+    ],
+    [
+      -1.1876087180642874,
+      1.168977525217438
+    ],
+    [
+      -8.234706498105115,
+      8.113612991558062
+    ]
+  ],
+  "last_accepted_endpoint": [
+    [
+      -0.3526886240051373,
+      0.3566493619687928
+    ],
+    [
+      -1.124355850322217,
+      1.1423714229525816
+    ],
+    [
+      -1.1876087180642874,
+      1.1686723157212133
+    ],
+    [
+      -8.234706498105115,
+      8.111932599286265
+    ]
+  ],
+  "outer_status": "failed",
+  "outer_exit_code": 2,
+  "outer_wall_s": 13.806936142966151,
+  "inner_status": "early_stopped",
+  "cuda_peak_allocated_bytes": 87559168,
+  "cuda_peak_reserved_bytes": 205520896
+}
