@@ -79,3 +79,47 @@ interpolated. The `[0.94,1.06]` band applies to the terminal target only.
 The native whole-step bounds are axis-aligned box projections, not octagon
 support values. The included MATLAB script is generated but has not been run
 in MATLAB or Octave.
+
+## Actual Taylor-model eight-direction projection
+
+`torch_tm_flowpipe.tm_octagon_nohash.export_segments` now accepts **validated
+segments while their correlated Taylor models still exist**. It ranges `x`,
+`y`, `x+y`, and `x-y` as Taylor models, retaining shared dependency symbols,
+and saves all eight lower/upper half-plane bounds for both tube and the
+accepted `final_tm` endpoint used for propagation. The latter includes
+symbolic output remainders added after raw endpoint substitution in applicable
+normalized-insertion modes. Polygon vertices are computed later in ordinary floating point for
+drawing only; the saved directional bounds are the numerical data. The entry
+rejects missing or unvalidated segments. It never derives diagonal bounds
+from an axis-aligned observer or computes a content digest.
+
+The isolated [three-step harmonic-oscillator smoke](evidence/results/archcomp26_20261001/tm_octagon_harmonic_smoke_20261002_001/SUMMARY.md)
+uses the existing CPU Taylor-model solver, `x1'=x2`, `x2'=-x1`,
+`x1(0)∈[1,1.2]`, `x2(0)=0`, `h=.05`, order 4. All three plant-only steps
+validated to `T=.15`. The saved third endpoint octagon's display area is
+`0.848866` of its axis-aligned box area; 108 sampled exact-solution cases fell
+inside every saved directional interval. The check is a finite sample and
+does not replace solver validation or establish an NNCS certificate.
+The saved smoke is an immutable snapshot of the initial exporter, which used
+`endpoint_raw_tm`; the current exporter uses `final_tm` for subsequent runs.
+That change affects endpoint semantics where fixed-time tightening or symbolic
+output materialization is active. The saved directional JSON remains labeled
+as the original raw-endpoint smoke and is not silently rewritten.
+
+```console
+PYTHONPATH=src python -m torch_tm_flowpipe.tm_octagon_nohash \
+  --smoke-harmonic --output out/harmonic_3step
+PYTHONPATH=src python -m torch_tm_flowpipe.tm_octagon_nohash \
+  --geometry out/harmonic_3step.geometry.json --view endpoint \
+  --output out/harmonic_3step_endpoint
+```
+
+For an actual application, call `export_segments(result.segments,
+initial_box, output, x=..., y=..., names=(..., ...))` at the accepted solver
+boundary. The second command redraws the saved geometry without any numerical
+step. The demonstration produced `.geometry.json`, MATLAB `.m`, PDF, and PNG
+on the saved research server. MATLAB/Octave was unavailable there and was not
+run. The existing 2026 QUAD/native/P3 saved ranges contain no correlated TM,
+so their figures remain explicitly box projections until a new accepted-step
+directional observer is attached to those engines; the old long runs are not
+repeated just for plotting.

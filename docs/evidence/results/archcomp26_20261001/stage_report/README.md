@@ -2,6 +2,8 @@
 
 本目录的 `ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx` 是可编辑稿；同名 `.pdf` 由 Microsoft Word 导出。封面和页脚标为 2026-10-02 阶段更新版。固定文件名沿用 20261001 的工作目录命名。
 
+新增的 [2026-10-02 当前截点 DOCX](ARCHCOMP26_STATUS_20261002.docx)和[同版 PDF](ARCHCOMP26_STATUS_20261002.pdf)是单独的两页状态报告，由[只读生成脚本](../../../../../tools/build_archcomp26_status_docx_20261002.py)从当前无哈希工作矩阵及[历史覆盖附表](../../../archcomp26_coverage_overlay_20261002.md)生成。它固定在 187 条新尝试：37 格新完整数值时域、9 格已审计的同合同旧全程、14 格无全程、4 格 Airplane discrete 合同阻塞。旧长篇阶段稿下述 105/26 数字只代表原快照。新版 DOCX 在 Word 中逐页查看；PDF 由 Word 导出，再用 PDFium 渲染两页逐页核查中文、表格和截断。两份文件均不是最终完整实验报告。
+
 本版固定在 **105 条尝试**的索引截点：16×4 工作矩阵中有 **26 个完整数值时域方法格**。论文方程 QUAD 原生旧作业自然完成；外层 completed/exit 0，独立重扫确认 1,024,000 条保存范围覆盖 1024 盒 × 1000 小步，T=5 的 x₃ endpoint union 为 `[0.965771839016746,1.0167484756616678]`。作者 checker 打印 VERIFIED，但原生保存源码只在终时逐盒检查目标，不等于论文 reach-and-remain 全时证明。四方单次进程时间和终点区间列于正文，不据不同引擎和资源路径排稳定速度名次。
 
 Double Pendulum less-robust 的 P3 定向仿射四分控制 residual 全程诊断完成 225 盒、20 期、100 小步；四方保存区间图收入正文。先前未分区的 P3 早停作业仍单列。DP more P3 只有全初盒首周期 900/900 盒步数值接受，性质 Unknown；TORA reach-sigmoid Huan 官方 `u=11f` 配置只有完整初盒一期前缀，终点未检，均不计完整格。Docking 四方的全时性质均为 Unknown，原生外层记录 failed/exit 2；“完整”仅说明 400 个数值段保存齐全。ACC 表中的后五次中位数只是共享主机下的描述性计时。保存区间、作者 checker 输出和图不构成独立端到端浮点 NNCS 证明。

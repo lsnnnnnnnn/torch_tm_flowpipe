@@ -1,0 +1,86 @@
+{
+  "schema": "archcomp26-tora-remain-numeric-stop-readonly-v1",
+  "basis": "Existing 2026-10-01 runs only; no new execution",
+  "methods": {
+    "huan": {
+      "original_run_dir": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001",
+      "observed_substeps": 200,
+      "expected_lane_substeps": 2400,
+      "accepted_lane_substeps": 2357,
+      "rejected_lane_substeps": 43,
+      "full_lane_acceptance_substeps": 189,
+      "first_saved_tube_outside_safe_substep": 185,
+      "first_numerical_rejection_substep": 190,
+      "rejected_lanes_first_rejection": [
+        2
+      ],
+      "accepted_lanes_last_step": 6,
+      "rejected_lanes_last_step": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "joint_full_acceptance_and_saved_safe_prefix_substeps": 184,
+      "author_stdout_flowstar_terminated_lines": 6,
+      "author_stdout_unknown_lines": 1,
+      "author_stdout_unsafe_lines": 0,
+      "driver_return": 0,
+      "observer_status": "incomplete",
+      "outer_exit_code": 1,
+      "original_receipts": {
+        "outer_result": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001/RESULT.json",
+        "payload_result": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001/payload/RESULT.json",
+        "observations": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001/payload/observations.jsonl",
+        "stdout": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001/stdout.log",
+        "independent_scan": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001/INDEPENDENT_INTERVAL_SCAN.json"
+      }
+    },
+    "xiangru": {
+      "original_run_dir": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001",
+      "observed_substeps": 200,
+      "expected_lane_substeps": 2400,
+      "accepted_lane_substeps": 2357,
+      "rejected_lane_substeps": 43,
+      "full_lane_acceptance_substeps": 189,
+      "first_saved_tube_outside_safe_substep": 185,
+      "first_numerical_rejection_substep": 190,
+      "rejected_lanes_first_rejection": [
+        2
+      ],
+      "accepted_lanes_last_step": 6,
+      "rejected_lanes_last_step": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "joint_full_acceptance_and_saved_safe_prefix_substeps": 184,
+      "author_stdout_flowstar_terminated_lines": 6,
+      "author_stdout_unknown_lines": 1,
+      "author_stdout_unsafe_lines": 0,
+      "driver_return": 0,
+      "observer_status": "incomplete",
+      "outer_exit_code": 1,
+      "original_receipts": {
+        "outer_result": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001/RESULT.json",
+        "payload_result": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001/payload/RESULT.json",
+        "observations": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001/payload/observations.jsonl",
+        "stdout": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001/stdout.log",
+        "independent_scan": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001/INDEPENDENT_INTERVAL_SCAN.json"
+      }
+    }
+  },
+  "source_locations": {
+    "driver_numerical_rejection": "research/gpu_verified_20260930/source/integration/crown_reach.py:1442-1460",
+    "driver_safe_unknown_bookkeeping": "research/gpu_verified_20260930/source/integration/crown_reach.py:1461-1518",
+    "driver_final_verdict": "research/gpu_verified_20260930/source/integration/crown_reach.py:1553-1560",
+    "observer_acceptance": "tools/archcomp26_tora_remain_author_nohash.py:263-301",
+    "observer_completion": "tools/archcomp26_tora_remain_author_nohash.py:319-344"
+  },
+  "interpretation": "safe_unknown does not stop integration; disabling only the safe-set checker cannot recover lanes already rejected by advance_sparse. The subclass of numerical failure is not recorded by these receipts."
+}

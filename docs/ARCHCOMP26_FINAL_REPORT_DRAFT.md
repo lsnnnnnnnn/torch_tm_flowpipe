@@ -4,6 +4,8 @@
 
 > 本轮按用户要求**没有计算或校验任何内容摘要**。旧冻结证据只按既存记录陈述，不重新验证身份；新 DP 原生结果保留无哈希路径、配置、日志、范围记录与图，尚未注入旧矩阵的资格字段。旧 Huan、旧 PyTorch 与旧 Flow* 数字也不冒充 2026 新合同结果。
 
+> 下方逐实例章节仍含恢复前自动生成的旧矩阵模板（例如 `not_started`、旧版“哈希绑定图”门槛）。那些句子不适用于本轮；本轮状态以本页接续记录、[当前无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)和[历史覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)为准。待完整报告重排时将旧模板整体替换。
+
 ## 摘要与边界
 
 目标是在同一冻结 benchmark 合同下比较 PyTorch/GPU、Huan、Xiangru 和 Flow* native 的完整性、进程时间与绝对 flowpipe 宽度。共享驱动仅用于控制变量，不等同于三套独立 NNCS 产品。
@@ -13,6 +15,12 @@
 - 覆盖：16 个实例 × 4 个方法 = 64 个 cell。
 - 旧基线矩阵计数：`not_started=64`；它不是本轮实际 attempt 计数。新 attempt 见[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)。
 - 当前可写的实测结论：新原生 DP less 225×100、修正危险集的 Attitude 四方 1×60、论文方程 QUAD 四方 1024×1000、Single Pendulum 两物理态四方 1×100、TORA remain P3/原生 12×200、ACC participant-order 四方 1×50、Docking 四方 1×400 均有完整数值运行；DP less P3 分区仿射版本与 Huan/Xiangru 225×100 也完整；P3 仍无端到端严格证书。Docking 四方的非线性安全性质未决；原生外层 `failed/exit 2` 因 checker `UNKNOWN`，原始状态未改写。ACC、具名两物理态 Single Pendulum 与修正危险盒后的 Attitude 各有四方每法 5 次后续独立进程计时；这些完成时间不能仅凭当前数据做稳定速度排名或声称独立端到端浮点 NNCS 证明。失败前缀时间不外推为完成时间。
+
+[16×4 新旧覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)单独核对了九格同合同历史完整时域：NAV standard/robust 共五格及 TORA reach-tanh 四格。故 64 格按证据来源分为 **37 格本轮新全程、9 格同合同旧全程、14 格无全程、4 格 Airplane discrete 合同阻塞**。历史九格未增记为 187 条新尝试；“全程”只指保存的数值时域，并不提升模型身份、性质或计时资格。可编辑的[当前两页进度 DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STATUS_20261002.docx)和[Word 导出 PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STATUS_20261002.pdf)按此截点重建；此前 105/26 的长篇阶段稿保留为历史快照。
+
+TORA remain 作者两方的[只读数值拒绝审计](ARCHCOMP26_TORA_REMAIN_NUMERIC_STOP_AUDIT_20261002.md)确认：各记录 200/200 步但只接受 2357/2400 盒步；第 185 步首次保存 tube 出安全带，第 190 步首次发生数值盒拒绝，末步各仅 6/12 盒接受。`safe_unknown` 不停积分，最终 `Unknown.` 不是盒拒绝原因；关闭性质检查不能补齐原有流管。拒绝的具体数值状态子类未记录，不作猜测。
+
+绘图新增[真实 Taylor 模型八方向导出](flowpipe_plot_nohash.md#actual-taylor-model-eight-direction-projection)：隔离三步 plant-only 谐振子 smoke 全部验证通过，并保存 tube/endpoint 的方向界、MATLAB 脚本、PNG/PDF 与[108 项有限解析采样审计](evidence/results/archcomp26_20261001/tm_octagon_harmonic_smoke_20261002_001/SUMMARY.md)。第三步 endpoint 显示多边形面积为坐标盒的 0.8488663；这只证明导出器在该短例中保留了相关性。现有 QUAD/P3/native 归档范围只含逐坐标区间，仍只能画 box，不能从中重建真实 octagon；MATLAB/Octave 尚未实跑。
 
 ## 2026-10-01 新尝试与旧冻结证据的分界
 
