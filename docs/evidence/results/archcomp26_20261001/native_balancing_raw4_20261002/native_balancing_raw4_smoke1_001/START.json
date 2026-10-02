@@ -1,0 +1,34 @@
+{
+  "argv": [
+    "/bin/bash",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/tools/run_archcomp26_balancing_raw4_native_pair.sh"
+  ],
+  "contract_label": "balancing-fixed-repo-raw4-smoke1-v1",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_balancing_raw4_build_001/archcomp/balancing_raw4",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "balancing-reach",
+  "method": "native",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "BALANCING_BINARY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_balancing_raw4_build_001/archcomp/balancing_raw4/balancing_smoke1",
+    "BALANCING_CPUSET": "24-27",
+    "BALANCING_MODEL": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/CartPole/model.onnx",
+    "BALANCING_OVERLAY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_rpc_overlay_preflight_001/rpc_overlay",
+    "BALANCING_RUN_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_balancing_raw4_smoke1_001",
+    "BALANCING_SERVER_PYTHON": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "BALANCING_WORKDIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_balancing_raw4_build_001/archcomp/balancing_raw4",
+    "CUDA_VISIBLE_DEVICES": "1",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+  },
+  "started_utc": "2026-10-02T07:34:43.379696+00:00",
+  "timeout_s": 180.0
+}

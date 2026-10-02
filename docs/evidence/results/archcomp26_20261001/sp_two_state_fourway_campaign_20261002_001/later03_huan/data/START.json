@@ -1,0 +1,66 @@
+{
+  "schema": "archcomp26-sp-two-state-gpu-nohash-v1",
+  "started_utc": "2026-10-02T06:41:56.863109+00:00",
+  "backend": "huan",
+  "mode": "full",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/single_pendulum_paper_two_state.yaml",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later03_huan/data/config.yaml",
+  "engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk",
+  "driver": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py",
+  "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx",
+  "physical_box_count": 1,
+  "physical_states": [
+    "x1",
+    "x2"
+  ],
+  "auxiliary_states": [
+    "t",
+    "u1"
+  ],
+  "property_window": [
+    0.5,
+    1.0
+  ],
+  "property_note": "x1 in [0,1] at all times in the closed window",
+  "cuda_visible_devices": "2",
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "cuda_memory_cap_bytes": 12884901888,
+  "preloaded_binaries": {
+    "flowstar_seg_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_seg_kernels/flowstar_seg_kernels.so",
+      "bytes": 1279632,
+      "mtime_ns": 1790068022742403774
+    },
+    "flowstar_tape_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_tape_kernels/flowstar_tape_kernels.so",
+      "bytes": 1442736,
+      "mtime_ns": 1790068080138544285
+    },
+    "flowstar_valid_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_valid_kernels/flowstar_valid_kernels.so",
+      "bytes": 1421248,
+      "mtime_ns": 1790068137490679947
+    }
+  },
+  "qualification": "author checker result; no independent floating-point NN certificate",
+  "driver_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later03_huan/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later03_huan/data/metrics.json"
+  ]
+}

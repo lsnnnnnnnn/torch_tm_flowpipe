@@ -1,0 +1,12 @@
+/srv/local/shengenli/native_envs/crownreach28/lib/python3.11/site-packages/onnx2pytorch/convert/layer.py:29: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:203.)
+  layer.weight.data = torch.from_numpy(numpy_helper.to_array(weight))
+Traceback (most recent call last):
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_001/run_full.py", line 217, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_001/run_full.py", line 134, in main
+    torch, driver, _, _ = support.prepare("huan")
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_001/author_support.py", line 169, in prepare
+    raise RuntimeError("saved PyTorch/CUDA environment unavailable")
+RuntimeError: saved PyTorch/CUDA environment unavailable

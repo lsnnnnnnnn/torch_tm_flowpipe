@@ -1,0 +1,64 @@
+{
+  "schema": "archcomp26-balancing-raw4-xiangru-independent-scan-nohash-v1",
+  "source": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_xiangru_20261002/balancing_fixed_raw4_xiangru_smoke1_001",
+  "mode": "smoke1",
+  "planned_substeps": 4,
+  "observed_substeps": 4,
+  "accepted_substeps": 4,
+  "first_rejection": null,
+  "last_accepted_t_s": 0.02,
+  "complete_numeric_horizon": true,
+  "property_checks": 0,
+  "property_verdict": "NOT_APPLICABLE_SHORT_PREFIX",
+  "accepted_tube_union": [
+    [
+      -0.101735689930469,
+      0.10174300027251267
+    ],
+    [
+      -0.1242968513369562,
+      0.1251156096458437
+    ],
+    [
+      -0.10234991023349767,
+      0.10232708239049167
+    ],
+    [
+      -0.2403444550530503,
+      0.2377885671751699
+    ]
+  ],
+  "last_accepted_endpoint": [
+    [
+      -0.10173364303469679,
+      0.10174300027251267
+    ],
+    [
+      -0.12417988586425799,
+      0.1251156096458437
+    ],
+    [
+      -0.10234991023349771,
+      0.10232068822176808
+    ],
+    [
+      -0.24034445505305027,
+      0.23742274403116612
+    ]
+  ],
+  "raw_status": "completed_short_prefix",
+  "raw_wall_s": 4.531592207029462,
+  "strict_saved_tube_contains_endpoint": false,
+  "endpoint_outside_tube_count": 1,
+  "endpoint_outside_tube_first": {
+    "substep": 4,
+    "state": 2,
+    "side": "lower",
+    "tube_bound": -0.10234991023349767,
+    "endpoint_bound": -0.10234991023349771,
+    "delta": 4.163336342344337e-17,
+    "delta_in_tube_bound_ulps": 3.0
+  },
+  "endpoint_outside_tube_max_absolute": 4.163336342344337e-17,
+  "endpoint_outside_tube_max_tube_bound_ulps": 3.0
+}

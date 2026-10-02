@@ -29,3 +29,9 @@
 ## 后续独立短程诊断
 
 在此执行门之后，仅对明确命名的官方文件 `tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag` 做了一次[完整初盒一期 Huan 诊断](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag/SUMMARY.md)：由固定 `.mat` 构造四层 sigmoid 加图内 `u=11f` 的 ONNX，外部缩放设为 1/0，50/50 个 0.01 秒数值小步接受。其范围、日志、配置与独立扫描均单列，未检查 `T=5` 目标，未重跑旧 500 步或 tanh，也未选择论文主表网络合同。
+
+## 2026-10-02 后续数值与复用审计
+
+同一具名官方 sigmoid `u=11f` profile 的新[Huan 全初盒数值运行](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_002/SUMMARY.md)完成 500/500 小步，保存终点 `x1,x2` 落入目标；性质 checker 未启用，故这是数值区间的充分条件观察，不是论文文字所述控制器的主表证明。独立的[第一次全程入口](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_001/SUMMARY.md)因误选保存 Python 环境在第一个 ODE 步前失败，原始收据不删除。
+
+官方 tanh 模型 `ReLU³/tanh, u=11f` 的新[一期门检](evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_firstperiod_diag_001/SUMMARY.md)接受 50/50 步；其 800 个四态 tube/endpoint 边界数与旧 Huan 全程前 50 步逐值相同，且旧四方法同合同均有 500 步完整历史记录。因此没有重启同一 tanh 全程作业。两变体的论文主表选择和“5 秒内到达”收据口径仍未获用户明确决定。

@@ -1,0 +1,148 @@
+{
+  "schema": "archcomp26-attitude-corrected-unsafe-fourway-campaign-v1",
+  "started_utc": "2026-10-02T07:24:42.882268+00:00",
+  "contract": "corrected official six-dimensional closed unsafe box, avoid for all t in [0,3]",
+  "unsafe_box": [
+    [
+      -0.2,
+      0
+    ],
+    [
+      -0.5,
+      -0.4
+    ],
+    [
+      0,
+      0.2
+    ],
+    [
+      -0.7,
+      -0.6
+    ],
+    [
+      0.7,
+      0.8
+    ],
+    [
+      -0.4,
+      -0.2
+    ]
+  ],
+  "initial_physical_box": [
+    [
+      -0.45,
+      -0.44
+    ],
+    [
+      -0.55,
+      -0.54
+    ],
+    [
+      0.65,
+      0.66
+    ],
+    [
+      -0.75,
+      -0.74
+    ],
+    [
+      0.85,
+      0.86
+    ],
+    [
+      -0.65,
+      -0.64
+    ]
+  ],
+  "same_hardware": "physical GPU 2, CPU affinity 10-13, sequential fresh processes",
+  "initial_gpu_1_2_3_memory_mib_and_utilization_percent": {
+    "1": [
+      0,
+      0
+    ],
+    "2": [
+      0,
+      0
+    ],
+    "3": [
+      0,
+      0
+    ]
+  },
+  "wall_boundary": "supervisor Popen(child) to reap; native includes RPC startup and solver, GPU includes Python/NN/CUDA startup and driver",
+  "first_definition": "first fresh process per method in this campaign, not a rebooted host/GPU",
+  "later_definition": "five later independent fresh processes per method",
+  "separation_s": 2,
+  "timeout_s_per_run": 120,
+  "native_rpc_port": 5103,
+  "fixed_model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_prep_001/official_attitude_control_3_64_torch.onnx",
+  "fixed_native_binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_build_001/archcomp/attitude_control/attitude_avoid_full30",
+  "p3_gpu2_adaptation": {
+    "original": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_attitude_avoid_v1/archcomp26_attitude_p3_nohash.py",
+    "saved_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/p3_source/archcomp26_attitude_p3_gpu2_campaign_nohash.py",
+    "only_change": "CUDA_VISIBLE_DEVICES guard 3 -> 2 and its error message; other source copied"
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "phase": "first_process",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later_process",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later_process",
+      "order": [
+        "xiangru",
+        "ours_p3",
+        "native",
+        "huan"
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later_process",
+      "order": [
+        "ours_p3",
+        "native",
+        "huan",
+        "xiangru"
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later_process",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later_process",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    }
+  ],
+  "content_digest_performed": false
+}

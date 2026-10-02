@@ -1,0 +1,11 @@
+{
+  "profile": "tora_reach_sigmoid_official2026_mat_u11_full500_huan_001",
+  "method": "huan",
+  "status": "exception",
+  "error_type": "RuntimeError",
+  "error": "saved PyTorch/CUDA environment unavailable",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_001/run_full.py\", line 134, in main\n    torch, driver, _, _ = support.prepare(\"huan\")\n                          ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_001/author_support.py\", line 169, in prepare\n    raise RuntimeError(\"saved PyTorch/CUDA environment unavailable\")\nRuntimeError: saved PyTorch/CUDA environment unavailable\n",
+  "observed_substeps": 0,
+  "accepted_substeps": 0,
+  "wall_s": 3.4164934996515512
+}

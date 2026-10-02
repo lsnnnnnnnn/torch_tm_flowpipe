@@ -1,0 +1,81 @@
+{
+  "schema": "archcomp26-sp-two-state-fourway-fresh-process-campaign-v1",
+  "started_utc": "2026-10-02T06:40:06.040346+00:00",
+  "contract": "named 2026 paper two-physical-state SP, auxiliary checker clock",
+  "same_hardware": "physical GPU 2, CPU affinity 10-13, sequential fresh processes",
+  "initial_gpu2_memory_mib_and_utilization_percent": [
+    0,
+    0
+  ],
+  "wall_boundary": "supervisor Popen(child) to reap; native includes RPC startup and solver, GPU includes Python/NN/CUDA startup and driver",
+  "first_definition": "first fresh process per method in this campaign; host/GPU not rebooted",
+  "later_definition": "five later independent fresh processes per method",
+  "separation_s": 2,
+  "timeout_s_per_run": 120,
+  "native_rpc_port": 5101,
+  "fixed_model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx",
+  "fixed_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/single_pendulum_paper_two_state.yaml",
+  "rounds": [
+    {
+      "round": 0,
+      "phase": "first_process",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later_process",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later_process",
+      "order": [
+        "xiangru",
+        "ours_p3",
+        "native",
+        "huan"
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later_process",
+      "order": [
+        "ours_p3",
+        "native",
+        "huan",
+        "xiangru"
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later_process",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later_process",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    }
+  ],
+  "content_digest_performed": false
+}

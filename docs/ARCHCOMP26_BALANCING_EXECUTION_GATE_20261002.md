@@ -1,6 +1,6 @@
 # ARCH-COMP 2026 Balancing/CartPole 执行门槛
 
-2026-10-02；只读来源与已有记录，未启动新数值实验。此门槛把论文五特征控制器和固定仓库四原态控制器分别命名；两者不能共用一个未注明语义的四方成绩格。
+2026-10-02；本门槛首版只读来源与已有记录，后续具名 raw4 四方法的新尝试见文末。此门槛把论文五特征控制器和固定仓库四原态控制器分别命名；两者不能共用一个未注明语义的四方成绩格。
 
 ## 来源与已确定的物理合同
 
@@ -23,3 +23,7 @@
 ## 既有证据的边界
 
 当前 [64 格无摘要工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md) 中 `balancing-reach` 四格均为未尝试。[2026-09-23 CartPole 历史记录](progress_review_20260923/REPORT.md) 是更小初盒、`50×0.02=1 s`、内部 `200` 积分步的另一合同；native 只保存 141/200 步，五个 GPU 模式接受 156/200 步并在第 157 步拒绝。历史 [配置](../research/gpu_verified_20260930/report/configs/arch_cartpole_official_f32.yaml) 将盒约束放在 `constraints_target`，只在终点使用。这些数据既没有完整 2026 初盒，也没有 500 周期及 `[8,10]`/`(8,10]` 全时性质，不能迁入上述任一四方结果格。
+
+## 2026-10-02 后续尝试
+
+上段“未尝试”是本执行门写成时的旧截点；当前工作矩阵须按最新 attempt 索引读取。具名 raw4 profile 的 Huan、当前 P3、Xiangru 分别在第 99、87、99 个 ODE 小步首拒，均未进入 8–10 秒性质窗。Xiangru 的新[原始收据与独立扫描](evidence/results/archcomp26_20261001/balancing_fixed_raw4_xiangru_20261002/SUMMARY.md)另记录 189 处保存 endpoint 超出同小步 tube，最大约 `2.49e-14`；不由此推断数值拒绝成因。[原生独立入口及审计](evidence/results/archcomp26_20261001/native_balancing_raw4_20261002/SUMMARY.md)保存首个解析失败、修正后一期 4/4 接受及 500 期请求在第 84 小步 `UNCOMPLETED_SAFE` 首停的全部原始记录。四方法 raw4 均无 10 秒完整结果；论文五特征控制器文件或权威四输入映射仍缺，不能把历史小初盒结果代入。

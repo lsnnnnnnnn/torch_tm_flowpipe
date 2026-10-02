@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "/usr/bin/taskset",
+    "-c",
+    "10-13",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "-B",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1/archcomp26_attitude_avoid_author_nohash.py",
+    "--backend",
+    "huan",
+    "--mode",
+    "full",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/first00_huan/payload"
+  ],
+  "contract_label": "attitude-avoid-official-unsafe-corrected-full30-campaign",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "attitude-control-avoid",
+  "method": "huan",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "CUDA_VISIBLE_DEVICES": "2",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_utc": "2026-10-02T07:24:53.322651+00:00",
+  "timeout_s": 120.0
+}

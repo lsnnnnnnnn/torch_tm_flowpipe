@@ -1,0 +1,782 @@
+{
+  "schema": "archcomp26-sp-two-state-campaign-saved-evidence-audit-v1",
+  "record_count": 24,
+  "saved_range_records": 2400,
+  "native_rpc_requests": 120,
+  "all_saved_closed_window_tubes_safe": true,
+  "groups": {
+    "native": {
+      "first_process_wall_s": 4.7278655199334025,
+      "later_process_walls_s": [
+        4.7290550619363785,
+        4.728539139032364,
+        4.729022588580847,
+        4.729130749590695,
+        4.728673757985234
+      ],
+      "later_median_s": 4.729022588580847,
+      "later_min_s": 4.728539139032364,
+      "later_max_s": 4.729130749590695
+    },
+    "huan": {
+      "first_process_wall_s": 5.381101839244366,
+      "later_process_walls_s": [
+        5.380764663219452,
+        5.681419363245368,
+        5.381353672593832,
+        5.280743812210858,
+        5.380656252615154
+      ],
+      "later_median_s": 5.380764663219452,
+      "later_min_s": 5.280743812210858,
+      "later_max_s": 5.681419363245368
+    },
+    "xiangru": {
+      "first_process_wall_s": 5.631141201592982,
+      "later_process_walls_s": [
+        5.43106550257653,
+        5.581294511444867,
+        5.480807341635227,
+        5.38085004594177,
+        5.581208102405071
+      ],
+      "later_median_s": 5.480807341635227,
+      "later_min_s": 5.38085004594177,
+      "later_max_s": 5.581294511444867
+    },
+    "ours_p3": {
+      "first_process_wall_s": 6.284114480949938,
+      "later_process_walls_s": [
+        6.483611287549138,
+        6.183685949072242,
+        6.183895939029753,
+        6.133768793195486,
+        6.184106973931193
+      ],
+      "later_median_s": 6.183895939029753,
+      "later_min_s": 6.133768793195486,
+      "later_max_s": 6.483611287549138
+    }
+  },
+  "runs": [
+    {
+      "round": 0,
+      "phase": "first_process",
+      "method": "native",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/first00_native",
+      "outer_wall_s": 4.7278655199334025,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832734116439,
+        0.991934830071947
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16069166977272653,
+        0.17991064797779377
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342774539228,
+        0.1749893812554506
+      ],
+      "controller_rpc": 20,
+      "http_200_responses": 20,
+      "controller_calls": null,
+      "author_verdict": "VERIFIED",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 0,
+      "phase": "first_process",
+      "method": "huan",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/first00_huan",
+      "outer_wall_s": 5.381101839244366,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 0,
+      "phase": "first_process",
+      "method": "xiangru",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/first00_xiangru",
+      "outer_wall_s": 5.631141201592982,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 0,
+      "phase": "first_process",
+      "method": "ours_p3",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/first00_ours_p3",
+      "outer_wall_s": 6.284114480949938,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5645452654370386,
+        0.9932406822927875
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.1635471005792754,
+        0.18245539362569063
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15814391768553945,
+        0.17689077452034863
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": 50,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 1,
+      "phase": "later_process",
+      "method": "huan",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later01_huan",
+      "outer_wall_s": 5.380764663219452,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 1,
+      "phase": "later_process",
+      "method": "xiangru",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later01_xiangru",
+      "outer_wall_s": 5.43106550257653,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 1,
+      "phase": "later_process",
+      "method": "ours_p3",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later01_ours_p3",
+      "outer_wall_s": 6.483611287549138,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5645452654370386,
+        0.9932406822927875
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.1635471005792754,
+        0.18245539362569063
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15814391768553945,
+        0.17689077452034863
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": 50,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 1,
+      "phase": "later_process",
+      "method": "native",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later01_native",
+      "outer_wall_s": 4.7290550619363785,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832734116439,
+        0.991934830071947
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16069166977272653,
+        0.17991064797779377
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342774539228,
+        0.1749893812554506
+      ],
+      "controller_rpc": 20,
+      "http_200_responses": 20,
+      "controller_calls": null,
+      "author_verdict": "VERIFIED",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 2,
+      "phase": "later_process",
+      "method": "xiangru",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later02_xiangru",
+      "outer_wall_s": 5.581294511444867,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 2,
+      "phase": "later_process",
+      "method": "ours_p3",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later02_ours_p3",
+      "outer_wall_s": 6.183685949072242,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5645452654370386,
+        0.9932406822927875
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.1635471005792754,
+        0.18245539362569063
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15814391768553945,
+        0.17689077452034863
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": 50,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 2,
+      "phase": "later_process",
+      "method": "native",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later02_native",
+      "outer_wall_s": 4.728539139032364,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832734116439,
+        0.991934830071947
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16069166977272653,
+        0.17991064797779377
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342774539228,
+        0.1749893812554506
+      ],
+      "controller_rpc": 20,
+      "http_200_responses": 20,
+      "controller_calls": null,
+      "author_verdict": "VERIFIED",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 2,
+      "phase": "later_process",
+      "method": "huan",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later02_huan",
+      "outer_wall_s": 5.681419363245368,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 3,
+      "phase": "later_process",
+      "method": "ours_p3",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later03_ours_p3",
+      "outer_wall_s": 6.183895939029753,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5645452654370386,
+        0.9932406822927875
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.1635471005792754,
+        0.18245539362569063
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15814391768553945,
+        0.17689077452034863
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": 50,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 3,
+      "phase": "later_process",
+      "method": "native",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later03_native",
+      "outer_wall_s": 4.729022588580847,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832734116439,
+        0.991934830071947
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16069166977272653,
+        0.17991064797779377
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342774539228,
+        0.1749893812554506
+      ],
+      "controller_rpc": 20,
+      "http_200_responses": 20,
+      "controller_calls": null,
+      "author_verdict": "VERIFIED",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 3,
+      "phase": "later_process",
+      "method": "huan",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later03_huan",
+      "outer_wall_s": 5.381353672593832,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 3,
+      "phase": "later_process",
+      "method": "xiangru",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later03_xiangru",
+      "outer_wall_s": 5.480807341635227,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 4,
+      "phase": "later_process",
+      "method": "native",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later04_native",
+      "outer_wall_s": 4.729130749590695,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832734116439,
+        0.991934830071947
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16069166977272653,
+        0.17991064797779377
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342774539228,
+        0.1749893812554506
+      ],
+      "controller_rpc": 20,
+      "http_200_responses": 20,
+      "controller_calls": null,
+      "author_verdict": "VERIFIED",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 4,
+      "phase": "later_process",
+      "method": "huan",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later04_huan",
+      "outer_wall_s": 5.280743812210858,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 4,
+      "phase": "later_process",
+      "method": "xiangru",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later04_xiangru",
+      "outer_wall_s": 5.38085004594177,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 4,
+      "phase": "later_process",
+      "method": "ours_p3",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later04_ours_p3",
+      "outer_wall_s": 6.133768793195486,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5645452654370386,
+        0.9932406822927875
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.1635471005792754,
+        0.18245539362569063
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15814391768553945,
+        0.17689077452034863
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": 50,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 5,
+      "phase": "later_process",
+      "method": "huan",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_huan",
+      "outer_wall_s": 5.380656252615154,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 5,
+      "phase": "later_process",
+      "method": "xiangru",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_xiangru",
+      "outer_wall_s": 5.581208102405071,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832766836561,
+        0.9925703395905962
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16138070134380858,
+        0.18054615587866618
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342757796202,
+        0.1749893811382608
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": null,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 5,
+      "phase": "later_process",
+      "method": "ours_p3",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3",
+      "outer_wall_s": 6.184106973931193,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5645452654370386,
+        0.9932406822927875
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.1635471005792754,
+        0.18245539362569063
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15814391768553945,
+        0.17689077452034863
+      ],
+      "controller_rpc": null,
+      "http_200_responses": null,
+      "controller_calls": 20,
+      "author_safety_events": 50,
+      "author_verdict": "window safe",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    },
+    {
+      "round": 5,
+      "phase": "later_process",
+      "method": "native",
+      "run_directory_remote": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_native",
+      "outer_wall_s": 4.728673757985234,
+      "outer_status": "completed",
+      "periods": 20,
+      "substeps": 100,
+      "records": 100,
+      "closed_window_tube_records": 50,
+      "closed_window_x1_tube_union": [
+        0.5663832734116439,
+        0.991934830071947
+      ],
+      "closed_window_x1_tube_width_mean_max": [
+        0.16069166977272653,
+        0.17991064797779377
+      ],
+      "closed_window_x1_endpoint_width_mean_max": [
+        0.15598342774539228,
+        0.1749893812554506
+      ],
+      "controller_rpc": 20,
+      "http_200_responses": 20,
+      "controller_calls": null,
+      "author_verdict": "VERIFIED",
+      "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx"
+    }
+  ],
+  "limits": [
+    "Two physical states plus an auxiliary checker clock; the official MATLAB third-state initial value is unresolved.",
+    "Saved tube scan does not independently certify floating-point NN bounds.",
+    "First means fresh process in this campaign, not a rebooted host/GPU; shared-host timing is descriptive."
+  ]
+}

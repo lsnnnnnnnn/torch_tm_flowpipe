@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "/usr/bin/taskset",
+    "-c",
+    "10-13",
+    "/bin/bash",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/run_archcomp26_attitude_avoid_native_pair.sh"
+  ],
+  "contract_label": "attitude-avoid-official-unsafe-corrected-full30-campaign",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_build_001/archcomp/attitude_control",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "attitude-control-avoid",
+  "method": "flowstar_native",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "ATTITUDE_BINARY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_build_001/archcomp/attitude_control/attitude_avoid_full30",
+    "ATTITUDE_CPUSET": "10-13",
+    "ATTITUDE_MODEL": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_prep_001/official_attitude_control_3_64_torch.onnx",
+    "ATTITUDE_OVERLAY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_rpc_overlay_preflight_001/rpc_overlay",
+    "ATTITUDE_RUN_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later02_native",
+    "ATTITUDE_SERVER_PYTHON": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "ATTITUDE_WORKDIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_build_001/archcomp/attitude_control",
+    "CUDA_VISIBLE_DEVICES": "2",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_utc": "2026-10-02T07:26:32.285296+00:00",
+  "timeout_s": 120.0
+}
