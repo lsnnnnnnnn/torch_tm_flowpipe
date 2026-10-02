@@ -2,11 +2,13 @@
 
 ## 当前 200 条尝试截点
 
-[16 节可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_200_20261003.py)从[200 条截点 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。64 格按证据来源为 38 格本轮新完整数值时域、8 格同合同历史完整时域、14 格无完整时域、4 格 Airplane discrete 合同阻塞。新增的 DP more P3 20 期请求因作者 checker `Unsafe.` 停于 72/80 小步，不计完整时域。原生 QUAD 复制库全 1,024 初盒首个 0.005 秒小步、首盒第二步与独立 plant 条件性门检已写入报告；首盒 NN 相关仿射门结果为 `UNDECIDED`。它们不计入 200 条 benchmark 尝试，也不构成完整闭环或性质证明。
+[16 节可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_200_20261003.py)从[200 条截点 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。64 格按证据来源为 38 格本轮新完整数值时域、8 格同合同历史完整时域、14 格无完整时域、4 格 Airplane discrete 合同阻塞。新增的 DP more P3 20 期请求因作者 checker `Unsafe.` 停于 72/80 小步，不计完整时域。
 
-PDF 于 2026-10-03 经 Microsoft Word 从更新后的 DOCX 导出，为 **22 页 A4**，含 **14 幅保存数据图、10 个表格**。首次加入新诊断时的 23 页导出在第 22 页留下大块空白；生成脚本已取消“最终发布门”前的强制分页，再次导出回 22 页。PDFium 逐页检查中文字形、图表、页码与页边界，末页两个结尾小节同页且无孤页或截断；本机 Poppler 缺 Adobe-GB1 语言包，不能用其中文字形渲染结果评价此 Word PDF。文档技能的 `render_docx.py` 也已运行，但本机 LibreOffice 输出缺中文字形，故交付版面以 Word PDF 为准。本稿仍是可审阅阶段稿，不是完整四方最终成绩；旧 189/187 截点文件继续保留。
+本版收入[原生 QUAD 八方向生产门](../../../../ARCHCOMP26_NATIVE_OCTAGON_PRODUCTION_GATE_20261002.md)的后续短程证据：隔离复制库的 1,024 源盒首个 `0.005 s` plant 小步，在保存的 CROWN 控制包络有效这一前提下通过独立区间检查；首盒第二小步另有条件性门检。[新录制的 1,024 盒 CROWN 同斜率数值回放](../native_quad_crown_same_slope_batch_20261003_001/README.md)、[float32 系数传输审计](../native_quad_crown_f32_transport_gate_20261003_001/README.md)和[逐盒条件性修正账本](../native_quad_crown_transport_correction_20261003_001/README.md)已收入报告。[隔离 C++ 校正控制构造门](../native_quad_corrected_control_construct_20261003_001/README.md)与首盒 NN 相关仿射门仍为 `UNDECIDED`；原生八方向生产门保持关闭。这些诊断不计入 200 条 benchmark 尝试，也不构成完整闭环或性质证明。
 
-本 22 页文件冻结在随后新增的 CROWN same-slope/float32 传输审计、逐盒条件性修正账本、旧作者 QUAD 256 行短程候选及 Single Pendulum 来源复核之前。这些后续证据见[当前 Markdown 报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)及各自原始目录；不要把本 PDF 当成这些诊断的更新版。
+另收入[旧作者 QUAD 256 行加权图全 1,000 步候选](../../huan_quad_stage_a_40_20261001/weighted_chunk256_full1000_v1/README.md)：1,024,000/1,024,000 盒步接受，所存 1,000 步逐盒范围、接受掩码、状态和 pooled 观察与旧 P3/trig 完整参考直接逐字节相同。旧参考未保存可对照的 post-driver final NPY，内部 TM/SR 也未逐项比较；异日单次 wall 差异不构成稳定或因果加速。此候选属旧作者动力学合同，不进入 2026 论文 QUAD 主表。[Single Pendulum 官方第三态来源复核](../../../../ARCHCOMP26_SINGLE_PENDULUM_THIRD_STATE_SOURCE_FOLLOWUP_20261003.md)也已纳入本版；具名两物理态四方结果不能冒充该官方第三态实例。
+
+PDF 于 2026-10-03 经 Microsoft Word 从更新后的 DOCX 导出，为 **23 页 A4**，含 **14 幅保存数据图、10 个表格**。“最终发布门”作为完整小节排在末页；PDFium 逐页检查中文字形、图表、页码与页边界，无截断。本机 Poppler 缺 Adobe-GB1 语言包，不能用其中文字形渲染结果评价此 Word PDF。文档技能的 `render_docx.py` 也已运行，但本机 LibreOffice 输出缺中文字形，故交付版面以 Word PDF 为准。本稿仍是可审阅阶段稿；旧 189/187 截点文件继续保留。
 
 ## 当前 189 条尝试截点
 

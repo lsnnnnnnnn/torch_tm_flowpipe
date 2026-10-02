@@ -230,8 +230,8 @@ def initialize(doc):
     normal = doc.styles["Normal"]
     set_font(normal.font, normal._element)
     normal.font.size = Pt(9)
-    normal.paragraph_format.line_spacing = 1.12
-    normal.paragraph_format.space_after = Pt(4)
+    normal.paragraph_format.line_spacing = 1.10
+    normal.paragraph_format.space_after = Pt(3)
     for name, size, before, after in (
         ("Title", 17.5, 0, 8),
         ("Heading 1", 12.5, 12, 5),

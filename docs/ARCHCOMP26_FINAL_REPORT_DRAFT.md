@@ -370,7 +370,7 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 
 [另立的一轮加权细化 40 步变体](evidence/results/huan_quad_stage_a_40_20261001/weighted_one_round40_v1/README.md)只把 `rounds=2` 改为 1，旧作者方程、1024 盒、P3/P2/P4、strict 边界与两期控制保持一致；40,960/40,960 盒步数值接受。独立保存读回发现全部 40 行比两轮参考宽，终步 tube 与 endpoint 各有 22,528 个端点向外改变、0 个向内，最大端点差 `3.836081×10⁻⁹`。单次外层 45.207353 秒与不同日期且插入同步/复制的两轮诊断不可直接作净节省；这仅是略宽、短前缀可运行的**算法变体**，无旧合同 1000 步完成时间、终点宽度或性质资格，也不进入 2026 论文 QUAD 四方主表。
 
-[加权图分块 128→256 的独立 40 步候选](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_v1/README.md)保留两轮细化、普通验证 128 行和旧作者其余合同，40,960/40,960 盒步接受；加权图调用从 640 降至 320，40 条观察与既有短程参考逐字节相同，所存终态逐盒 tube/endpoint/status 亦直接一致。这是实现组织候选，单次外层 49.620295 秒与异日、不同插桩参考不可作净加速结论。[新独立全 1000 步作业](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_full1000_v1/README.md)已通过自动预检并在 GPU3 运行，首 40 步逐盒观察与旧完整参考直接一致；最终 RESULT、全程数值对照与时间尚未取得，不进入 2026 论文 QUAD 主表。
+[加权图分块 128→256 的独立 40 步候选](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_v1/README.md)保留两轮细化、普通验证 128 行和旧作者其余合同，40,960/40,960 盒步接受；加权图调用从 640 降至 320，40 条观察与既有短程参考逐字节相同，所存终态逐盒 tube/endpoint/status 亦直接一致。[新独立全 1000 步作业](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_full1000_v1/README.md)也通过旧合同/资源自动预检后完成 1,000/1,000 步、1,024,000/1,024,000 盒步接受和 50 次控制。[全程逐步保存值对照](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_full1000_v1/FULL_SAVED_COMPARISON.json)显示全部 1,000 步的逐盒 `1024×12×4` bounds、接受掩码、状态和 pooled 观察与旧 P3/trig 完整参考直接逐字节相同；未比较不存在的旧 post-driver final NPY 或全部内部 TM/SR。新单次 outer/watchdog wall 为 1093.267/1093.193 秒，旧参考 watchdog 单次 1533.752 秒；异日且无交错计时控制，不把差值写成稳定或因果加速。它不进入 2026 论文 QUAD 主表，也不构成独立浮点 NNCS 证明。
 
 ## 绘图功能与 MATLAB 示例
 
