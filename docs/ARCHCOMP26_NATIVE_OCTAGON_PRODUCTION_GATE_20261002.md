@@ -223,13 +223,21 @@ diagnostic skip is **not** a production fix, performance result, or soundness
 proof. The original frozen library's failed receipt remains the relevant
 production gate.
 
+## Isolated two-site VAR-tail repair diagnostic
+
+The previously saved historical VAR-tail patch at `/Users/shengenli/Documents/ChatGPT/verification/results/quad_residual_memory_20260923/native_var_tail_fix/expression.patch` identified a more targeted candidate than skipping refinement. In a **new copied library** it keeps both ordinary and symbolic-remainder refinement loops, saves each variable leaf's fixed polynomial truncation tail during the full Picard pass, and adds that tail to the changing input remainder on each replay. Its earlier local witness and four one-step ACC checks were not QUAD qualification. The current frozen source was checked for the exact two active VAR sites and unchanged refinement loops before applying the patch to the isolated copy; the original library and full50 run were not modified. The [new receipt bundle](evidence/results/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/README.md) contains the two-site patch, build record, raw short runs, independent checks, and width comparison.
+
+With the rebuilt copy, both three-step harmonic variants accepted all three steps, observer on/off saved equal numerical outputs, and each original finite analytic regression had **0/1,512** violations. On the paper-equation QUAD first box, one original CROWN call per arm and one `h=0.005` symbolic-remainder step, observer off/on again had equal status, RPC, twelve terminal axes and saved range records. The same 513 relaxed-control numerical samples gave **0/20,520** direction/axis exceedances, including the previously excluded `x7/x8` witness. The repaired `x7` pre-composition terminal interval was `[-2.382516064701138e-6,5.675470465089593e-6]`, versus the original `[1.6384537157764776e-6,1.6545006846119772e-6]` and skip-refinement `[-5.575585333117811e-4,5.608514877121697e-4]`. The [saved comparison](evidence/results/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/quad/WIDTH_COMPARISON.json) shows all 32 compared intervals inside the skip-refinement intervals and 30 strictly narrower; repaired `x7/x8` terminal widths are about 139 times narrower than the skip variant.
+
+This repairs the observed finite-sample omission and retains narrowing in the isolated first step. It does **not** independently prove enclosure for every initial state, every control admitted by the affine relaxation, or every time inside the step; it also does not validate the controller bounder or a 50-period closed loop. The original-library failure remains the production gate evidence, and native octagon promotion stays closed. No new QUAD benchmark cell or long-task timing is claimed from this method diagnostic.
+
 ## Gate to continue
 
-1. Preserve both original-library counterexamples and both copied-library
-   mechanism checks. A repair must retain fixed truncation/control uncertainty
-   while refining remainders, and pass independent containment checks in the
-   ordinary and symbolic-remainder paths. `COMPLETED_SAFE` is numerical status,
-   not this missing validity check.
+1. Preserve both original-library counterexamples, both refinement-skip
+   mechanism checks, and the separate two-site VAR-tail repair diagnostic.
+   The short repaired candidate passes finite samples in the ordinary and
+   symbolic-remainder paths, but `COMPLETED_SAFE` is numerical status, not a
+   complete validity check.
 2. Requalify the actual paper-equation QUAD contract with a mathematically
    justified enclosure test beyond the finite samples above. Compare observer
    on/off on an isolated short subset after any candidate repair. Do not alter

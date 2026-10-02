@@ -1,0 +1,34 @@
+{
+  "schema": "native-quad-var-tail-repair-gate-build-nohash-v1",
+  "remote_gate_directory": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007",
+  "source_directory_resolved": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/flowstar_native/flowstar-toolbox",
+  "candidate_source": "flowstar-toolbox",
+  "changed_source_file": "flowstar-toolbox/expression.h",
+  "changed_expression_sites": 2,
+  "continuous_refinement_loops": "copied unchanged",
+  "original_library_writes": 0,
+  "candidate_archive": "flowstar-toolbox/libflowstar.a",
+  "candidate_archive_bytes": 28773722,
+  "full_library_build_command": "taskset -c 10 /usr/bin/make -C CANDIDATE/flowstar-toolbox CXX=/usr/bin/g++-15 CFLAGS=\"-I . -I /usr/local/include -g -O3 -std=c++11 -fpermissive -Wno-template-body\" -j1 lib",
+  "harmonic_binary_build_command": "taskset -c 10 /usr/bin/g++-15 -O2 -std=c++11 -fpermissive -Wno-template-body -fopenmp -I CANDIDATE/flowstar-toolbox -I BASE/runs/author_nncs_reproduction_v1/native_build/deps/extracted/usr/include -I /usr/include/jsoncpp CANDIDATE/harmonic/native_flowstar_octagon_probe_nohash.cpp CANDIDATE/flowstar-toolbox/libflowstar.a -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -lcolamd -lamd -lz -lltdl -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -l:libboost_thread.so.1.90.0 -o CANDIDATE/harmonic/probe",
+  "quad_binary_build_command": "taskset -c 10 /usr/bin/g++-15 -O2 -std=c++11 -fpermissive -Wno-template-body -fopenmp -I CANDIDATE/flowstar-toolbox -I BASE/runs/archcomp26_20261001/native_quad_paper_build_001/archcomp/Quadrotor -I BASE/runs/author_nncs_reproduction_v1/native_build/deps/extracted/usr/include -I /usr/include/jsoncpp CANDIDATE/quad/build/quad_gate.cpp CANDIDATE/flowstar-toolbox/libflowstar.a -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -lcolamd -lamd -lz -lltdl -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -l:libboost_thread.so.1.90.0 -o CANDIDATE/quad/build/quad_gate",
+  "command_placeholders": {
+    "BASE": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z",
+    "CANDIDATE": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007"
+  },
+  "build_exit_codes": {
+    "library": 0,
+    "harmonic_probe": 0,
+    "quad_gate": 0
+  },
+  "run_exit_codes": {
+    "harmonic_periodic": 0,
+    "harmonic_periodic_checker": 0,
+    "harmonic_single": 0,
+    "harmonic_single_checker": 0,
+    "quad_gate_runner": 0,
+    "quad_checker": 0,
+    "width_comparison": 0
+  },
+  "content_digest_policy": "none computed"
+}

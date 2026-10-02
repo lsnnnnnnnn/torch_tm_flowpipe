@@ -1,0 +1,24 @@
+--- frozen/expression.h
++++ isolated/expression.h
+@@ -1626,7 +1626,12 @@
+ 		if(node_value.var.type == VAR_ID)
+ 		{
+ 			result = tms_of_vars[node_value.var.id];
++			// The polynomial tail is fixed while the input remainder is refined.
++			Interval input_remainder = result.remainder;
++			result.remainder = Interval(0);
+ 			result.ctrunc_normal(step_exp_table, order);
++			intermediate_ranges.push_back(result.remainder);
++			result.remainder += input_remainder;
+ 		}
+ 		else
+ 		{
+@@ -1974,6 +1979,8 @@
+ 		if(node_value.var.type == VAR_ID)
+ 		{
+ 			result = tms_of_vars[node_value.var.id].remainder;
++			result += *iter;
++			++iter;
+ 		}
+ 		else
+ 		{

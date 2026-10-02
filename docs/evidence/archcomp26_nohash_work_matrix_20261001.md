@@ -2,7 +2,7 @@
 
 来源：`benchmarks/archcomp26/manifest.json` 与 `docs/evidence/archcomp26_nohash_attempts_20261001.json`。仅按路径归属，不做内容摘要；与历史冻结的 `benchmarks/archcomp26/execution_matrix.json` 独立。
 
-16 个实例 × 4 种方法 = 64 个单元；本轮索引 189 条尝试。完成 38；运行中 0；早停 10；失败 4；仅短前缀 3；未尝试 9。
+16 个实例 × 4 种方法 = 64 个单元；本轮索引 191 条尝试。完成 38；运行中 0；早停 10；失败 4；仅短前缀 3；未尝试 9。
 
 | 实例 | P3 GPU | Huan | Xiangru | FlowStar native |
 | --- | --- | --- | --- | --- |

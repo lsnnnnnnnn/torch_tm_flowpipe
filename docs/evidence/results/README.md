@@ -29,3 +29,24 @@ attempt or change the current 189-attempt, 38-new-full-cell numerical coverage;
 they prevent promoting native accepted/`VERIFIED` to independent soundness.
 
 The [stage report directory](archcomp26_20261001/stage_report/README.md) now contains a 189-attempt, 38-new-full-cell editable DOCX and Word-exported 21-page PDF with 13 saved-data figures and the native QUAD short-gate caveat. The older 187-attempt DOCX/PDF remains a separate dated snapshot. The Markdown report and linked raw records are the continuing source of truth.
+
+Two further actual Airplane continuous one-step native runs are preserved as
+[the unused-overload alignment control](archcomp26_20261001/native_airplane_first_reject_trace_20261002_004/README.md)
+and [the active Real-path Picard trace](archcomp26_20261001/native_airplane_first_reject_trace_20261002_005/README.md).
+Both used the full initial box, one controller RPC, and one requested `0.01 s`
+step; both refused with no accepted range. The active-path trace identifies
+five proposed remainders outside the preset `[-0.01,0.01]` interval. The
+current attempt index is **191**, while the 21-page DOCX/PDF remains the
+unchanged **189-attempt** snapshot; numerical full-horizon coverage remains
+38 new plus eight audited historical same-contract cells. These traces do not
+establish an Airplane full-time or property result.
+
+The [isolated native QUAD VAR-tail candidate gate](archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/README.md)
+rebuilds a copied Flow* library with a two-site variable truncation-tail
+repair, preserving the remainder refinement loops. Ordinary harmonic short
+checks and the paper-equation QUAD first-box, first-step finite-sample checks
+passed, and the repaired QUAD intervals were much narrower than the copied
+skip-refinement diagnostic. The original failing library and full50 receipts
+are unchanged. This candidate has no complete independent inclusion proof;
+the native production octagon gate remains closed and the diagnostic is not a
+new benchmark attempt.

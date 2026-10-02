@@ -1,0 +1,87 @@
+{
+  "schema": "native-quad-sr-one-step-octagon-gate-nohash-v1",
+  "contract": "2026 paper QUAD equations, first of 1024 native boxes, one CROWN call, one h=0.005/order-2 symbolic-remainder step",
+  "mode_status": {
+    "status": "2",
+    "accepted_steps": "1"
+  },
+  "on_off_status_equal": true,
+  "on_off_terminal_axes_byte_equal": true,
+  "on_off_ranges_bin_byte_equal": true,
+  "on_off_rpc_json_equal": true,
+  "controller_rpc_count_and_shapes_valid": true,
+  "reference": "SciPy DOP853 finite point trajectories using the paper ODE and float32-transported CROWN affine-plus-residual controls",
+  "reference_samples": 513,
+  "reference_corner_samples": 512,
+  "reference_midpoint_samples": 1,
+  "sample_direction_and_axis_checks": 20520,
+  "numeric_tolerance": 1e-11,
+  "max_reference_loose_strict_difference_first_eight": 0.0,
+  "first_witness_dop853_radau_max_difference": 2.0539125955565396e-15,
+  "first_witness": {
+    "initial_x1_to_x12": [
+      -0.39999999999999997,
+      -0.39999999999999997,
+      -0.39999999999999997,
+      -0.4,
+      -0.4,
+      -0.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "constant_u1_to_u3": [
+      12.730082304606912,
+      -0.001486676491913386,
+      -0.006470973906107247
+    ],
+    "residual_choice": [
+      -1,
+      -1,
+      -1
+    ],
+    "affine_center_at_x": [
+      12.763631613383767,
+      0.006917192970286123,
+      0.0017525739269331098
+    ],
+    "residual_radius": [
+      0.03354930877685547,
+      0.00840386946219951,
+      0.008223547833040357
+    ],
+    "trajectory_x7_x8": [
+      {
+        "time": 0.0,
+        "x7": 0.0,
+        "x8": 0.0,
+        "radau_x7": 0.0,
+        "radau_x8": 0.0
+      },
+      {
+        "time": 0.0025,
+        "x7": -8.603451920795456e-08,
+        "x8": -3.74477656603428e-07,
+        "radau_x7": -8.603451920795452e-08,
+        "radau_x8": -3.744776566034281e-07
+      },
+      {
+        "time": 0.005,
+        "x7": -3.441380768320594e-07,
+        "x8": -1.4979106264136853e-06,
+        "radau_x7": -3.441380768320597e-07,
+        "radau_x8": -1.4979106264136846e-06
+      }
+    ]
+  },
+  "minimum_sample_slack": 0.0,
+  "maximum_sample_overshoot": 0.0,
+  "violation_count_above_tolerance": 0,
+  "violation_counts_by_kind": {},
+  "max_overshoot_by_kind": {},
+  "first_violations": [],
+  "qualification": "finite numerical diagnostic only; no all-trajectory enclosure, NN float soundness or T=5 property proof"
+}

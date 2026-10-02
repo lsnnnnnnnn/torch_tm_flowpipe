@@ -1,0 +1,36 @@
+--- frozen/Continuous.cpp
++++ isolated/Continuous.cpp
+@@ -4,6 +4,8 @@
+ ---*/
+ 
+ #include "Continuous.h"
++#include <iostream>
++#include <iomanip>
+ 
+ using namespace flowstar;
+ 
+@@ -2650,6 +2652,24 @@
+ 
+ 		intDifferences.push_back(I);
+ 	}
++	std::cerr << std::setprecision(17);
++	for(unsigned int i=0; i<rangeDim; ++i)
++	{
++		Interval proposed = tmvTmp.tms[i].remainder;
++		proposed += intDifferences[i];
++		std::cerr << "AIRPLANE_PICARD	" << i
++			<< "	old_lo=" << x.tms[i].remainder.inf()
++			<< "	old_hi=" << x.tms[i].remainder.sup()
++			<< "	base_lo=" << tmvTmp.tms[i].remainder.inf()
++			<< "	base_hi=" << tmvTmp.tms[i].remainder.sup()
++			<< "	diff_lo=" << intDifferences[i].inf()
++			<< "	diff_hi=" << intDifferences[i].sup()
++			<< "	new_lo=" << proposed.inf()
++			<< "	new_hi=" << proposed.sup()
++			<< "	subset=" << proposed.subseteq(x.tms[i].remainder)
++			<< std::endl;
++	}
++
+ 
+ 	// add the uncertainties and the cutoff intervals onto the result
+ 	for(unsigned int i=0; i<rangeDim; ++i)
