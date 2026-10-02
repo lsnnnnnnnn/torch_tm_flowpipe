@@ -1,0 +1,10 @@
+{
+  "schema": "archcomp26-tora-remain-h01-refusal-trace-intent-v2",
+  "run_id": "author_tora_remain_h01_refusal_trace_20261002_001/huan_step190_trace_002",
+  "prior_failed_new_attempt": "huan_step190_trace_001: stopped before step 190 because installed Huan Settings lacks the newer refinement_callback field; 189 accepted steps and full error retained",
+  "purpose": "Capture the first rejected lane's installed-engine status and step-190 Picard initial self-map proposal without changing numerical configuration or solver control flow.",
+  "instrumentation": "Wrap installed GlueCache.run only for step 190; call its original method first, then record all 12 lanes' validpost proposal, difference bound, input remainder, component containment and margins; return the original tensors unchanged. Stop at first rejected lane or at hard step-190 cap.",
+  "fixed_contract_and_settings": "Same as INTENT.json and original h=0.1 Huan run: official 2026 ONNX, 12 full-cover boxes, unchanged ODE/property, Taylor order 3, h=0.1, cutoff 1e-6, remainder [-0.01,0.01], strict plant, same-slope CROWN.",
+  "resource_plan": "GPU3, CPU14-17, no external listener; Airplane diagnostic uses separate GPU2, CPU10-13, RPC5105.",
+  "limits": "Read-only observation adds synchronization at step 190; verify prefix and failure record by direct byte/field comparisons to the original. No T=20 full numerical result or property conclusion."
+}

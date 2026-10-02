@@ -1,0 +1,54 @@
+{
+  "schema": "archcomp26-tora-remain-h01-first-refusal-direct-audit-v1",
+  "old_run": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001",
+  "failed_hook_attempt": {
+    "observed_steps": 189,
+    "range_prefix_direct_bytes_equal": true,
+    "observation_fields_equal": true
+  },
+  "read_only_glue_trace_attempt": {
+    "observed_steps": 190,
+    "range_prefix_direct_bytes_equal": true,
+    "observation_fields_equal": true
+  },
+  "validpost_records": 12,
+  "initial_self_map_misses": [
+    {
+      "lane": 2,
+      "component": 1,
+      "guess": [
+        -0.01,
+        0.01
+      ],
+      "proposal": [
+        -0.012253595542717259,
+        0.011665851915157245
+      ],
+      "lower_margin": -0.002253595542717259,
+      "upper_margin": -0.0016658519151572446
+    }
+  ],
+  "first_rejection": {
+    "substep": 190,
+    "accepted_count": 11,
+    "rejected_lanes": [
+      2
+    ],
+    "tube_inside_safe_for_accepted": false,
+    "status_codes": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "content_digest_computed": false
+}

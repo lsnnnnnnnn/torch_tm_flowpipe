@@ -1,0 +1,40 @@
+{
+  "schema": "archcomp26-tora-remain-h01-x2rem002-saved-audit-v1",
+  "smoke": {
+    "run": "huan_smoke1_firstreject_001",
+    "config_other_fields_direct_text_equal": true,
+    "prior_uniform_remainder": [
+      -0.01,
+      0.01
+    ],
+    "new_x2_remainder": [
+      -0.02,
+      0.02
+    ],
+    "observed_substeps": 10,
+    "accepted_lane_substeps": 120,
+    "saved_range_records": 120,
+    "first_rejected_substep": null,
+    "first_saved_tube_outside_safe_substep": null,
+    "result_status": "completed_short_prefix"
+  },
+  "first_refusal_full_attempt": {
+    "run": "huan_full20_firstreject_001",
+    "config_other_fields_direct_text_equal": true,
+    "prior_uniform_remainder": [
+      -0.01,
+      0.01
+    ],
+    "new_x2_remainder": [
+      -0.02,
+      0.02
+    ],
+    "observed_substeps": 192,
+    "accepted_lane_substeps": 2303,
+    "saved_range_records": 2304,
+    "first_rejected_substep": 192,
+    "first_saved_tube_outside_safe_substep": 185,
+    "result_status": "stopped_first_numerical_rejection"
+  },
+  "content_digest_computed": false
+}

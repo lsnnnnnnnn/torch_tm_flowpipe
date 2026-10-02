@@ -1,0 +1,74 @@
+{
+  "ended_utc": "2026-10-02T15:54:40.151443+00:00",
+  "status": "numerical_point_replay_completed",
+  "scope": "one initial corner, one held true ONNX output, t in [0,0.01]",
+  "model_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/controller_airplane.onnx",
+  "onnx_input": "sequential_1_input",
+  "onnx_output": "dense_4",
+  "onnx_ops": [
+    "MatMul",
+    "Add",
+    "Relu",
+    "MatMul",
+    "Add",
+    "Relu",
+    "MatMul",
+    "Add",
+    "Relu",
+    "MatMul",
+    "Add"
+  ],
+  "controller_output_Fx_Fy_Fz_Mx_My_Mz": [
+    -3.3967220783233643,
+    4.793511390686035,
+    13.706613540649414,
+    -0.3058854043483734,
+    -1.1542012691497803,
+    0.14724339544773102
+  ],
+  "inside_saved_CROWN_affine_interval": true,
+  "CROWN_affine_lower_at_point": [
+    -14.50724953318234,
+    -7.634878698647913,
+    -1.7111100199911586,
+    -1.7474812709163388,
+    -2.95281918235032,
+    -1.564089712629235
+  ],
+  "CROWN_affine_upper_at_point": [
+    6.247463275545554,
+    16.243040193745692,
+    31.367154083847943,
+    1.101701321559593,
+    1.30543478811594,
+    1.211323013843547
+  ],
+  "integrators": [
+    "DOP853",
+    "Radau"
+  ],
+  "rtol": 1e-12,
+  "atol": 1e-14,
+  "max_step_s": 0.0001,
+  "max_state_gap_between_integrators": 1.3322676295501878e-15,
+  "DOP853_end_state": [
+    0.012322483172197888,
+    0.012789394546181776,
+    -0.00044700447339391785,
+    0.9576888509593785,
+    1.0524577311200778,
+    1.1399453339765808,
+    0.999915276289783,
+    0.9999626221787573,
+    0.9999174894031985,
+    0.0014724339544773114,
+    -0.003058854043483738,
+    -0.011542012691497789
+  ],
+  "DOP853_sampled_angle_maxima_above_1": {},
+  "candidate_only": true,
+  "certified_unsafe_trajectory": false,
+  "numpy_version": "2.4.4",
+  "onnx_version": "1.22.0",
+  "scipy_version": "1.17.1"
+}

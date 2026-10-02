@@ -1,0 +1,76 @@
+{
+  "schema": "archcomp26-tora-remain-author-nohash-v1",
+  "started_utc": "2026-10-02T15:50:43.312153+00:00",
+  "backend": "huan",
+  "mode": "smoke1",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_homogeneous.yaml",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_h01_x2rem002_20261002_001/huan_smoke1_firstreject_001/payload/config.yaml",
+  "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_homogeneous_boxes.json",
+  "controller": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_remain_prep_001/official_controllerTora_2026.onnx",
+  "engine": "/srv/local/shengenli/flowstar-gpu",
+  "shared_driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "cuda_cache": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan",
+  "cuda_visible_devices": "3",
+  "cpu_affinity": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "controller_boundary": "raw ONNX f(x) injected into u1; plant dx4=u1-10 applies offset once",
+  "method": "author sparse engine, Taylor order 3, strict plant, box same-slope CROWN, native input layout, rpc-float32",
+  "numerical_profile": {
+    "ode_step_size": 0.1,
+    "remainder_estimation": [
+      [
+        -0.01,
+        0.01
+      ],
+      [
+        -0.02,
+        0.02
+      ],
+      [
+        -0.01,
+        0.01
+      ],
+      [
+        -0.01,
+        0.01
+      ],
+      [
+        -0.01,
+        0.01
+      ],
+      [
+        -0.01,
+        0.01
+      ]
+    ],
+    "stop_at_first_rejection": true
+  },
+  "property": "all four physical states in [-2,2] over every substep of T=20; smoke covers only T=1",
+  "qualification": "shared controller driver and unqualified floating NN injection; not an independent end-to-end proof",
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_h01_x2rem002_20261002_001/huan_smoke1_firstreject_001/payload/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--strict",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_h01_x2rem002_20261002_001/huan_smoke1_firstreject_001/payload/metrics.json"
+  ]
+}

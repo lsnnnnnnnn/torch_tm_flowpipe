@@ -1,0 +1,11 @@
+{
+  "schema": "archcomp26-tora-remain-h01-x2rem002-intent-v1",
+  "purpose": "Test whether the directly observed x2 Picard self-map miss at h=0.1 can be resolved by enlarging only the x2 initial remainder estimate.",
+  "prior_evidence": "../author_tora_remain_h01_refusal_trace_20261002_001/huan_step190_trace_002/payload/refinement_step190.jsonl: lane 2 x2 proposal [-0.012253595542717259,0.011665851915157245] exceeded original [-0.01,0.01]; saved status FAILED_CONTRACTION, exact original 190-step ranges prefix.",
+  "run_ids": ["huan_smoke1_firstreject_001", "huan_full20_firstreject_001", "xiangru_smoke1_firstreject_001", "xiangru_full20_firstreject_001"],
+  "frozen_math": "Official 2026 TORA remain ONNX and 12 initial boxes; unchanged six-state ODE, 1-second control hold, T=20, full-time four-state [-2,2] property.",
+  "numerical_delta_only": "Set remainder_estimation from uniform [-0.01,0.01] to six per-variable intervals with x2 [-0.02,0.02] and all other components [-0.01,0.01]; h=0.1, Taylor order 3, cutoff 1e-6, SR queue 1000, strict plant and CROWN settings stay fixed.",
+  "run_gate": "For each method, run a new one-period smoke and require all 12x10 box steps accepted before a separate T=20 run. Every run stops immediately at its first rejected box. Supervisor timeout 120 seconds.",
+  "classification": "Numerical-method profile, separate from the frozen h=0.1 uniform-remainder four-way main table. Completion or saved-tube safety does not constitute an end-to-end floating NNCS proof or permit VERIFIED wording without an explicit checker result.",
+  "resources": "GPU3 and CPU14-17, sequential Huan/Xiangru runs, no external listener; check availability immediately before execution."
+}

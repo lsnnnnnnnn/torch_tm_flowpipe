@@ -1,0 +1,17 @@
+{
+  "schema": "archcomp26-tora-remain-h01-refusal-trace-intent-v1",
+  "run_id": "author_tora_remain_h01_refusal_trace_20261002_001/huan_step190_trace_001",
+  "purpose": "Identify the numerical first-refusal subtype and Picard self-map component margins absent from the original receipt.",
+  "prior_receipts": [
+    "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001/payload/RESULT.json",
+    "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/NUMERIC_FAILURE_READONLY_AUDIT_20261002.json",
+    "docs/evidence/results/archcomp26_20261001/author_tora_remain_h005_probe_20261002/SUMMARY.md"
+  ],
+  "fixed_contract": "Official 2026 TORA remain ONNX; original 12-box initial partition; x1'=x2, x2'=-x1+0.1 sin(x3), x3'=x4, x4'=u1-10; control hold 1 s; T=20; all-time [-2,2]^4",
+  "numerical_settings": "Huan strict plant; Taylor order 3; h=0.1; cutoff 1e-6; uniform remainder [-0.01,0.01]; SR queue 1000; box same-slope CROWN, native input layout, rpc-float32",
+  "added_observation": "Save lane status codes on every observed step and Picard self-map intervals, component subset margins, nonfinite mask, and lane-2 refinement events on step 190 only.",
+  "stop_rule": "At the first rejected lane, stop immediately; hard cap after step 190 even if no lane rejects. No step 191-200 execution.",
+  "isolation": "Separate copied diagnostic driver and unique run directory; original full20_001 and h=.05 results remain untouched.",
+  "resource_plan": "GPU3, CPU14-17, no external listener; concurrently allocated Airplane diagnostic uses GPU2, CPU10-13, RPC5105.",
+  "interpretation_limit": "A first-refusal trace is not a complete T=20 flowpipe, property proof, or speed result. Its observer changes the step-190 refinement implementation path, so prior step records and the first-refusal record must be compared directly with the saved original."
+}

@@ -1,0 +1,10 @@
+{
+  "status": "exception",
+  "backend": "huan",
+  "mode": "full",
+  "error_type": "TypeError",
+  "error": "Settings.__init__() got an unexpected keyword argument 'refinement_callback'",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_h01_refusal_trace_20261002_001/diagnostic_driver.py\", line 351, in run\n    driver_code = driver.main()\n                  ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1446, in main\n    st, ok = advance_sparse(st, code, eng, sched, settings, rem_est, sr)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_h01_refusal_trace_20261002_001/diagnostic_driver.py\", line 295, in observed\n    call_args[4] = replace(call_args[4], refinement_callback=capture)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/dataclasses.py\", line 1503, in replace\n    return obj.__class__(**changes)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: Settings.__init__() got an unexpected keyword argument 'refinement_callback'\n",
+  "observed_substeps": 189,
+  "wall_s": 5.506788888946176
+}

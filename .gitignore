@@ -24,3 +24,7 @@ artifacts/runs/*
 .matplotlib-cache/
 *.prof
 *.trace
+
+# Local process inventory and PID files are not part of published run evidence.
+docs/evidence/results/**/listeners_at_start.txt
+docs/evidence/results/**/*.pid

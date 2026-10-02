@@ -1,0 +1,11 @@
+import os as _os
+
+USE_TAPE_KERNELS = _os.environ.get("FLOWSTAR_NO_TAPE_KERNEL", "0") != "1"
+
+ACTIVE = 0
+FAILED_CONTRACTION = 1
+DONE = 2
+FAILED_DIV = 3
+INITIAL_SIMP = 1e-4
+
+
