@@ -1,0 +1,60 @@
+{
+  "artifacts": {
+    "geometry": {
+      "bytes": 8796,
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/overlay_t_x1_tube.geometry.json"
+    },
+    "matlab": {
+      "bytes": 6045,
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/overlay_t_x1_tube.m"
+    },
+    "pdf": {
+      "bytes": 18887,
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/overlay_t_x1_tube.pdf"
+    },
+    "png": {
+      "bytes": 213776,
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/overlay_t_x1_tube.png"
+    }
+  },
+  "content_digest_policy": "none computed by this entry point",
+  "declared_origin_path": null,
+  "input_geometries": [
+    "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/source_1/t_x1_tube.geometry.json",
+    "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/source_2/t_x1_tube.geometry.json"
+  ],
+  "matlab_runtime_check": "not performed by generator",
+  "mode": "geometry-overlay",
+  "native_record_warning": "ranges.bin has no accepted/status field; complete means record coverage only, not solver acceptance or certification",
+  "plot_configuration": {
+    "benchmark": "Synthetic overlay fixture",
+    "expected_lanes": null,
+    "expected_steps": 2,
+    "instance_id": "synthetic-overlay",
+    "partial_policy": "reject",
+    "projection": {
+      "kind": "time-state",
+      "x": "t",
+      "y": "x1",
+      "y_index": 0
+    },
+    "run_config_path": null,
+    "spec_path": null,
+    "step_size": 0.125,
+    "view": "tube"
+  },
+  "run_identity_check": "not performed; source paths and adjacent run files are unbound",
+  "schema": "torch-tm-flowpipe-nohash-render-v1",
+  "solver_timing": "not measured by this plotting entry point",
+  "source_geometry": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/overlay_t_x1_tube.geometry.json",
+  "source_ranges": [
+    "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/source_1/ranges.bin",
+    "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/source_2/ranges.bin"
+  ],
+  "timings_seconds": {
+    "matlab_script_generation": 0.00029483300750143826,
+    "matplotlib_png_pdf_render": 0.7389612089900766,
+    "source_read_and_projection_export_or_geometry_validation": 0.0009440410067327321,
+    "total_before_receipt_write": 0.740971624996746
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "quad-old-p3-weighted-full-array-independent-audit-nohash-v1",
+  "steps": 40,
+  "boxes": 1024,
+  "rounds": [
+    {
+      "accepted": 40960,
+      "changed_lanes": 40960,
+      "changed_components": 518869,
+      "width_reduction_sum": 0.001428149499442845,
+      "gpu_stream_span_s": 15.633156646728514
+    },
+    {
+      "accepted": 40615,
+      "changed_lanes": 40615,
+      "changed_components": 564916,
+      "width_reduction_sum": 1.3863845427716655e-05,
+      "gpu_stream_span_s": 14.834444000244146
+    }
+  ],
+  "partial_second_round_steps": [
+    [
+      7,
+      1022
+    ],
+    [
+      16,
+      825
+    ],
+    [
+      17,
+      896
+    ],
+    [
+      19,
+      1009
+    ],
+    [
+      38,
+      1023
+    ]
+  ],
+  "all_40_actual_final_remainders_bitwise_reconstructed": true,
+  "reference_direct_equal": {
+    "final_tube_12x2": true,
+    "final_endpoint_12x2": true,
+    "final_status": true,
+    "observations_jsonl": true
+  },
+  "pass": true
+}

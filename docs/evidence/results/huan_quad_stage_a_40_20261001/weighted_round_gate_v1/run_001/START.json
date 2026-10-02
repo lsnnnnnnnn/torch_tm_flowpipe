@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "taskset",
+    "-c",
+    "14-17",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "-B",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_weighted_round_gate_20261003_001/round_probe.py",
+    "--source-runner",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py",
+    "--source-config",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/quad_40.yaml",
+    "--comparison-helper",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_post_trig_phase40_nohash_v2/phase_probe.py",
+    "--reference",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/observer_on_002/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_weighted_round_gate_20261003_001/run_001/data"
+  ],
+  "contract_label": "quad-old-author-P3-40-nohash-nojit-weighted-round-gate",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_weighted_round_gate_20261003_001",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "quad-old-author-stage-a-40",
+  "method": "ours-p3-strict-weighted-round-observer",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "CUDA_VISIBLE_DEVICES": "3",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_utc": "2026-10-02T16:36:25.630741+00:00",
+  "timeout_s": 120.0
+}

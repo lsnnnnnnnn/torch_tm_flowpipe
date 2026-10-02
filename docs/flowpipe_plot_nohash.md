@@ -1,10 +1,14 @@
 # No-hash native flowpipe plotting
 
 `python -m torch_tm_flowpipe.flowpipe_plot_nohash` reads a saved native
-`ranges.bin` or an existing geometry JSON. It writes `.geometry.json` for
-native input, `.m`, `.png`, `.pdf`, and `.render.json`. This entry never runs a
-solver or computes a content digest. The receipt records file paths, byte
-sizes, the plot configuration, and an optional JSON run configuration.
+`ranges.bin` or one or more existing geometry JSON files. It writes
+`.geometry.json` for native input or a multi-geometry overlay, plus `.m`,
+`.png`, `.pdf`, and `.render.json`. This entry never runs a solver or computes
+a content digest. The receipt records file paths, byte sizes, plot
+configuration, and separate source/geometry, MATLAB-generation, and
+Matplotlib-render wall times. Solver time is not measured by this entry. An
+optional JSON run configuration and adjacent `RESULT.json` remain unbound
+declarations; the receipt performs no model or run identity check.
 When an adjacent `RESULT.json` exists, its saved status is shown in the figure
 footer as **unbound** adjacent evidence.
 
@@ -47,12 +51,35 @@ plot receipt. Record the actual source path and run identity separately if
 files have been copied from another host; `--origin-path` records that
 declared path without claiming byte identity.
 
-To redraw existing geometry without recalculating source or output hashes:
+To redraw existing v1 informational geometry without rereading the range file:
 
 ```console
 PYTHONPATH=src python -m torch_tm_flowpipe.flowpipe_plot_nohash \
   --geometry /path/to/saved.geometry.json --output /path/to/plots/redraw
 ```
+
+Repeat `--geometry` to overlay methods already exported under the same v1
+informational plot contract, without reading range files again:
+
+```console
+PYTHONPATH=src python -m torch_tm_flowpipe.flowpipe_plot_nohash \
+  --geometry /path/to/method_a.geometry.json \
+  --geometry /path/to/method_b.geometry.json \
+  --output /path/to/plots/same_axis_comparison
+```
+
+The inputs must agree exactly on benchmark and instance, coordinate order,
+projection, tube/endpoint view, step size and horizon, initial/property plot
+spec, and partial-record policy. Series labels must be unique. The combined
+`.geometry.json` retains each method's source path, recorded-step coverage,
+and unbound run evidence; a missing step remains missing for that method.
+This entry accepts only v1 informational geometry on redraw, so it does not
+validate declared source digests from other plot-spec versions. The
+[small synthetic overlay fixture](evidence/results/flowpipe_plot_nohash_overlay_20261003_001/README.md)
+shows two visibly overlaid saved-range series, one with an unobserved second
+step, together with initial/Safe/endpoint Target layers and the generated
+MATLAB/PDF/PNG artifacts. The fixture is a renderer check, not a reachable-set
+or solver result.
 
 Archived QUAD root1 B2 data is a parser/render regression fixture only. Its
 `x3` band is a **target at endpoint `t=5`**, not a Safe region; neither the

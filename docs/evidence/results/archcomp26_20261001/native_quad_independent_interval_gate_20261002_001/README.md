@@ -6,12 +6,18 @@ job. The checker is [`tools/check_native_quad_fullset_interval_gate_nohash.py`](
 It reads the original-library `_005` and copied VAR-tail repair `_007` RPC,
 octagon, and terminal-axis receipts. No content digest was calculated.
 
-The first RPC input bounds enclose the **whole first initial box**. The checker
+The check covers the saved **first-call RPC/recenter TM input domain**, not
+the entire first physical box defined in C++. The source starts `x1`–`x3`
+at binary64 `-0.4`; the saved RPC lower bounds are one ULP higher at
+`-0.39999999999999997`. The separate
+[initial-box audit](../native_quad_initial_recenter_gate_20261003_001/README.md)
+records that boundary. The checker
 reconstructs the C++ float32 `T`, `u_min`, and `u_max` conversion and encloses
 every `u=T·x(0)+center+r`, with each residual `r` in its saved interval, by an
 interval control hull. This hull loses affine correlation, so it is broader
 than the injected control set. The paper-equation 12-state ODE is then
-propagated for **every initial state and every control in that hull**, over
+propagated for **every state in the saved RPC domain and every control in
+that hull**, over
 the complete `t∈[0,0.005]` step. It uses 1,000 substeps. For each substep,
 the saved `picard_inclusion_passed` means the interval Picard image lies
 strictly inside a candidate tube. Sine and cosine use interval Taylor
@@ -47,5 +53,9 @@ not. The independent x10/x11 hulls extend beyond the saved endpoints by only
 about `2–3e-15`; this also fails strict containment but does not by itself
 identify a reachable counterexample. Those five comparisons remain open.
 The check does not validate CROWN bounds, the neural network, Flow* parsing
-or rounding, the other 1,023 initial boxes, later control calls, or `T=5`.
+or rounding, the excluded first-box strip, the other 1,023 initial boxes,
+later control calls, or `T=5`. The later
+[algebraic receipt](../native_quad_algebraic_gate_20261003_001/README.md)
+resolves the three undecided composed physical comparisons for this RPC
+domain; its two pre-column comparisons remain numerical diagnostics.
 **Native production promotion remains blocked.**

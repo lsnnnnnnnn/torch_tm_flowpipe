@@ -1,0 +1,181 @@
+{
+  "benchmark": "Synthetic overlay fixture",
+  "coordinate_names": [
+    "x1",
+    "x2"
+  ],
+  "expected_steps": 2,
+  "geometry_class": "Axis-aligned box projection (not octagon).",
+  "instance_id": "synthetic-overlay",
+  "interpolation": "none",
+  "observer_columns": [
+    "tube_lo",
+    "tube_hi",
+    "endpoint_lo",
+    "endpoint_hi"
+  ],
+  "partial_policy": "reject",
+  "projection": {
+    "kind": "time-state",
+    "x": "t",
+    "y": "x1",
+    "y_index": 0
+  },
+  "schema": "torch-tm-flowpipe-projection-v2",
+  "semantics": "tube bounds cover one local integration step",
+  "series": [
+    {
+      "declared_origin_path": null,
+      "display_omitted_observed_step_count": 0,
+      "display_omitted_observed_step_ranges": [],
+      "display_selection": {
+        "policy": "all-observed",
+        "requested_steps": null
+      },
+      "displayed_partial_step_ranges": [],
+      "displayed_steps": [
+        1
+      ],
+      "expected_steps": 2,
+      "frames": [
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.0,
+              0.125,
+              0.0,
+              0.4
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 0,
+          "source_record_index_min": 0,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 1,
+          "time_end": 0.125,
+          "time_start": 0.0,
+          "total_lanes": 1
+        }
+      ],
+      "label": "A saved prefix",
+      "lane_universe_binding": "explicit_cli_expected_lanes; not verified against initial partition",
+      "observed_steps": [
+        1
+      ],
+      "origin_binding": "local source path only",
+      "physical_state_count_from_explicit_coordinates": 2,
+      "projection_coverage_semantics": "record presence only; acceptance and certification unknown",
+      "projection_partial_coverage_semantics": "known record coverage for every observed step",
+      "projection_partial_step_ranges": [],
+      "projection_unobserved_reason": "no native range record; solver status is not inferred",
+      "projection_unobserved_step_count": 1,
+      "projection_unobserved_step_ranges": [
+        [
+          2,
+          2
+        ]
+      ],
+      "record_schema": "little-endian <lane:uint64,step:uint64,h:float64,8xfloat64>; tube_lo,tube_hi,endpoint_lo,endpoint_hi per physical state",
+      "record_size": 88,
+      "solver_run_evidence": {
+        "binding": {
+          "series": "adjacent run evidence unbound to ranges.bin"
+        },
+        "plot_contract_check": {
+          "expected_steps": "explicit_cli_unverified",
+          "lane_count": "explicit_cli_unverified",
+          "status": "explicit plotting declarations unbound to native records",
+          "step_size": "matched to each binary record h"
+        },
+        "run_configuration": null
+      },
+      "source_bytes": 88,
+      "source_kind": "native-ranges-bin-v1",
+      "source_path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/source_1/ranges.bin"
+    }
+  ],
+  "spec": {
+    "benchmark": "Synthetic overlay fixture",
+    "contract_status": "synthetic parser and renderer fixture; no solver run",
+    "coordinate_names": [
+      "x1",
+      "x2"
+    ],
+    "horizon": {
+      "end": 0.25,
+      "kind": "continuous_time",
+      "start": 0
+    },
+    "identity_binding": "informational_legacy_unbound",
+    "initial_set": {
+      "bounds": {
+        "x1": [
+          0,
+          1
+        ],
+        "x2": [
+          0,
+          1
+        ]
+      },
+      "label": "Initial fixture box"
+    },
+    "instance_id": "synthetic-overlay",
+    "property_quantifier": "conjunction",
+    "regions": [
+      {
+        "bounds": {
+          "x1": [
+            -1,
+            2
+          ],
+          "x2": [
+            -1,
+            2
+          ]
+        },
+        "label": "Safe fixture band",
+        "role": "safe",
+        "time": {
+          "kind": "all"
+        }
+      },
+      {
+        "bounds": {
+          "x1": [
+            0.4,
+            0.8
+          ]
+        },
+        "label": "Endpoint fixture target",
+        "role": "target",
+        "time": {
+          "at": 0.25,
+          "kind": "endpoint"
+        }
+      }
+    ],
+    "schema": "torch-tm-flowpipe-plot-spec-v1",
+    "units": {
+      "t": "s"
+    },
+    "warning": "These intervals are synthetic and do not describe reachable states."
+  },
+  "spec_binding": {
+    "contract_status": "synthetic parser and renderer fixture; no solver run",
+    "identity_binding": "informational_legacy_unbound",
+    "status": "accepted_with_explicit_unbound_legacy_scope"
+  },
+  "step_size": 0.125,
+  "step_size_hex": "0x1.0000000000000p-3",
+  "view": "tube"
+}

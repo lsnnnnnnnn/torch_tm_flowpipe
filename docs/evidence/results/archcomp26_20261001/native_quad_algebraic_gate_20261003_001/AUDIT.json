@@ -1,0 +1,929 @@
+{
+  "schema": "native-quad-algebraic-whole-set-first-step-gate-nohash-v1",
+  "scope": "saved first-call RPC/recenter-TM input domain, first 0.005 s, saved affine-plus-residual control only",
+  "covers_cpp_first_physical_box": false,
+  "rpc_x1_x3_lower_vs_cpp_first_box": {
+    "rpc_lower_binary64": "-0.39999999999999997",
+    "cpp_first_box_lower_binary64": "-0.4",
+    "gap_exact": "1/18014398509481984",
+    "meaning": "RPC x1-x3 lower bounds are one binary64 ULP above the C++ first physical box lower bounds"
+  },
+  "source": "saved repaired RPC/octagon/terminal axes plus prior independent interval audit",
+  "exact_constants": {
+    "h": "0.005",
+    "gravity": "9.81",
+    "mass": "1.4",
+    "inertia": "0.054"
+  },
+  "constant_scope": "paper-equation exact-decimal ODE; no independent validation of Flow* parser or internal Real arithmetic",
+  "nearest_binary64_h_inertia_sensitivity": {
+    "x10_x11_closed_forms_inside_unexpanded_binary64_columns": true,
+    "meaning": "hypothetical nearest-binary64 h and 0.054 only; not a Flow* parser certificate"
+  },
+  "rpc_rounding": "JSON binary64 input bounds; T/u_min/u_max rounded to binary32 as C++ asFloat; centers and radii checked exactly representable as binary64",
+  "comparison_arithmetic": "Fraction exact; decimal fields are display approximations, *_exact fields are rational values used in all comparisons",
+  "bootstrap": {
+    "x4": {
+      "strict_bound": "0.4004955000000000222044604925",
+      "limit": "1"
+    },
+    "x5": {
+      "strict_bound": "0.4004980000000000222044604925",
+      "limit": "1"
+    },
+    "x6": {
+      "strict_bound": "0.4542603910866520699837998411",
+      "limit": "1"
+    },
+    "x7": {
+      "strict_bound": "0.000007500500025001250062503125156",
+      "limit": "0.01"
+    },
+    "x8": {
+      "strict_bound": "0.000005",
+      "limit": "0.01"
+    }
+  },
+  "x6_correlated_base": [
+    "-0.4457052562783896532152177734",
+    "0.3495666249588664312564417923"
+  ],
+  "x6_correlated_base_exact": [
+    "-77245893545375823900681646511/173311605499953238485877391360",
+    "60583953000821166396439502567/173311605499953238485877391360"
+  ],
+  "x6_integral_error_limit": "0.000017405",
+  "x6_integral_error_limit_exact": "3481/200000000",
+  "physical_composed_passed": 20,
+  "physical_composed_total": 20,
+  "pre_numeric_column_physical_bound_inside": 12,
+  "pre_numeric_column_total": 12,
+  "pre_set_inclusion_proven": false,
+  "all_numeric_comparisons_inside": true,
+  "all_five_algebraic_comparisons_inside_unexpanded_binary64": true,
+  "comparisons": [
+    {
+      "kind": "tube",
+      "coord_or_form": 0,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000043253801987037973651",
+        "-0.2999999957870215743941308486"
+      ],
+      "independent_exact": [
+        "-402000004325380198703797365083319173684337969767125462772479/1000000000000000000000000000000000000000000000000000000000000",
+        "-299999995787021574394130848602131827682823683014861804107157/1000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4025114069359042590079411639",
+        "-0.2994836042066446601950246986"
+      ],
+      "native_exact": [
+        "-3625500444577825/9007199254740992",
+        "-674377124154309/2251799813685248"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "tube",
+      "coord_or_form": 1,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000058542837747590209644",
+        "-0.2979999939317889778036169697"
+      ],
+      "independent_exact": [
+        "-201000002927141887379510482191841651079271726758721879860507/500000000000000000000000000000000000000000000000000000000000",
+        "-582031238148025347272689393931191699071771402089671757241/1953125000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4024982374459408762668033432",
+        "-0.2975017594306165191753166255"
+      ],
+      "native_exact": [
+        "-7250763648715283/18014398509481984",
+        "-2679657625827583/9007199254740992"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "tube",
+      "coord_or_form": 2,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.8040000101796639734628183295",
+        "-0.5979999897188105521977478183"
+      ],
+      "independent_exact": [
+        "-804000010179663973462818329467002475842881423284569222493493/1000000000000000000000000000000000000000000000000000000000000",
+        "-597999989718810552197747818294901977607570640884773743814549/1000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.8050096443818453018081982009",
+        "-0.5969853636372610683480388616"
+      ],
+      "native_exact": [
+        "-1812720567233867/2251799813685248",
+        "-2688583061222409/4503599627370496"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "tube",
+      "coord_or_form": 3,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.1040000103935912209001803954",
+        "0.1020000100672622003648901158"
+      ],
+      "independent_exact": [
+        "-104000010393591220900180395383319173684337969767125462772479/1000000000000000000000000000000000000000000000000000000000000",
+        "102000010067262200364890115797868172317176316985138195892843/1000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.1050096475052875871769586524",
+        "0.1030146332392960634161127587"
+      ],
+      "native_exact": [
+        "-7566742550001925/72057594037927936",
+        "7422986621923233/72057594037927936"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "endpoint",
+      "coord_or_form": 0,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000033254100490620535855",
+        "-0.2999999967869930480948653337"
+      ],
+      "independent_exact": [
+        "-402000003325410049062053585529361980446902604184847416213/1000000000000000000000000000000000000000000000000000000000",
+        "-29999999678699304809486533371005201575498696693251641825599/100000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4025114069359042590079411639",
+        "-0.2994836042066446601950246986"
+      ],
+      "native_exact": [
+        "-3625500444577825/9007199254740992",
+        "-674377124154309/2251799813685248"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "endpoint",
+      "coord_or_form": 1,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000048543221658809024369",
+        "-0.2979999949317483119102483335"
+      ],
+      "independent_exact": [
+        "-201000002427161082940451218445886560311563906507568658723253/500000000000000000000000000000000000000000000000000000000000",
+        "-297999994931748311910248333457712338162692432266385800606333/1000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4024982374459408762668033432",
+        "-0.2975017594306165191753166255"
+      ],
+      "native_exact": [
+        "-7250763648715283/18014398509481984",
+        "-2679657625827583/9007199254740992"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "endpoint",
+      "coord_or_form": 2,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.8040000081797322149429560224",
+        "-0.5979999917187413600051136672"
+      ],
+      "independent_exact": [
+        "-402000004089866107471478011210567550535015208599992366829753/500000000000000000000000000000000000000000000000000000000000",
+        "-597999991718741360005113667167764353917679399198902218862323/1000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.8050096443818453018081982009",
+        "-0.5969853636372610683480388616"
+      ],
+      "native_exact": [
+        "-1812720567233867/2251799813685248",
+        "-2688583061222409/4503599627370496"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "endpoint",
+      "coord_or_form": 3,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.1040000083936617371518052520",
+        "0.1020000080673291177860371032"
+      ],
+      "independent_exact": [
+        "-104000008393661737151805252029361980446902604184847416213/1000000000000000000000000000000000000000000000000000000000",
+        "10200000806732911778603710318994798424501303306748358174401/100000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.1050096475052875871769586524",
+        "0.1030146332392960634161127587"
+      ],
+      "native_exact": [
+        "-7566742550001925/72057594037927936",
+        "7422986621923233/72057594037927936"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 1,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000033254100490620535855",
+        "-0.2999999967869930480948653337"
+      ],
+      "independent_exact": [
+        "-402000003325410049062053585529361980446902604184847416213/1000000000000000000000000000000000000000000000000000000000",
+        "-29999999678699304809486533371005201575498696693251641825599/100000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4025114069359042590079411639",
+        "-0.2994836042066446601950246986"
+      ],
+      "native_exact": [
+        "-3625500444577825/9007199254740992",
+        "-674377124154309/2251799813685248"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 1,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000033254100490620535855",
+        "-0.2999999967869930480948653337"
+      ],
+      "independent_exact": [
+        "-402000003325410049062053585529361980446902604184847416213/1000000000000000000000000000000000000000000000000000000000",
+        "-29999999678699304809486533371005201575498696693251641825599/100000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4025114069359042590079411639",
+        "-0.2994836042066446601950246986"
+      ],
+      "native_exact": [
+        "-3625500444577825/9007199254740992",
+        "-674377124154309/2251799813685248"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 2,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000048543221658809024369",
+        "-0.2979999949317483119102483335"
+      ],
+      "independent_exact": [
+        "-201000002427161082940451218445886560311563906507568658723253/500000000000000000000000000000000000000000000000000000000000",
+        "-297999994931748311910248333457712338162692432266385800606333/1000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4024982374459408762668033432",
+        "-0.2975017594306165191753166255"
+      ],
+      "native_exact": [
+        "-7250763648715283/18014398509481984",
+        "-2679657625827583/9007199254740992"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 2,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4020000048543221658809024369",
+        "-0.2979999949317483119102483335"
+      ],
+      "independent_exact": [
+        "-201000002427161082940451218445886560311563906507568658723253/500000000000000000000000000000000000000000000000000000000000",
+        "-297999994931748311910248333457712338162692432266385800606333/1000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4024982374459408762668033432",
+        "-0.2975017594306165191753166255"
+      ],
+      "native_exact": [
+        "-7250763648715283/18014398509481984",
+        "-2679657625827583/9007199254740992"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 3,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4018953731413390150323083556",
+        "-0.2978642494015798152684232372"
+      ],
+      "independent_exact": [
+        "-401895373141339015032308355591943658456804035870500345178129/1000000000000000000000000000000000000000000000000000000000000",
+        "-29786424940157981526842323721226428141870247062372780509707/100000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4023379353278120906800552348",
+        "-0.2974211000649625846747881042"
+      ],
+      "native_exact": [
+        "-7247875902477397/18014398509481984",
+        "-2678931110849377/9007199254740992"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 3,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4018953731413390150323083556",
+        "-0.2978642494015798152684232372"
+      ],
+      "independent_exact": [
+        "-401895373141339015032308355591943658456804035870500345178129/1000000000000000000000000000000000000000000000000000000000000",
+        "-29786424940157981526842323721226428141870247062372780509707/100000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4023379353278120906800552348",
+        "-0.2974211000649625846747881042"
+      ],
+      "native_exact": [
+        "-7247875902477397/18014398509481984",
+        "-2678931110849377/9007199254740992"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 4,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4000009271542807930884836585",
+        "0.000001066951050972453086032045094"
+      ],
+      "independent_exact": [
+        "-200000463577140396544241829267888186680391361325618190919531/500000000000000000000000000000000000000000000000000000000000",
+        "21339021019449061720640901877042524787216696602636771092829/20000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4048989782050718133632472018",
+        "0.004899007131149889920918027997"
+      ],
+      "native_exact": [
+        "-113968930460441/281474976710656",
+        "1412042668181251/288230376151711744"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 4,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4000009271542807930884836585",
+        "0.000001066951050972453086032045094"
+      ],
+      "independent_exact": [
+        "-200000463577140396544241829267888186680391361325618190919531/500000000000000000000000000000000000000000000000000000000000",
+        "21339021019449061720640901877042524787216696602636771092829/20000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4048989782050718133632472018",
+        "0.004899007131149889920918027997"
+      ],
+      "native_exact": [
+        "-113968930460441/281474976710656",
+        "1412042668181251/288230376151711744"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 5,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4000015937149062920282557905",
+        "0.4000014144078669296578775009"
+      ],
+      "independent_exact": [
+        "-50000199214363286503531973808200684765647520464404401148579/125000000000000000000000000000000000000000000000000000000000",
+        "8000028288157338593157550018215387102131423579822952556883/20000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4049001772080267902431671700",
+        "0.4049000581895220718386951830"
+      ],
+      "native_exact": [
+        "-7294033148785269/18014398509481984",
+        "7294031004738495/18014398509481984"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 5,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4000015937149062920282557905",
+        "0.4000014144078669296578775009"
+      ],
+      "independent_exact": [
+        "-50000199214363286503531973808200684765647520464404401148579/125000000000000000000000000000000000000000000000000000000000",
+        "8000028288157338593157550018215387102131423579822952556883/20000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4049001772080267902431671700",
+        "0.4049000581895220718386951830"
+      ],
+      "native_exact": [
+        "-7294033148785269/18014398509481984",
+        "7294031004738495/18014398509481984"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 6,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.4542453969769747274781585268",
+        "0.3581064449408204075567945077"
+      ],
+      "independent_exact": [
+        "-454245396976974727478158526825785340670986356447285538611311/1000000000000000000000000000000000000000000000000000000000000",
+        "179053222470410203778397253871889678528170362542503798442771/500000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.4547372712205176581434784566",
+        "0.3583537350628633877391848728"
+      ],
+      "native_exact": [
+        "-4095909210440399/9007199254740992",
+        "1613881747695937/4503599627370496"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 6,
+      "role": "physical_composed",
+      "method": "algebraic",
+      "independent": [
+        "-0.4457226612783896532152177734",
+        "0.3495840299588664312564417923"
+      ],
+      "independent_exact": [
+        "-6035071096396058639593554156796611/13539969179683846756709171200000000",
+        "4733356991352726022074636661171611/13539969179683846756709171200000000"
+      ],
+      "native": [
+        "-0.4461995414122552072733185469",
+        "0.3498160052546009368690249630"
+      ],
+      "native_exact": [
+        "-8038016353748475/18014398509481984",
+        "6301724923651425/18014398509481984"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": true,
+      "algebraic_raw_binary64_margins_exact": [
+        "6456942314942357390049043203389/13539969179683846756709171200000000",
+        "3140938354692500095526538828389/13539969179683846756709171200000000"
+      ],
+      "algebraic_raw_binary64_margins": [
+        "0.0004768801338654985469495422568",
+        "0.0002319752957344501014319394774"
+      ]
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 7,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-3.444872149209103970840899957E-7",
+        "0.000003640734569711819178996232191"
+      ],
+      "independent_exact": [
+        "-86121803730227599271022498916254260548000513597154515668027/250000000000000000000000000000000000000000000000000000000000000000",
+        "364073456971181917899623219149019691647846281487225155696117/100000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.000002382516064701138607602633190",
+        "0.000005675470465089594093591532364"
+      ],
+      "native_exact": [
+        "-1406389251105393/590295810358705651712",
+        "1675103218678481/295147905179352825856"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 7,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-3.444872149209103970840899957E-7",
+        "0.000003640734569711819178996232191"
+      ],
+      "independent_exact": [
+        "-86121803730227599271022498916254260548000513597154515668027/250000000000000000000000000000000000000000000000000000000000000000",
+        "364073456971181917899623219149019691647846281487225155696117/100000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.000002382516064701138607602633190",
+        "0.000005675470465089594093591532364"
+      ],
+      "native_exact": [
+        "-1406389251105393/590295810358705651712",
+        "1675103218678481/295147905179352825856"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 8,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.000001584690596402076657828895931",
+        "0.000002386481718722008121789378448"
+      ],
+      "independent_exact": [
+        "-19808632455025958222861199134505684095566930637871795831963/12500000000000000000000000000000000000000000000000000000000000000",
+        "238648171872200812178937844770911665258422743710297391948677/100000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.000003569701363368787415305529928",
+        "0.000004369691059062129580216771868"
+      ],
+      "native_exact": [
+        "-8428719036113419/2361183241434822606848",
+        "5158820649452541/1180591620717411303424"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 8,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-0.000001584690596402076657828895931",
+        "0.000002386481718722008121789378448"
+      ],
+      "independent_exact": [
+        "-19808632455025958222861199134505684095566930637871795831963/12500000000000000000000000000000000000000000000000000000000000000",
+        "238648171872200812178937844770911665258422743710297391948677/100000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-0.000003569701363368787415305529928",
+        "0.000004369691059062129580216771868"
+      ],
+      "native_exact": [
+        "-8428719036113419/2361183241434822606848",
+        "5158820649452541/1180591620717411303424"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 9,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-7.890134788298410868961506623E-12",
+        "9.352430778601252118609581044E-12"
+      ],
+      "independent_exact": [
+        "-31560539153193643475846026492558245207296267835670231936763/4000000000000000000000000000000000000000000000000000000000000000000000",
+        "46762153893006260593047905221383740334765163597876274377981/5000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-4.784215158924817259820027812E-7",
+        "4.784221736512940222410539270E-7"
+      ],
+      "native_exact": [
+        "-2259281731334343/4722366482869645213696",
+        "35301325586133/73786976294838206464"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 9,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "-7.890134788298410868961506623E-12",
+        "9.352430778601252118609581044E-12"
+      ],
+      "independent_exact": [
+        "-31560539153193643475846026492558245207296267835670231936763/4000000000000000000000000000000000000000000000000000000000000000000000",
+        "46762153893006260593047905221383740334765163597876274377981/5000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "native": [
+        "-4.784215158924817259820027812E-7",
+        "4.784221736512940222410539270E-7"
+      ],
+      "native_exact": [
+        "-2259281731334343/4722366482869645213696",
+        "35301325586133/73786976294838206464"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 10,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "algebraic",
+      "independent": [
+        "-0.0001376552307327208966702310323",
+        "0.001454836990887997673239340211"
+      ],
+      "independent_exact": [
+        "-2300520443504885005336205/16712190530352633711138177024",
+        "97254051929300462290281875/66848762121410534844552708096"
+      ],
+      "native": [
+        "-0.0001376552307327214041184765270",
+        "0.001454836990887998756163956848"
+      ],
+      "native_exact": [
+        "-5078581623467899/36893488147419103232",
+        "6709251409969157/4611686018427387904"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": true,
+      "algebraic_raw_binary64_margins_exact": [
+        "8027586931/16712190530352633711138177024",
+        "57896655469/66848762121410534844552708096"
+      ],
+      "algebraic_raw_binary64_margins": [
+        "4.803431911825274527834951911E-19",
+        "8.660841821401009075674930903E-19"
+      ]
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 10,
+      "role": "physical_composed",
+      "method": "algebraic",
+      "independent": [
+        "-0.0001376552307327208966702310323",
+        "0.001454836990887997673239340211"
+      ],
+      "independent_exact": [
+        "-2300520443504885005336205/16712190530352633711138177024",
+        "97254051929300462290281875/66848762121410534844552708096"
+      ],
+      "native": [
+        "-0.0001376552307327215667488023998",
+        "0.001454836990887998756163956848"
+      ],
+      "native_exact": [
+        "-5078581623467905/36893488147419103232",
+        "6709251409969157/4611686018427387904"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": true,
+      "algebraic_raw_binary64_margins_exact": [
+        "10745495923/16712190530352633711138177024",
+        "57896655469/66848762121410534844552708096"
+      ],
+      "algebraic_raw_binary64_margins": [
+        "6.429735170553531178846131112E-19",
+        "8.660841821401009075674930903E-19"
+      ]
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 11,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "algebraic",
+      "independent": [
+        "-0.0006332409975584596345489241100",
+        "0.0009536370504334896695833663943"
+      ],
+      "independent_exact": [
+        "-14110458937103392465212895/22282920707136844948184236032",
+        "63749456334591932092148765/66848762121410534844552708096"
+      ],
+      "native": [
+        "-0.0006332409975584600732301243653",
+        "0.0009536370504334901925316825277"
+      ],
+      "native_exact": [
+        "-1460154327367681/2305843009213693952",
+        "8795749304276921/9223372036854775808"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": true,
+      "algebraic_raw_binary64_margins_exact": [
+        "7359179297/22282920707136844948184236032",
+        "27710690275/66848762121410534844552708096"
+      ],
+      "algebraic_raw_binary64_margins": [
+        "3.302609830067284928158484149E-19",
+        "4.145280988849415312475587153E-19"
+      ]
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 11,
+      "role": "physical_composed",
+      "method": "algebraic",
+      "independent": [
+        "-0.0006332409975584596345489241100",
+        "0.0009536370504334896695833663943"
+      ],
+      "independent_exact": [
+        "-14110458937103392465212895/22282920707136844948184236032",
+        "63749456334591932092148765/66848762121410534844552708096"
+      ],
+      "native": [
+        "-0.0006332409975584601816503416138",
+        "0.0009536370504334903009518997763"
+      ],
+      "native_exact": [
+        "-5840617309470725/9223372036854775808",
+        "4397874652138461/4611686018427387904"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": true,
+      "algebraic_raw_binary64_margins_exact": [
+        "9775098401/22282920707136844948184236032",
+        "34958447587/66848762121410534844552708096"
+      ],
+      "algebraic_raw_binary64_margins": [
+        "4.386812002552789362165936950E-19",
+        "5.229483161334919746483039953E-19"
+      ]
+    },
+    {
+      "kind": "terminal_pre",
+      "coord_or_form": 12,
+      "role": "physical_bound_vs_pre_numeric_column",
+      "method": "prior_interval_picard",
+      "independent": [
+        "0",
+        "0"
+      ],
+      "independent_exact": [
+        "0",
+        "0"
+      ],
+      "native": [
+        "-4.940656458412465441765687929E-324",
+        "4.940656458412465441765687929E-324"
+      ],
+      "native_exact": [
+        "-1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784",
+        "1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    },
+    {
+      "kind": "terminal_composed",
+      "coord_or_form": 12,
+      "role": "physical_composed",
+      "method": "prior_interval_picard",
+      "independent": [
+        "0",
+        "0"
+      ],
+      "independent_exact": [
+        "0",
+        "0"
+      ],
+      "native": [
+        "-4.940656458412465441765687929E-324",
+        "4.940656458412465441765687929E-324"
+      ],
+      "native_exact": [
+        "-1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784",
+        "1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784"
+      ],
+      "inside": true,
+      "algebraic_inside_unexpanded_binary64": null,
+      "algebraic_raw_binary64_margins_exact": null,
+      "algebraic_raw_binary64_margins": null
+    }
+  ],
+  "limitation": "The RPC/recenter domain omits a one-ULP lower strip of x1-x3 from the C++ first physical box. Physical trajectory bounds lying inside pre numeric columns do not prove enclosure of the pre symbolic set. This exact-decimal one-step plant test does not validate Flow* parsing, CROWN, NN output, other boxes, later controls, or T=5."
+}

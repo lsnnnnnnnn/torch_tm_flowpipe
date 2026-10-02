@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import time
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,14 @@ def _read_object(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{path}: expected a JSON object")
     return value
+
+
+def _saved_geometry(path: Path) -> dict[str, Any]:
+    value = _read_object(path)
+    spec = value.get("spec")
+    if not isinstance(spec, dict) or spec.get("schema") != plot.PLOT_SPEC_SCHEMA:
+        raise ValueError(f"{path}: no-hash redraw requires a v1 informational plot spec")
+    return plot.validate_geometry(value)
 
 
 def _artifact(path: Path) -> dict[str, Any]:
@@ -166,11 +175,38 @@ def _native_geometry(args: argparse.Namespace) -> dict[str, Any]:
     return plot.validate_geometry(geometry)
 
 
+def _overlay_geometry(paths: list[Path]) -> dict[str, Any]:
+    geometries = [_saved_geometry(path) for path in paths]
+    first = geometries[0]
+    common = (
+        "schema", "benchmark", "instance_id", "coordinate_names", "projection",
+        "view", "observer_columns", "step_size", "step_size_hex",
+        "expected_steps", "partial_policy", "interpolation", "geometry_class",
+        "semantics", "spec", "spec_binding",
+    )
+    labels: set[str] = set()
+    series: list[dict[str, Any]] = []
+    for path, geometry in zip(paths, geometries):
+        for key in common:
+            if geometry.get(key) != first.get(key):
+                raise ValueError(f"{path}: geometry {key} differs from the first input")
+        for item in geometry["series"]:
+            label = item["label"]
+            if label in labels:
+                raise ValueError(f"{path}: duplicate series label {label!r}")
+            labels.add(label)
+            series.append(item)
+    return plot.validate_geometry({**first, "series": series})
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--ranges", type=Path, help="saved native ranges.bin")
-    source.add_argument("--geometry", type=Path, help="existing validated geometry JSON")
+    source.add_argument(
+        "--geometry", type=Path, action="append",
+        help="existing geometry JSON; repeat to overlay compatible saved series",
+    )
     parser.add_argument("--output", type=Path, required=True, help="output path prefix")
     parser.add_argument("--label", default="native")
     parser.add_argument("--benchmark", default="unknown")
@@ -190,7 +226,9 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    total_started = time.perf_counter()
     args = _parser().parse_args(argv)
+    source_started = time.perf_counter()
     if args.ranges:
         if args.ranges.name != "ranges.bin" or not args.ranges.is_file():
             raise ValueError("--ranges must name an existing ranges.bin file")
@@ -203,17 +241,33 @@ def main(argv: list[str] | None = None) -> int:
     else:
         if args.spec or args.run_config or args.origin_path:
             raise ValueError("geometry redraw uses the plot spec and run configuration saved in geometry")
-        geometry = plot.validate_geometry(_read_object(args.geometry))
-        geometry_path = args.geometry
-        mode = "geometry-redraw"
+        if len(args.geometry) == 1:
+            geometry = _saved_geometry(args.geometry[0])
+            geometry_path = args.geometry[0]
+            mode = "geometry-redraw"
+        else:
+            geometry_path = args.output.with_suffix(".geometry.json")
+            if geometry_path.resolve() in {path.resolve() for path in args.geometry}:
+                raise ValueError("overlay output geometry must not replace an input geometry")
+            geometry = _overlay_geometry(args.geometry)
+            plot._json_dump(geometry_path, geometry)
+            mode = "geometry-overlay"
+    source_seconds = time.perf_counter() - source_started
     matlab = args.output.with_suffix(".m")
+    matlab_started = time.perf_counter()
     plot.write_matlab(geometry, matlab)
+    matlab_seconds = time.perf_counter() - matlab_started
+    render_started = time.perf_counter()
     png, pdf = plot.render_matplotlib(geometry, args.output)
+    render_seconds = time.perf_counter() - render_started
     receipt = {
         "schema": "torch-tm-flowpipe-nohash-render-v1",
         "mode": mode,
         "content_digest_policy": "none computed by this entry point",
         "source_geometry": str(geometry_path.resolve()),
+        "input_geometries": (
+            [str(path.resolve()) for path in args.geometry] if args.geometry else []
+        ),
         "source_ranges": (
             str(args.ranges.resolve()) if args.ranges else
             [item.get("source_path") for item in geometry["series"]]
@@ -234,6 +288,14 @@ def main(argv: list[str] | None = None) -> int:
         "artifacts": {name: _artifact(path) for name, path in (
             ("geometry", geometry_path), ("matlab", matlab), ("png", png), ("pdf", pdf)
         )},
+        "timings_seconds": {
+            "source_read_and_projection_export_or_geometry_validation": source_seconds,
+            "matlab_script_generation": matlab_seconds,
+            "matplotlib_png_pdf_render": render_seconds,
+            "total_before_receipt_write": time.perf_counter() - total_started,
+        },
+        "solver_timing": "not measured by this plotting entry point",
+        "run_identity_check": "not performed; source paths and adjacent run files are unbound",
         "native_record_warning": (
             "ranges.bin has no accepted/status field; complete means record coverage only, "
             "not solver acceptance or certification"

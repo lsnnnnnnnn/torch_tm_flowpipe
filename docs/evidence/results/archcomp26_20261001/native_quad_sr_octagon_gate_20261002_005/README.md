@@ -18,7 +18,7 @@ The [independent finite-sample audit](AUDIT.json) exited nonzero: 513 sampled
 initial/control choices, 20,520 direction and axis checks, 2,048 terminal
 `x7`/`x8` checks outside the frozen Flow* endpoint bounds, maximum overshoot
 `1.9825917926144243e-6`. All sampled x1/x2 octagon checks passed. The first
-point is `x1…x6=(-0.4,-0.4,-0.4,-0.4,-0.4,-0.4)`, other states zero, with
+point is `x1…x3=-0.39999999999999997`, `x4…x6=-0.4`, other states zero, with
 constant `u=(12.730082304606912,-0.001486676491913386,
 -0.006470973906107247)`. This u is inside the **affine-plus-residual control
 relaxation injected by the C++ source**: `T·x + center ± radius`, after the

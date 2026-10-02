@@ -1,0 +1,91 @@
+include.h:36:const int normal_precision	=	53;
+Interval.cpp:683:Interval::Interval(const double l, const double u)
+Interval.cpp:684:{
+Interval.cpp:685:	mpfr_inits2(intervalNumPrecision, lo, up, (mpfr_ptr) 0);
+Interval.cpp:686:
+Interval.cpp:687:	mpfr_set_d(lo, l, MPFR_RNDD);
+Interval.cpp:688:	mpfr_set_d(up, u, MPFR_RNDU);
+Interval.cpp:689:}
+Interval.cpp:824:void Interval::split(std::list<Interval> & result, const int n) const
+Interval.cpp:825:{
+Interval.cpp:826:	mpfr_t inc, w, newup, newlo;
+Interval.cpp:827:	mpfr_inits2(intervalNumPrecision, inc, w, newup, newlo, (mpfr_ptr) 0);
+Interval.cpp:828:
+Interval.cpp:829:	mpfr_sub(w, up, lo, MPFR_RNDU);
+Interval.cpp:830:	mpfr_div_si(inc, w, (long)n, MPFR_RNDU);
+Interval.cpp:831:
+Interval.cpp:832:	Interval grid;
+Interval.cpp:833:	mpfr_set(grid.lo, lo, MPFR_RNDD);
+Interval.cpp:834:	mpfr_add(grid.up, lo, inc, MPFR_RNDU);
+Interval.cpp:835:	result.push_back(grid);
+Interval.cpp:836:
+Interval.cpp:837:	for(int i=1; i<n; ++i)
+Interval.cpp:838:	{
+Interval.cpp:839:		mpfr_add(grid.lo, grid.lo, inc, MPFR_RNDD);
+Interval.cpp:840:		mpfr_add(grid.up, grid.up, inc, MPFR_RNDU);
+Interval.cpp:841:		result.push_back(grid);
+Interval.cpp:842:	}
+Interval.cpp:843:}
+Interval.cpp:856:double Interval::inf() const
+Interval.cpp:857:{
+Interval.cpp:858:	return mpfr_get_d(lo, MPFR_RNDD);
+Interval.cpp:927:void Interval::toCenterForm(Real & center, Real & radius) const
+Interval.cpp:928:{
+Interval.cpp:929:	mpfr_t tmp1;
+Interval.cpp:930:
+Interval.cpp:931:	mpfr_inits2(intervalNumPrecision, tmp1, (mpfr_ptr) 0);
+Interval.cpp:932:
+Interval.cpp:933:	mpfr_add(tmp1, lo, up, MPFR_RNDN);
+Interval.cpp:934:	mpfr_div_d(center.value, tmp1, 2.0, MPFR_RNDN);
+Interval.cpp:935:
+Interval.cpp:936:	mpfr_sub(radius.value, up, center.value, MPFR_RNDU);
+Interval.cpp:937:
+Interval.cpp:938:	mpfr_clear(tmp1);
+TaylorModel.h:2838:TaylorModelVec<DATA_TYPE>::TaylorModelVec(const std::vector<Interval> & box, std::vector<Interval> & domain)
+TaylorModel.h:2839:{
+TaylorModel.h:2840:	unsigned int rangeDim = box.size();
+TaylorModel.h:2841:	unsigned int domainDim = rangeDim + 1;
+TaylorModel.h:2842:	domain.resize(domainDim, 0);
+TaylorModel.h:2843:	domain[0] = 0;
+TaylorModel.h:2844:
+TaylorModel.h:2845:	std::vector<DATA_TYPE> center(rangeDim);
+TaylorModel.h:2846:	std::vector<DATA_TYPE> scalars(rangeDim);
+TaylorModel.h:2847:	for(unsigned int i=0; i<rangeDim; ++i)
+TaylorModel.h:2848:	{
+TaylorModel.h:2849:		DATA_TYPE c, r;
+TaylorModel.h:2850:		box[i].toCenterForm(c, r);
+TaylorModel.h:2851:		center[i] = c;
+TaylorModel.h:2852:		scalars[i] = r;
+TaylorModel.h:2853:	}
+TaylorModel.h:2854:
+TaylorModel.h:2855:	std::vector<std::vector<DATA_TYPE> > coefficients(rangeDim, std::vector<DATA_TYPE>(domainDim));
+TaylorModel.h:2856:
+TaylorModel.h:2857:	for(unsigned int i=0; i<rangeDim; ++i)
+TaylorModel.h:2858:	{
+TaylorModel.h:2859:		coefficients[i][i+1] = scalars[i];
+TaylorModel.h:2860:	}
+TaylorModel.h:2861:
+TaylorModel.h:2862:	TaylorModelVec<DATA_TYPE> newVars(coefficients);
+TaylorModel.h:2863:	tms = newVars.tms;
+TaylorModel.h:2864:
+TaylorModel.h:2865:	for(unsigned int i=0; i<rangeDim; ++i)
+TaylorModel.h:2866:	{
+TaylorModel.h:2867:		TaylorModel<DATA_TYPE> tmTmp(center[i], domainDim);
+TaylorModel.h:2868:		tms[i] += tmTmp;
+TaylorModel.h:2869:	}
+TaylorModel.h:2870:
+TaylorModel.h:2871:	Interval intUnit(-1,1);
+TaylorModel.h:2872:	for(unsigned int i=1; i<domainDim; ++i)
+TaylorModel.h:2873:	{
+TaylorModel.h:2874:		domain[i] = intUnit;
+TaylorModel.h:2875:	}
+Continuous.cpp:260:Flowpipe::Flowpipe(const std::vector<Interval> & box)
+Continuous.cpp:261:{
+Continuous.cpp:262:	TaylorModelVec<Real> tmv1(box, domain);
+Continuous.cpp:263:	TaylorModelVec<Real> tmv2(box.size());
+Continuous.cpp:264:
+Continuous.cpp:265:	tmvPre = tmv1;
+Continuous.cpp:266:	tmv = tmv2;
+Continuous.cpp:267:
+Continuous.cpp:268:	safety = SAFE;
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_paper_build_001/flowstar/flowstar-toolbox/Interval.cpp:15:mpfr_prec_t intervalNumPrecision = normal_precision;

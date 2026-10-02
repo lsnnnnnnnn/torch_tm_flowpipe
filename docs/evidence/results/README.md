@@ -45,16 +45,20 @@ establish an Airplane full-time or property result.
 The [isolated native QUAD VAR-tail candidate gate](archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/README.md)
 rebuilds a copied Flow* library with a two-site variable truncation-tail
 repair, preserving the remainder refinement loops. Ordinary harmonic short
-checks and the paper-equation QUAD first-box, first-step finite-sample checks
+checks and the paper-equation QUAD first-call, first-step finite-sample checks
 passed, and the repaired QUAD intervals were much narrower than the copied
 skip-refinement diagnostic. The original failing library and full50 receipts
-are unchanged. This candidate has no complete independent inclusion proof;
-the native production octagon gate remains closed and the diagnostic is not a
-new benchmark attempt. The [independent short-step interval gate](archcomp26_20261001/native_quad_independent_interval_gate_20261002_001/README.md)
-then checked the entire first-box, relaxed-control, `0.005 s` ODE step: 27/32
-repaired saved bounds contained the independent intervals, versus 23/32 from
-the original library. Five repaired comparisons remain inconclusive, so the
-native production gate stays closed.
+are unchanged. The [independent short-step interval gate](archcomp26_20261001/native_quad_independent_interval_gate_20261002_001/README.md)
+checked the saved first-call RPC domain and relaxed-control hull throughout
+`0.005 s`: 27/32 repaired saved columns contained the independent intervals,
+versus 23/32 from the original library. A [later algebraic check](archcomp26_20261001/native_quad_algebraic_gate_20261003_001/README.md)
+established 20/20 composed physical-state comparisons on that RPC domain.
+The [initial recenter audit](archcomp26_20261001/native_quad_initial_recenter_gate_20261003_001/README.md)
+found the RPC's first three lower bounds one binary64 ULP inside the C++
+initial box. Thus these checks do not prove inclusion for the whole declared
+first box. Other boxes, control periods, and NN/CROWN remain open; the native
+production octagon gate stays closed. These diagnostics are not new benchmark
+attempts.
 
 The [two-state Single Pendulum four-method saved figure and width table](archcomp26_20261001/sp_two_state_fourway_saved_20261002/README.md)
 read the four existing complete 100-step range files without another solve.

@@ -1,0 +1,48 @@
+quad_paper_full50.cpp:80:    int steps = 50;
+quad_paper_full50.cpp:81:    vector<Interval> X0;
+quad_paper_full50.cpp:82:    Interval init_x1(-0.4, 0.4), init_x2(-0.4, 0.4), init_x3(-0.4, 0.4),
+quad_paper_full50.cpp:83:             init_x4(-0.4, 0.4), init_x5(-0.4, 0.4), init_x6(-0.4, 0.4),
+quad_paper_full50.cpp:84:             init_x7(0), init_x8(0), init_x9(0), init_x10(0), init_x11(0), init_x12(0),
+quad_paper_full50.cpp:85:             init_t(0), init_u1(0), init_u2(0), init_u3(0);
+quad_paper_full50.cpp:86:
+quad_paper_full50.cpp:87:    list<Interval> list_x1;
+quad_paper_full50.cpp:88:    init_x1.split(list_x1, 8);
+quad_paper_full50.cpp:89:    list<Interval> list_x2;
+quad_paper_full50.cpp:90:    init_x2.split(list_x2, 8);
+quad_paper_full50.cpp:91:    list<Interval> list_x3;
+quad_paper_full50.cpp:92:    init_x3.split(list_x3, 8);
+quad_paper_full50.cpp:93:    list<Interval> list_x4;
+quad_paper_full50.cpp:94:    init_x4.split(list_x4, 2);
+quad_paper_full50.cpp:95:    list<Interval> list_x5;
+quad_paper_full50.cpp:96:    init_x5.split(list_x5, 1);
+quad_paper_full50.cpp:97:    list<Interval> list_x6;
+quad_paper_full50.cpp:98:    init_x6.split(list_x6, 1);
+quad_paper_full50.cpp:99:
+quad_paper_full50.cpp:128:                            X0.push_back(init_u1);
+quad_paper_full50.cpp:129:                            X0.push_back(init_u2);
+quad_paper_full50.cpp:130:                            X0.push_back(init_u3);
+quad_paper_full50.cpp:131:                            Flowpipe initial_set_temp(X0);
+quad_paper_full50.cpp:132:                            initial_sets.push_back(initial_set_temp);
+quad_paper_full50.cpp:133:                            initial_boxes.push_back(X0);
+quad_paper_full50.cpp:134:                        }
+quad_paper_full50.cpp:135:                    }
+quad_paper_full50.cpp:136:                }
+quad_paper_full50.cpp:137:            }
+quad_paper_full50.cpp:138:        }
+quad_paper_full50.cpp:139:    }
+quad_paper_full50.cpp:140:
+quad_paper_full50.cpp:141:
+quad_paper_full50.cpp:142:    vector<Symbolic_Remainder> symbolic_remainders;
+quad_paper_full50.cpp:143:    vector<Result_of_Reachability> results;
+quad_paper_full50.cpp:144:    for (int sub_iter = 0; sub_iter < initial_sets.size(); sub_iter++)
+quad_paper_full50.cpp:163:        for (int sub_iter = 0; sub_iter < initial_sets.size(); sub_iter++)
+quad_paper_full50.cpp:164:        {
+quad_paper_full50.cpp:165:            for (int i = 0; i < num_nn_input; i++)
+quad_paper_full50.cpp:166:            {
+quad_paper_full50.cpp:167:                Interval input_range_temp;
+quad_paper_full50.cpp:168:                initial_sets[sub_iter].tmvPre.tms[i].intEval(input_range_temp, initial_sets[sub_iter].domain);
+quad_paper_full50.cpp:169:                input_lb.append(input_range_temp.inf());
+quad_paper_full50.cpp:170:                input_ub.append(input_range_temp.sup());
+quad_paper_full50.cpp:171:            }
+quad_paper_full50.cpp:172:        }
+quad_paper_full50.cpp:173:

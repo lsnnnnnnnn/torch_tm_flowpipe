@@ -1,0 +1,154 @@
+{
+  "schema": "quad-old-author-p3-weighted-round-gate-nohash-v1",
+  "status": "completed_and_direct_equal",
+  "started_utc": "2026-10-02T16:36:25.732804+00:00",
+  "source_runner": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/quad_40.yaml",
+  "comparison_helper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_post_trig_phase40_nohash_v2/phase_probe.py",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/observer_on_002/data",
+  "requested_steps": 40,
+  "requested_boxes": 1024,
+  "observed_steps": 40,
+  "advance_calls": 40,
+  "rounds_per_step": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "round_array_files": [
+    {
+      "name": "STEP_CURRENT_BEFORE.npy",
+      "shape": [
+        40,
+        1024,
+        16,
+        2
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "STEP_CURRENT_AFTER.npy",
+      "shape": [
+        40,
+        1024,
+        16,
+        2
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "ROUND_STEP_INDEX.npy",
+      "shape": [
+        80,
+        2
+      ],
+      "dtype": "int16"
+    },
+    {
+      "name": "ROUND_ACCEPTED_MASK.npy",
+      "shape": [
+        80,
+        1024
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "ROUND_NEW_REMAINDER.npy",
+      "shape": [
+        80,
+        1024,
+        16,
+        2
+      ],
+      "dtype": "float64"
+    }
+  ],
+  "comparison": {
+    "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/observer_on_002/data",
+    "profiled": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_weighted_round_gate_20261003_001/run_001/data",
+    "arrays": {
+      "final_tube_12x2": {
+        "shape": [
+          1024,
+          12,
+          2
+        ],
+        "dtype": "float64",
+        "direct_equal": true
+      },
+      "final_endpoint_12x2": {
+        "shape": [
+          1024,
+          12,
+          2
+        ],
+        "dtype": "float64",
+        "direct_equal": true
+      },
+      "final_status": {
+        "shape": [
+          1024
+        ],
+        "dtype": "int8",
+        "direct_equal": true
+      }
+    },
+    "all_saved_observation_rows_direct_equal": true,
+    "observation_count_reference": 40,
+    "observation_count_profiled": 40,
+    "metrics_direct_equal": {
+      "B": true,
+      "steps": true,
+      "substeps": true,
+      "broken": true,
+      "ctrl_steps": true,
+      "final_hull": true,
+      "final_hull_width_sum_mean": true,
+      "order": true,
+      "coupling": true
+    },
+    "pass": true
+  },
+  "error": null,
+  "outer_wall_s": 58.87466875836253,
+  "timing_limit": "CUDA events plus synchronization and diagnostic copies perturb timing; 40-step phase observation only",
+  "full_horizon_inference": false,
+  "end_to_end_certificate": false
+}

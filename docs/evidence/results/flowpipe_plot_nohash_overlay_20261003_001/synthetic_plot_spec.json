@@ -1,0 +1,67 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v1",
+  "benchmark": "Synthetic overlay fixture",
+  "instance_id": "synthetic-overlay",
+  "contract_status": "synthetic parser and renderer fixture; no solver run",
+  "identity_binding": "informational_legacy_unbound",
+  "warning": "These intervals are synthetic and do not describe reachable states.",
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0,
+    "end": 0.25
+  },
+  "property_quantifier": "conjunction",
+  "coordinate_names": [
+    "x1",
+    "x2"
+  ],
+  "units": {
+    "t": "s"
+  },
+  "initial_set": {
+    "label": "Initial fixture box",
+    "bounds": {
+      "x1": [
+        0,
+        1
+      ],
+      "x2": [
+        0,
+        1
+      ]
+    }
+  },
+  "regions": [
+    {
+      "label": "Safe fixture band",
+      "role": "safe",
+      "bounds": {
+        "x1": [
+          -1,
+          2
+        ],
+        "x2": [
+          -1,
+          2
+        ]
+      },
+      "time": {
+        "kind": "all"
+      }
+    },
+    {
+      "label": "Endpoint fixture target",
+      "role": "target",
+      "bounds": {
+        "x1": [
+          0.4,
+          0.8
+        ]
+      },
+      "time": {
+        "kind": "endpoint",
+        "at": 0.25
+      }
+    }
+  ]
+}

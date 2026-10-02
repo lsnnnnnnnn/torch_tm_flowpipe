@@ -1,6 +1,6 @@
 # Huan QUAD speed and mode audit
 
-Status: **evidence-backed draft; 40-step mode, Huan phase, and isolated P3 observer diagnostics completed**
+Status: **evidence-backed draft; 40-step mode, Huan phase, P3 observer, and early-weighted round diagnostics completed**
 Date: 2026-10-02
 
 ## Plain-language answer
@@ -421,3 +421,28 @@ The one-pair on−off driver difference is **0.230546 s**, with a **0.350075 s**
 The [new isolated 40-step phase profile](evidence/results/huan_quad_stage_a_40_20261001/post_trig_phase_profile_v1/SUMMARY.md) uses the same old-author equations, 1,024 initial boxes, P3/P2/P4, strict boundary, full host K20 SR, and trig reuse as the saved observer pair. It accepted all 40,960 box-steps and made two controller calls. Every final per-box tube/endpoint/status value, all 40 saved observation rows, and selected driver metrics directly equal the previous `observer_on_002` result. The first attempted profile exited before numerical solving because its filename shadowed Python's standard `profile` module; its raw failure is retained. The successful process has a separate identity and original receipt.
 
 The successful 40-step process took 60.134056 s externally. An added per-step CUDA synchronization makes its phase timing **diagnostic, not an uninstrumented speed sample**. Of 52.674081 s of measured advance CUDA stream spans, weighted accepted refinement took 30.503348 s and ordinary validation 17.249883 s, together **90.66%**; compose took 1.639102 s, host SR propagation 0.610925 s, and graph eviction 0.090426 s separately. These are outer phase spans, not GPU kernel sums or a complete decomposition. The result locates a short-prefix investigation target after trig reuse; it does not predict late 1,000-step proportions, establish a valid shortcut around validation, or justify disabling plotting evidence. The archived long experiments were not restarted.
+
+## Old-author P3 early-weighted two-round gate (2026-10-02)
+
+A new isolated [40-step round probe and independent audit](evidence/results/huan_quad_stage_a_40_20261001/weighted_round_gate_v1/README.md)
+retained the original two-round early-weighted algorithm, the old-author QUAD
+equations, all 1,024 boxes, P3/P2/P4, strict boundary, full host K20 SR,
+trig reuse, and the saved observer. The new run accepted all 40,960 box-steps;
+all 40 observation rows and final per-box tube/endpoint/status arrays directly
+equal the earlier `observer_on_002` run. All 40 final per-box remainders
+reconstructed from saved round inputs are bitwise equal to the engine results.
+The process wall was 60.178204 s under a 120-second supervisor limit.
+
+The first weighted round accepted and changed 40,960/40,960 optional
+self-map candidates. The second accepted and changed **40,615/40,960**;
+the 345 non-accepted candidates retained their first-round bounds. The
+second round changed 564,916 saved interval endpoints across the accepted
+box-rounds and reduced their aggregate interval width by a nonzero
+`1.3863845427716655e-05`. It therefore **cannot be omitted as a
+numerically equivalent shortcut on this 40-step prefix**. Its 14.834444 s
+CUDA stream span, and the first round's 15.633157 s, include effects from
+new events, synchronization and diagnostic copies; neither is a measured
+removable cost. Full intermediate arrays remain at the server path in the
+round-gate evidence README; compact masks, change witnesses, original
+receipts and the independent audit are saved locally. This bounded result
+does not predict a 1,000-step speedup or establish end-to-end strictness.
