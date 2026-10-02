@@ -1,0 +1,16 @@
+{
+  "schema": "archcomp26-unicycle-p3-full-run-scope-metadata-erratum-v1",
+  "original_file": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/payload/P3_METHOD.json",
+  "original_scope": "full original initial box, first of 50 control periods; no T=10 property verdict",
+  "corrected_scope": "full original initial box, all 50 control periods to T=10; saved endpoint is contained in target",
+  "evidence": {
+    "START_controller_periods": 50,
+    "RESULT_observed_substeps": 500,
+    "RESULT_accepted_substeps": 500,
+    "RESULT_last_accepted_t_s": 10.0,
+    "saved_range_rows": 500,
+    "independent_audit": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/INDEPENDENT_AUDIT.json"
+  },
+  "cause": "adapter wrote fixed short-prefix scope text for both smoke1 and full modes",
+  "disposition": "original run receipts and run source snapshot preserved; repository adapter corrected for future runs only"
+}

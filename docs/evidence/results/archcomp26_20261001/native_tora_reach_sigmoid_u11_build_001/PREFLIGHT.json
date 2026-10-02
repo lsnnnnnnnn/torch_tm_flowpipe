@@ -1,0 +1,57 @@
+{
+  "controller_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_p3_full500_001/nn_tora_sigmoid.mat",
+  "controller_ops": [
+    "Gemm",
+    "Sigmoid",
+    "Gemm",
+    "Sigmoid",
+    "Gemm",
+    "Sigmoid",
+    "Gemm",
+    "Sigmoid",
+    "Mul",
+    "Add"
+  ],
+  "control_scale_in_graph": 11,
+  "control_offset_in_graph": 0,
+  "rpc_output_scale": 1,
+  "rpc_output_offset": 0,
+  "center_plant_u": 5.078156863296165,
+  "cuda_initialized": false,
+  "initial_box_source": "/srv/local/shengenli/CROWN-Reach/submit/CROWN-Reach/archcomp/TORA/tora_sigmoid.cpp",
+  "ode": [
+    "x2",
+    "-x1 + 0.1 * sin(x3)",
+    "x4",
+    "u"
+  ],
+  "rpc_port": 5111,
+  "step_s": 0.01,
+  "order": 6,
+  "compiled_initial_box": [
+    [
+      -0.77,
+      -0.75
+    ],
+    [
+      -0.45,
+      -0.43
+    ],
+    [
+      0.51,
+      0.54
+    ],
+    [
+      -0.3,
+      -0.28
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ]
+}

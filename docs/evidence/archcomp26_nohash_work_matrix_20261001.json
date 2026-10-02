@@ -10,13 +10,13 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 173,
+  "attempt_count": 187,
   "status_counts": {
-    "completed": 30,
+    "completed": 37,
     "running": 0,
     "early_stopped": 10,
     "failed": 4,
-    "not_attempted": 17,
+    "not_attempted": 10,
     "short_prefix_only": 3
   },
   "methods": [
@@ -2037,17 +2037,32 @@
     {
       "instance_id": "tora-reach-sigmoid",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 177,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_p3_full500_001",
+      "selected_wall_s": 13.741790565662086,
+      "selected_property_verdict": "NOT_EVALUATED",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 176,
+          "status": "completed_short_prefix",
+          "role": "official 2026 four-sigmoid u=11f full-initial-box P3 first-period gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_p3_firstperiod_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_p3_firstperiod_001/SUMMARY.md"
+        },
+        {
+          "index": 177,
+          "status": "completed",
+          "role": "official 2026 four-sigmoid u=11f P3 full 500-step numerical run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_p3_full500_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_p3_full500_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "tora-reach-sigmoid",
@@ -2089,32 +2104,62 @@
     {
       "instance_id": "tora-reach-sigmoid",
       "method": "xiangru",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 175,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_full500_001",
+      "selected_wall_s": 11.335332102142274,
+      "selected_property_verdict": "NOT_EVALUATED",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 174,
+          "status": "completed_short_prefix",
+          "role": "official 2026 four-sigmoid u=11f Xiangru first-period gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_firstperiod_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_firstperiod_001/SUMMARY.md"
+        },
+        {
+          "index": 175,
+          "status": "completed",
+          "role": "official 2026 four-sigmoid u=11f Xiangru full 500-step numerical run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_full500_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_full500_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "tora-reach-sigmoid",
       "method": "flowstar_native",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 187,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_reach_sigmoid_u11_full10_001",
+      "selected_wall_s": 8.991666202433407,
+      "selected_property_verdict": "VERIFIED at T=5 endpoint",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 186,
+          "status": "completed_short_prefix",
+          "role": "native full-initial-box first-period gate with official 2026 four-sigmoid u=11f controller",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_reach_sigmoid_u11_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_tora_reach_sigmoid_u11_smoke1_001/SUMMARY.md"
+        },
+        {
+          "index": 187,
+          "status": "completed",
+          "role": "native full-initial-box 10-period/500-step official 2026 four-sigmoid u=11f run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_reach_sigmoid_u11_full10_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_tora_reach_sigmoid_u11_full10_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "tora-reach-tanh",
@@ -2187,62 +2232,122 @@
     {
       "instance_id": "unicycle-reach",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 184,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001",
+      "selected_wall_s": 17.819782309234142,
+      "selected_property_verdict": "ENDPOINT_SUFFICIENT_FOR_REACH",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 183,
+          "status": "completed_short_prefix",
+          "role": "P3 order3/validation4 full-box one-period gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_smoke1_001/SUMMARY.md"
+        },
+        {
+          "index": 184,
+          "status": "completed",
+          "role": "P3 order3/validation4 full 50-period numerical run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "unicycle-reach",
       "method": "huan",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 179,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/huan_full50_001",
+      "selected_wall_s": 9.594388831406832,
+      "selected_property_verdict": "UNKNOWN",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 178,
+          "status": "completed_short_prefix",
+          "role": "2026 paper RHS, constant w only in speed: huan one-period full-box gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/huan_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/SUMMARY.md"
+        },
+        {
+          "index": 179,
+          "status": "completed",
+          "role": "2026 paper RHS, constant w only in speed: huan full 50-period numerical run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/huan_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "unicycle-reach",
       "method": "xiangru",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 181,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/xiangru_full50_001",
+      "selected_wall_s": 9.89512584824115,
+      "selected_property_verdict": "UNKNOWN",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 180,
+          "status": "completed_short_prefix",
+          "role": "2026 paper RHS, constant w only in speed: xiangru one-period full-box gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/xiangru_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/SUMMARY.md"
+        },
+        {
+          "index": 181,
+          "status": "completed",
+          "role": "2026 paper RHS, constant w only in speed: xiangru full 50-period numerical run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/xiangru_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "unicycle-reach",
       "method": "flowstar_native",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 185,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_unicycle_paper_speed_full50_001",
+      "selected_wall_s": 10.397307659499347,
+      "selected_property_verdict": "VERIFIED at T=10 endpoint",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 182,
+          "status": "completed_short_prefix",
+          "role": "native actual-initial-affine audited full-box one-period gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_unicycle_paper_speed_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_unicycle_paper_speed_smoke1_001/SUMMARY.md"
+        },
+        {
+          "index": 185,
+          "status": "completed",
+          "role": "native actual-initial-affine audited full 50-period numerical run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_unicycle_paper_speed_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_unicycle_paper_speed_full50_001/SUMMARY.md"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,67 @@
+{
+  "schema": "archcomp26-unicycle-native-full50-audit-nohash-v1",
+  "run": "docs/evidence/results/archcomp26_20261001/native_unicycle_paper_speed_full50_001",
+  "full_50_periods_500_substeps": true,
+  "saved_period_grid_complete": true,
+  "rpc_calls": 50,
+  "rpc_shapes_and_ranges_valid": true,
+  "fixed_0p02_step_grid": true,
+  "initial_full_box_covered": true,
+  "terminal_physical_endpoint": [
+    [
+      0.4671955350851057,
+      0.5065349953846583
+    ],
+    [
+      -0.15616953941683476,
+      -0.09758284503434796
+    ],
+    [
+      -0.04883265165704273,
+      -0.00956843390302745
+    ],
+    [
+      -0.27512570159052746,
+      -0.24138433133530823
+    ]
+  ],
+  "target": [
+    [
+      -0.6,
+      0.6
+    ],
+    [
+      -0.2,
+      0.2
+    ],
+    [
+      -0.06,
+      0.06
+    ],
+    [
+      -0.3,
+      0.3
+    ]
+  ],
+  "terminal_subset_of_target": true,
+  "target_lower_upper_margins": [
+    [
+      1.0671955350851057,
+      0.09346500461534168
+    ],
+    [
+      0.043830460583165254,
+      0.29758284503434795
+    ],
+    [
+      0.011167348342957267,
+      0.06956843390302744
+    ],
+    [
+      0.02487429840947253,
+      0.5413843313353082
+    ]
+  ],
+  "author_checker_printed_verified": true,
+  "interpretation": "Saved full numerical terminal enclosure is within target, sufficient for reach within 10 s under chosen terminal rule; no independent end-to-end floating-point NNCS certificate."
+}

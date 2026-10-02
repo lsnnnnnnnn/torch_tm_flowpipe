@@ -1,0 +1,32 @@
+{
+  "status": "cpu_preflight_complete",
+  "method": "huan",
+  "mode": "preflight",
+  "profile": "unicycle-paper-speed-w-constant-v1",
+  "model_info": {
+    "input_shape": [
+      1,
+      1,
+      1,
+      4
+    ],
+    "output_shape": [
+      1,
+      2
+    ],
+    "operators": [
+      "Sub",
+      "Conv",
+      "Relu",
+      "Conv",
+      "Relu",
+      "Flatten"
+    ],
+    "center_raw_outputs": [
+      20.90175364997264,
+      21.8513536810925
+    ],
+    "cuda_initialized": false
+  },
+  "wall_s": 2.1127884620800614
+}

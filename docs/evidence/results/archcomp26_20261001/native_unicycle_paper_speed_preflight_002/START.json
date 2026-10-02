@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/usr/bin/taskset",
+    "-c",
+    "36-39",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_unicycle_paper_speed_build_002/archcomp/unicycle/unicycle_smoke1",
+    "--preflight"
+  ],
+  "contract_label": "unicycle-paper-speed-w-constant-v1",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_unicycle_paper_speed_build_002/archcomp/unicycle",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "unicycle-reach",
+  "method": "flowstar_native",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "UNICYCLE_BOX_LOG": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_unicycle_paper_speed_preflight_002/initial_boxes.json",
+    "UNICYCLE_INITIAL_AFFINE_LOG": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_unicycle_paper_speed_preflight_002/initial_affine.tsv"
+  },
+  "started_utc": "2026-10-02T09:29:00.262308+00:00",
+  "timeout_s": 30.0
+}

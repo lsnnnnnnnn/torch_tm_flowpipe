@@ -1,0 +1,93 @@
+{
+ "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_smoke1_001/payload/config.yaml",
+ "engine": "sparse",
+ "coupling": "same-slope",
+ "crown_transport": "rpc-float32",
+ "crown_input_layout": "native",
+ "segment_cuda_kernel_available": true,
+ "tape_cuda_kernel_available": true,
+ "valid_cuda_kernel_available": true,
+ "alpha_iters": 0,
+ "B": 1,
+ "order": 3,
+ "steps": 1,
+ "substeps": 10,
+ "ctrl_steps": [
+  {
+   "k": 0,
+   "active": 1,
+   "x_hull_width_mean": [
+    0.05000000000000426,
+    0.05000000000000249,
+    0.010000000000000675,
+    0.010000000000000675
+   ],
+   "x_hull_width_max": [
+    0.05000000000000426,
+    0.05000000000000249,
+    0.010000000000000675,
+    0.010000000000000675
+   ],
+   "u_box_width_mean": [
+    0.0007171630859375,
+    0.003681182861328125
+   ],
+   "u_box_width_max": [
+    0.0007171630859375,
+    0.003681182861328125
+   ],
+   "u_rem_width_mean": [
+    0.0007171630859410554,
+    0.0036811828613352465
+   ],
+   "u_rem_width_max": [
+    0.0007171630859410554,
+    0.0036811828613352465
+   ]
+  }
+ ],
+ "broken": 0,
+ "elapsed_s": 1.2722079930827022,
+ "nvtx_phases": false,
+ "nvtx_detail": false,
+ "compose_parent_assembly": null,
+ "peak_allocated_bytes": 89407488,
+ "peak_reserved_bytes": 184549376,
+ "cuda_graph_captures": 12,
+ "cuda_graph_hits": 69,
+ "final_hull": {
+  "x1": [
+   9.289024851932092,
+   9.3412365053042
+  ],
+  "x2": [
+   -4.263747999633867,
+   -4.21051009377504
+  ],
+  "x3": [
+   2.4695763326903335,
+   2.481368010914277
+  ],
+  "x4": [
+   1.6790355057748747,
+   1.6917260309052864
+  ],
+  "w": [
+   -0.00010000000000000251,
+   0.00010000000000000251
+  ],
+  "t": [
+   0.19999999999999893,
+   0.20000000000000104
+  ],
+  "u1": [
+   20.895277528874328,
+   20.908530154526478
+  ],
+  "u2": [
+   21.798115197787762,
+   21.906606520235304
+  ]
+ },
+ "final_hull_width_sum_mean": 0.25187571068498327
+}

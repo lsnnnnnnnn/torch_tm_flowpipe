@@ -1,0 +1,75 @@
+{
+  "schema": "archcomp26-unicycle-p3-full500-independent-saved-range-audit-v1",
+  "source_rows": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/payload/ranges.jsonl",
+  "rows": 500,
+  "expected_rows": 500,
+  "all_accepted_sequential_times": true,
+  "all_intervals_finite_ordered": true,
+  "initial_physical_w_time_covered_by_first_tube": true,
+  "all_w_tubes_and_endpoints_cover_initial_parameter": true,
+  "all_time_endpoints_cover_expected_grid": true,
+  "endpoint_outside_same_step_tube_count": 0,
+  "endpoint_outside_same_step_tube_max": 0.0,
+  "last_time_s": 10.0,
+  "terminal_physical_endpoint": [
+    [
+      0.4739261690041136,
+      0.501609432907934
+    ],
+    [
+      -0.14663053064954754,
+      -0.11264753611216459
+    ],
+    [
+      -0.03616859801479514,
+      -0.016281470079929045
+    ],
+    [
+      -0.2664441173434879,
+      -0.24584274954935312
+    ]
+  ],
+  "terminal_matches_payload_result": true,
+  "target_box": [
+    [
+      -0.6,
+      0.6
+    ],
+    [
+      -0.2,
+      0.2
+    ],
+    [
+      -0.06,
+      0.06
+    ],
+    [
+      -0.3,
+      0.3
+    ]
+  ],
+  "terminal_inside_target": true,
+  "terminal_target_left_right_margins": [
+    [
+      1.0739261690041135,
+      0.09839056709206595
+    ],
+    [
+      0.053369469350452475,
+      0.3126475361121646
+    ],
+    [
+      0.023831401985204857,
+      0.07628147007992904
+    ],
+    [
+      0.033555882656512104,
+      0.5458427495493531
+    ]
+  ],
+  "outer_status": "completed",
+  "outer_exit_code": 0,
+  "payload_status": "completed",
+  "payload_driver_return": 0,
+  "property_scope": "complete T=10 endpoint inclusion suffices for reach within 10 s, without independent NNCS proof"
+}

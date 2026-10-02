@@ -1,0 +1,11 @@
+{
+  "status": "failed",
+  "method": "huan",
+  "mode": "preflight",
+  "profile": "unicycle-paper-speed-w-constant-v1",
+  "error_type": "ValueError",
+  "error": "saved Unicycle source box, dynamics, target or model differs",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/source/archcomp26_unicycle_paper_author_nohash.py\", line 91, in run\n    cfg, model_info = cpu_preflight()\n                      ^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/source/archcomp26_unicycle_paper_author_nohash.py\", line 62, in cpu_preflight\n    cfg = checked_config()\n          ^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/source/archcomp26_unicycle_paper_author_nohash.py\", line 51, in checked_config\n    raise ValueError(\"saved Unicycle source box, dynamics, target or model differs\")\nValueError: saved Unicycle source box, dynamics, target or model differs\n",
+  "observed_substeps": 0,
+  "wall_s": 2.0976967746391892
+}
