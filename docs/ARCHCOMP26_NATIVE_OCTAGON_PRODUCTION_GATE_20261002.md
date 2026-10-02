@@ -245,6 +245,12 @@ For the fifth comparison, the script keeps the shared initial-state symbols in `
 
 The repaired candidate thus has **20/20 numerical inclusions for the composed physical-state view** on the saved first-call RPC/recenter domain and one step under the exact-decimal paper ODE: eight x1/x2 tube/endpoint directions plus twelve terminal axes. It does **not** establish enclosure for the omitted one-ULP strip of the first physical box. Twelve physical-state bounds also lie numerically inside twelve pre-composition axis columns, but this is **not** an independent pre-set inclusion result. A Flowpipe state is `tmvPre ∘ tmv`; `tmvPre.intEval` alone is not the general physical-state observer. The earlier `27/32` audit remains unchanged as the result of its particular plain-box propagation method; the later algebraic argument resolves its three undecided composed physical comparisons and two pre-column numerical comparisons for this RPC-domain gate only. The original frozen-library counterexample remains, and production promotion stays closed pending full initial-box coverage, the other boxes, later controls, controller/CROWN validation, and an independent long-horizon argument.
 
+## Isolated first-box recentering candidate
+
+A separate [copied-library first-step gate](evidence/results/archcomp26_20261001/native_quad_initial_recenter_repair_gate_20261003_002/README.md) retains the two VAR-tail repair sites and changes `Interval::toCenterForm` so its radius encloses **both** sides of the center under upward MPFR rounding. The original library, original long run and earlier isolated results were not changed. On the source-defined first physical QUAD box, the new saved RPC x1–x3 lower bounds equal the original split lower bounds exactly; the new upper bounds are one binary64 ULP wider, and all twelve RPC coordinates enclose the source box. Observer on/off each accepted one `h=0.005` step, saved one finite ordered range record and equal control/terminal data. The 513 relaxed-control numerical samples gave 0/20,520 exceedances. This is a new short diagnostic, not a new 50-period run.
+
+The new RPC was checked independently rather than reusing the old 20/20 result. Its 1,000 directed-Decimal Picard substeps pass strict self-inclusion; plain-box propagation contains 27/32 saved columns. Exact-rational closed forms and a correlated x6 bound resolve the three remaining **composed physical-state** comparisons, giving 20/20 first-box, first-step plant comparisons under the exact-decimal paper ODE. The two additional pre columns are only numerical diagnostics; the narrowest unexpanded saved-bound margin among new composed comparisons is approximately `5.12×10⁻¹⁹`. This verifies neither Flow* decimal parsing nor the CROWN/NN calculation, other boxes, later controls or full-time reach-and-remain. The native octagon **production gate remains closed**.
+
 ## Gate to continue
 
 1. Preserve both original-library counterexamples, both refinement-skip
@@ -253,9 +259,9 @@ The repaired candidate thus has **20/20 numerical inclusions for the composed ph
    symbolic-remainder paths and all 20 composed physical-state comparisons
    in the saved-RPC-domain, first-step independent plant gate. `COMPLETED_SAFE` is
    numerical status, not a complete validity check.
-2. Resolve the source-defined first physical box's one-ULP lower-strip gap,
-   then requalify the paper-equation QUAD contract beyond this saved RPC
-   domain and one step, including 1,023 other boxes and later control calls.
+2. The isolated recentering candidate closes the identified one-ULP gap and
+   passes the first physical box's first-step plant comparison. Qualify the
+   other 1,023 boxes and later control calls before considering production.
    Compare observer on/off on an isolated short subset after any candidate repair. Do not alter
    the frozen full50 source or its original receipt; do not infer from this
    one-box failure that every saved long-run range is wrong.

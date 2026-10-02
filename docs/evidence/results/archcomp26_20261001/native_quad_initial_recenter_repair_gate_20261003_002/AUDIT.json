@@ -1,0 +1,787 @@
+{
+  "schema": "native-quad-initial-recenter-repair-one-box-gate-nohash-v1",
+  "scope": "source-defined first of 1024 QUAD boxes, first h=0.005 step, saved CROWN affine-plus-residual control hull",
+  "source_box_covered_by_new_rpc": true,
+  "source_box_covered_by_old_rpc": false,
+  "source_x1_x3_lower_hex": "-0x1.999999999999ap-2",
+  "old_rpc_x1_x3_lower_hex": "-0x1.9999999999999p-2",
+  "new_rpc_x1_x3_lower_hex": [
+    "-0x1.999999999999ap-2",
+    "-0x1.999999999999ap-2",
+    "-0x1.999999999999ap-2"
+  ],
+  "source_x1_x3_upper_hex": "-0x1.3333333333333p-2",
+  "old_rpc_x1_x3_upper_hex": [
+    "-0x1.3333333333333p-2",
+    "-0x1.3333333333333p-2",
+    "-0x1.3333333333333p-2"
+  ],
+  "new_rpc_x1_x3_upper_hex": [
+    "-0x1.3333333333332p-2",
+    "-0x1.3333333333332p-2",
+    "-0x1.3333333333332p-2"
+  ],
+  "old_omission_exact": "1/18014398509481984",
+  "new_source_lower_slack_exact": [
+    "0",
+    "0",
+    "0"
+  ],
+  "new_source_box_exact": [
+    [
+      "-3602879701896397/9007199254740992",
+      "-5404319552844595/18014398509481984"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "-5404319552844595/18014398509481984"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "-5404319552844595/18014398509481984"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "0"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "3602879701896397/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "3602879701896397/9007199254740992"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ]
+  ],
+  "new_rpc_box_exact": [
+    [
+      "-3602879701896397/9007199254740992",
+      "-2702159776422297/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "-2702159776422297/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "-2702159776422297/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "0"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "3602879701896397/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "3602879701896397/9007199254740992"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ]
+  ],
+  "crown_coefficients_equal_previous_json": false,
+  "crown_coefficients_equal_previous_after_float32_transport": true,
+  "finite_check": {
+    "observer_on_off_equal": true,
+    "complete_saved_range_records_per_arm": 1,
+    "numerical_samples": 513,
+    "sample_checks": 20520,
+    "sample_violations_above_tolerance": 0
+  },
+  "independent_check": {
+    "directed_decimal_picard_substeps": 1000,
+    "strict_picard_inclusion": true,
+    "broad_box_comparisons_inside": 27,
+    "broad_box_comparisons_total": 32,
+    "exact_algebraic_comparisons_redone": 5,
+    "physical_composed_inside": 20,
+    "physical_composed_total": 20,
+    "physical_bounds_inside_pre_numeric_columns": 12,
+    "pre_numeric_columns_total": 12,
+    "pre_symbolic_set_inclusion_proven": false,
+    "bootstrap_strict": {
+      "x4": [
+        "56364730767611268149/140737488355328000000",
+        "1"
+      ],
+      "x5": [
+        "56365082611332156469/140737488355328000000",
+        "1"
+      ],
+      "x6": [
+        "6150671694864399867840981483202861/13539969179683846756709171200000000",
+        "1"
+      ],
+      "x7": [
+        "60001/7999600000",
+        "1/100"
+      ],
+      "x8": [
+        "1/200000",
+        "1/100"
+      ]
+    },
+    "x6_correlated_base_exact": [
+      "-77245893545375824243948640257/173311605499953238485877391360",
+      "60583953000821166739706496313/173311605499953238485877391360"
+    ],
+    "x6_integral_error_limit_exact": "3481/200000000",
+    "comparisons": [
+      {
+        "kind": "tube",
+        "coord_or_form": 0,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-40200000432538025421494864420070046587749026570100929879571/100000000000000000000000000000000000000000000000000000000000",
+          "-74999998946755379720744892645261012327334102156600481561313/250000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7251000889155651/18014398509481984",
+          "-5395016993234471/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "tube",
+        "coord_or_form": 1,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-100500001463570957567543054727931221348000757803365732049537/250000000000000000000000000000000000000000000000000000000000",
+          "-148999996965894461146232857460299754381696303355537564546467/500000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1812690912178821/4503599627370496",
+          "-5359315251655165/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "tube",
+        "coord_or_form": 2,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-402000005089832042242560431556212675634746648457236113496929/500000000000000000000000000000000000000000000000000000000000",
+          "-298999994859405220587722642750821779036364507668738527669093/500000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1812720567233867/2251799813685248",
+          "-2688583061222409/4503599627370496"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "tube",
+        "coord_or_form": 3,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-10400001039359133192248292930070046587749026570100929879571/100000000000000000000000000000000000000000000000000000000000",
+          "25500002516815577846798162079738987672665897843399518438687/250000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7566742550001933/72057594037927936",
+          "7422986621923241/72057594037927936"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "endpoint",
+        "coord_or_form": 0,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-80400000665082020914640972929421363658099550486051827490797/200000000000000000000000000000000000000000000000000000000000",
+          "-299999996786992992583714055688631751700730875582901399155029/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7251000889155651/18014398509481984",
+          "-5395016993234471/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "endpoint",
+        "coord_or_form": 1,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-402000004854322221392053691420019233310259325072505036165553/1000000000000000000000000000000000000000000000000000000000000",
+          "-297999994931748256399097078685299451081580890968344029728037/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1812690912178821/4503599627370496",
+          "-5359315251655165/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "endpoint",
+        "coord_or_form": 2,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-402000004089866162982629278033563025800378538751382086809769/500000000000000000000000000000000000000000000000000000000000",
+          "-298999995859370624491405567186965601391155883275622714441533/500000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1812720567233867/2251799813685248",
+          "-2688583061222409/4503599627370496"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "endpoint",
+        "coord_or_form": 3,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-20800001678732369634821557189421363658099550486051827490797/200000000000000000000000000000000000000000000000000000000000",
+          "102000008067329228808339635711368248299269124417098600844971/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7566742550001933/72057594037927936",
+          "7422986621923241/72057594037927936"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 1,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-80400000665082020914640972929421363658099550486051827490797/200000000000000000000000000000000000000000000000000000000000",
+          "-299999996786992992583714055688631751700730875582901399155029/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7251000889155651/18014398509481984",
+          "-5395016993234471/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 1,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-80400000665082020914640972929421363658099550486051827490797/200000000000000000000000000000000000000000000000000000000000",
+          "-299999996786992992583714055688631751700730875582901399155029/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7251000889155651/18014398509481984",
+          "-5395016993234471/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 2,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-402000004854322221392053691420019233310259325072505036165553/1000000000000000000000000000000000000000000000000000000000000",
+          "-297999994931748256399097078685299451081580890968344029728037/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1812690912178821/4503599627370496",
+          "-5359315251655165/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 2,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-402000004854322221392053691420019233310259325072505036165553/1000000000000000000000000000000000000000000000000000000000000",
+          "-297999994931748256399097078685299451081580890968344029728037/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1812690912178821/4503599627370496",
+          "-5359315251655165/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 3,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-401895373141339070548406266807094176409317370850234044996069/1000000000000000000000000000000000000000000000000000000000000",
+          "-148932124700789879876157711378263915038341390441927299129149/500000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-3623937951238699/9007199254740992",
+          "-5357862221698753/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 3,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-401895373141339070548406266807094176409317370850234044996069/1000000000000000000000000000000000000000000000000000000000000",
+          "-148932124700789879876157711378263915038341390441927299129149/500000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-3623937951238699/9007199254740992",
+          "-5357862221698753/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 4,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-200000463577140396544248713747930083429434753484237873393447/500000000000000000000000000000000000000000000000000000000000",
+          "6668444068577831884735814280559454600907200434354914930757/6250000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-113968930460441/281474976710656",
+          "1412042668181251/288230376151711744"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 4,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-200000463577140396544248713747930083429434753484237873393447/500000000000000000000000000000000000000000000000000000000000",
+          "6668444068577831884735814280559454600907200434354914930757/6250000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-113968930460441/281474976710656",
+          "1412042668181251/288230376151711744"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 5,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-400001593714906292028263355458117988510849874105538690738047/1000000000000000000000000000000000000000000000000000000000000",
+          "400001414407866929657884668549924346023907084595572118348259/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7294033148785269/18014398509481984",
+          "7294031004738495/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 5,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-400001593714906292028263355458117988510849874105538690738047/1000000000000000000000000000000000000000000000000000000000000",
+          "400001414407866929657884668549924346023907084595572118348259/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-7294033148785269/18014398509481984",
+          "7294031004738495/18014398509481984"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 6,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-227122698488487364729403339307345033112989627482095902231241/500000000000000000000000000000000000000000000000000000000000",
+          "358106444940820409537442659543197041653738184114612668826793/1000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-4095909210440399/9007199254740992",
+          "1613881747695937/4503599627370496"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 6,
+        "role": "physical_composed",
+        "method": "exact_algebraic",
+        "bound_exact": [
+          "-6035071096396058666411288043202861/13539969179683846756709171200000000",
+          "4733356991352726048892370547577861/13539969179683846756709171200000000"
+        ],
+        "saved_outward_exact": [
+          "-2009504088437119/4503599627370496",
+          "3150862461825713/9007199254740992"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": true,
+        "algebraic_raw_binary64_margins_exact": [
+          "6456942314943082191591956797139/13539969179683846756709171200000000",
+          "3140938354693224897069452422139/13539969179683846756709171200000000"
+        ],
+        "algebraic_raw_binary64_margins_approx": [
+          0.00047688013386555205,
+          0.00023197529573450363
+        ]
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 7,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-344487214920910403172193577726274846848934862056664097851531/1000000000000000000000000000000000000000000000000000000000000000000",
+          "364073456971181918508433577358202424128977311424424451633131/100000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1406389251105393/590295810358705651712",
+          "1675103218678481/295147905179352825856"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 7,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-344487214920910403172193577726274846848934862056664097851531/1000000000000000000000000000000000000000000000000000000000000000000",
+          "364073456971181918508433577358202424128977311424424451633131/100000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-1406389251105393/590295810358705651712",
+          "1675103218678481/295147905179352825856"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 8,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-158469059640207668516852682579935413314850120643660626965079/100000000000000000000000000000000000000000000000000000000000000000",
+          "238648171872200814912900934275126850012759641147506127239287/100000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-8428719036113419/2361183241434822606848",
+          "5158820649452541/1180591620717411303424"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 8,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-158469059640207668516852682579935413314850120643660626965079/100000000000000000000000000000000000000000000000000000000000000000",
+          "238648171872200814912900934275126850012759641147506127239287/100000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-8428719036113419/2361183241434822606848",
+          "5158820649452541/1180591620717411303424"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 9,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-157802695765968218473068949274091376208415477425719581653019/20000000000000000000000000000000000000000000000000000000000000000000000",
+          "93524307786012521757454595856770371771324451089986055777391/10000000000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-2259281731334343/4722366482869645213696",
+          "35301325586133/73786976294838206464"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 9,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "-157802695765968218473068949274091376208415477425719581653019/20000000000000000000000000000000000000000000000000000000000000000000000",
+          "93524307786012521757454595856770371771324451089986055777391/10000000000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "saved_outward_exact": [
+          "-2259281731334343/4722366482869645213696",
+          "35301325586133/73786976294838206464"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 10,
+        "role": "pre_numeric_column_only",
+        "method": "exact_algebraic",
+        "bound_exact": [
+          "-9202081774019540183975065/66848762121410534844552708096",
+          "12156756491162557806614015/8356095265176316855569088512"
+        ],
+        "saved_outward_exact": [
+          "-5078581623467899/36893488147419103232",
+          "6709251409969157/4611686018427387904"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": true,
+        "algebraic_raw_binary64_margins_exact": [
+          "31947717479/66848762121410534844552708096",
+          "7216753153/8356095265176316855569088512"
+        ],
+        "algebraic_raw_binary64_margins_approx": [
+          4.779103825584181e-19,
+          8.636513735159916e-19
+        ]
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 10,
+        "role": "physical_composed",
+        "method": "exact_algebraic",
+        "bound_exact": [
+          "-9202081774019540183975065/66848762121410534844552708096",
+          "12156756491162557806614015/8356095265176316855569088512"
+        ],
+        "saved_outward_exact": [
+          "-5078581623467905/36893488147419103232",
+          "6709251409969157/4611686018427387904"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": true,
+        "algebraic_raw_binary64_margins_exact": [
+          "42819353447/66848762121410534844552708096",
+          "7216753153/8356095265176316855569088512"
+        ],
+        "algebraic_raw_binary64_margins_approx": [
+          6.405407084312438e-19,
+          8.636513735159916e-19
+        ]
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 11,
+        "role": "pre_numeric_column_only",
+        "method": "exact_algebraic",
+        "bound_exact": [
+          "-2645711050706886132872285/4178047632588158427784544256",
+          "3984341020911995801404165/4178047632588158427784544256"
+        ],
+        "saved_outward_exact": [
+          "-1460154327367681/2305843009213693952",
+          "8795749304276921/9223372036854775808"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": true,
+        "algebraic_raw_binary64_margins_exact": [
+          "1334201251/4178047632588158427784544256",
+          "1686273275/4178047632588158427784544256"
+        ],
+        "algebraic_raw_binary64_margins_approx": [
+          3.193360555761562e-19,
+          4.0360317145436923e-19
+        ]
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 11,
+        "role": "physical_composed",
+        "method": "exact_algebraic",
+        "bound_exact": [
+          "-2645711050706886132872285/4178047632588158427784544256",
+          "3984341020911995801404165/4178047632588158427784544256"
+        ],
+        "saved_outward_exact": [
+          "-2920308654735363/4611686018427387904",
+          "4397874652138461/4611686018427387904"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": true,
+        "algebraic_raw_binary64_margins_exact": [
+          "2240170915/4178047632588158427784544256",
+          "2139258107/4178047632588158427784544256"
+        ],
+        "algebraic_raw_binary64_margins_approx": [
+          5.361764900732571e-19,
+          5.120233887029197e-19
+        ]
+      },
+      {
+        "kind": "terminal_pre",
+        "coord_or_form": 12,
+        "role": "pre_numeric_column_only",
+        "method": "directed_picard",
+        "bound_exact": [
+          "0",
+          "0"
+        ],
+        "saved_outward_exact": [
+          "-1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784",
+          "1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      },
+      {
+        "kind": "terminal_composed",
+        "coord_or_form": 12,
+        "role": "physical_composed",
+        "method": "directed_picard",
+        "bound_exact": [
+          "0",
+          "0"
+        ],
+        "saved_outward_exact": [
+          "-1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784",
+          "1/202402253307310618352495346718917307049556649764142118356901358027430339567995346891960383701437124495187077864316811911389808737385793476867013399940738509921517424276566361364466907742093216341239767678472745068562007483424692698618103355649159556340810056512358769552333414615230502532186327508646006263307707741093494784"
+        ],
+        "inside": true,
+        "inside_saved_binary64_unexpanded": null,
+        "algebraic_raw_binary64_margins_exact": null,
+        "algebraic_raw_binary64_margins_approx": null
+      }
+    ]
+  },
+  "limitation": "One source-defined box and one plant step under saved relaxed control only. Numerical pre columns do not certify the pre symbolic set. This does not validate CROWN or actual network soundness, Flow* parser arithmetic, any of the other 1023 boxes, later controls, T=5, or the reach-and-remain property. Production gate remains closed."
+}

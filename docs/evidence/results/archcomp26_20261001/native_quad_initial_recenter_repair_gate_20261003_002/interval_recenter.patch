@@ -1,0 +1,12 @@
+--- /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/flowstar-toolbox/Interval.cpp	2026-09-07 03:26:37.422654417 +0000
++++ /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_initial_recenter_repair_gate_20261003_002/flowstar-toolbox/Interval.cpp	2026-10-02 17:14:34.494621378 +0000
+@@ -934,6 +934,9 @@
+ 	mpfr_div_d(center.value, tmp1, 2.0, MPFR_RNDN);
+ 
+ 	mpfr_sub(radius.value, up, center.value, MPFR_RNDU);
++	mpfr_sub(tmp1, center.value, lo, MPFR_RNDU);
++	if (mpfr_greater_p(tmp1, radius.value))
++		mpfr_set(radius.value, tmp1, MPFR_RNDU);
+ 
+ 	mpfr_clear(tmp1);
+ }

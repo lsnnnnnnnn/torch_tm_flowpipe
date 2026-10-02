@@ -60,6 +60,14 @@ first box. Other boxes, control periods, and NN/CROWN remain open; the native
 production octagon gate stays closed. These diagnostics are not new benchmark
 attempts.
 
+An additional [isolated recentering repair gate](archcomp26_20261001/native_quad_initial_recenter_repair_gate_20261003_002/README.md)
+retains the two VAR-tail repairs and expands the initial Taylor-model radius
+to cover both sides of its center. Its **new** RPC contains the entire
+source-defined first QUAD box, and a fresh first-step independent plant check
+contains 20/20 composed physical-state comparisons. It still covers only one
+box, one control call and `0.005 s`; the frozen full50 run is unchanged and
+production promotion remains closed.
+
 The [two-state Single Pendulum four-method saved figure and width table](archcomp26_20261001/sp_two_state_fourway_saved_20261002/README.md)
 read the four existing complete 100-step range files without another solve.
 The figure overlays the four tube boundaries on one set of axes per physical
