@@ -10,7 +10,7 @@ The [official `u=11f` TORA reach-sigmoid four-method saved-tube figure](archcomp
 
 The [historical official `u=11f` TORA reach-tanh four-method saved-tube figure](archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/SUMMARY.md) uses copied 500-step raw range records for Huan, Xiangru, historical P3, and Flow* native. It includes a four-state absolute T=5 endpoint CSV and a same-axis `x1/x2` plot with small endpoint-bound differences expanded alongside. All four saved endpoints lie in the target; Huan/Xiangru saved bounds coincide. Historical P3 used `engine_linear_leaf_v2`, rather than the current working P3. The archived GPU results have no property verdict; native's `VERIFIED` is its author endpoint-checker label. These copies and adjacent run receipts are numerically cross-checked but not content-bound, and the figure is neither an independent end-to-end certificate nor a speed ranking. Its MATLAB script was generated but not executed.
 
-The [new current working-P3 official `u=11f` TORA reach-tanh run](archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/SUMMARY.md) has a separate 50-step gate and a 500-step full-initial-box run, with CPU source/model preflight, original supervisor receipts and logs, raw ranges, 500 accepted observations, and an independent saved-interval scan. Its `engine_quad_normalization_center` identity is distinct from the archived `engine_linear_leaf_v2` P3 result. The [mixed-generation four-state endpoint table](archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/terminal_current_p3_historical_author_fourway_T5.csv) labels the new P3 and three historical author/native sources separately. All four saved T=5 target-coordinate endpoint boxes lie in target; the new P3 property checker was not run. The dated 187-attempt DOCX/PDF exports remain snapshots; the current index is 189 attempts with 38 new full cells and eight historical coverage cells.
+The [new current working-P3 official `u=11f` TORA reach-tanh run](archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/SUMMARY.md) has a separate 50-step gate and a 500-step full-initial-box run, with CPU source/model preflight, original supervisor receipts and logs, raw ranges, 500 accepted observations, and an independent saved-interval scan. Its `engine_quad_normalization_center` identity is distinct from the archived `engine_linear_leaf_v2` P3 result. The [mixed-generation four-state endpoint table](archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/terminal_current_p3_historical_author_fourway_T5.csv) labels the new P3 and three historical author/native sources separately. All four saved T=5 target-coordinate endpoint boxes lie in target; the new P3 property checker was not run. The dated 187/189-attempt DOCX/PDF exports remain snapshots; the current index is 192 attempts with 38 new full cells and eight historical coverage cells.
 
 The [paper-equation constant-speed-disturbance Unicycle four-method saved-tube figure](archcomp26_20261001/unicycle_paper_speed_w_constant_v1/plots/fourway_saved_20261002/SUMMARY.md) overlays all 500 stored `x1/x3` whole-step tubes and separately compares T=10 `x3/x4` endpoints. Huan/Xiangru bounds coincide; their stored endpoints do not satisfy the full four-state target inclusion criterion, while P3 and native do. Target markers refer only to T=10, and the adjacent saved-endpoint window audit gives the four-state timing detail. PNG, PDF, geometry JSON, and an unexecuted MATLAB script are included; no solver run was repeated for this plot.
 
@@ -25,18 +25,19 @@ numerical trajectories admitted by the C++ CROWN affine-plus-residual control
 relaxation by up to `1.98259e-6`; the sampled control has not been shown to
 be the neural network output. The copied-library skip widened bounds greatly
 and is not a production fix. These method diagnostics do not add a benchmark
-attempt or change the current 189-attempt, 38-new-full-cell numerical coverage;
+attempt or change the current 192-attempt, 38-new-full-cell numerical coverage;
 they prevent promoting native accepted/`VERIFIED` to independent soundness.
 
 The [stage report directory](archcomp26_20261001/stage_report/README.md) now contains a 189-attempt, 38-new-full-cell editable DOCX and Word-exported 21-page PDF with 13 saved-data figures and the native QUAD short-gate caveat. The older 187-attempt DOCX/PDF remains a separate dated snapshot. The Markdown report and linked raw records are the continuing source of truth.
 
-Two further actual Airplane continuous one-step native runs are preserved as
+Three further actual Airplane continuous one-step native runs are preserved as
 [the unused-overload alignment control](archcomp26_20261001/native_airplane_first_reject_trace_20261002_004/README.md)
-and [the active Real-path Picard trace](archcomp26_20261001/native_airplane_first_reject_trace_20261002_005/README.md).
-Both used the full initial box, one controller RPC, and one requested `0.01 s`
-step; both refused with no accepted range. The active-path trace identifies
-five proposed remainders outside the preset `[-0.01,0.01]` interval. The
-current attempt index is **191**, while the 21-page DOCX/PDF remains the
+and [the active Real-path Picard trace](archcomp26_20261001/native_airplane_first_reject_trace_20261002_005/README.md),
+plus [the widened `[-1,1]` trace](archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/README.md).
+All used the full initial box, one controller RPC, and one requested `0.01 s`
+step; all refused with no accepted range. The two active-path traces identify
+five proposed remainders outside their respective preset intervals, with
+different failed-coordinate sets. The current attempt index is **192**, while the 21-page DOCX/PDF remains the
 unchanged **189-attempt** snapshot; numerical full-horizon coverage remains
 38 new plus eight audited historical same-contract cells. These traces do not
 establish an Airplane full-time or property result.
@@ -49,4 +50,17 @@ passed, and the repaired QUAD intervals were much narrower than the copied
 skip-refinement diagnostic. The original failing library and full50 receipts
 are unchanged. This candidate has no complete independent inclusion proof;
 the native production octagon gate remains closed and the diagnostic is not a
-new benchmark attempt.
+new benchmark attempt. The [independent short-step interval gate](archcomp26_20261001/native_quad_independent_interval_gate_20261002_001/README.md)
+then checked the entire first-box, relaxed-control, `0.005 s` ODE step: 27/32
+repaired saved bounds contained the independent intervals, versus 23/32 from
+the original library. Five repaired comparisons remain inconclusive, so the
+native production gate stays closed.
+
+The [two-state Single Pendulum four-method saved figure and width table](archcomp26_20261001/sp_two_state_fourway_saved_20261002/README.md)
+read the four existing complete 100-step range files without another solve.
+The figure overlays the four tube boundaries on one set of axes per physical
+state, with endpoint differences below; it does not supply the missing
+official three-state MATLAB identity. The [old-author QUAD P3 post-trig 40-step
+profile](huan_quad_stage_a_40_20261001/post_trig_phase_profile_v1/SUMMARY.md)
+is a separate short diagnostic with direct numerical equality to the saved
+observer-on run, not a new 1,000-step result.

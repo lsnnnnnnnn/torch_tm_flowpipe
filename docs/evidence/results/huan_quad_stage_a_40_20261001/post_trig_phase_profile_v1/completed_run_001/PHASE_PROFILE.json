@@ -1,0 +1,2003 @@
+{
+  "schema": "quad-old-author-p3-post-trig-phase-profile-nohash-v1",
+  "status": "completed_and_direct_equal",
+  "started_utc": "2026-10-02T15:15:43.602181+00:00",
+  "source_runner": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/quad_40.yaml",
+  "source_reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/observer_on_002/data",
+  "source_runner_bytes": 27639,
+  "profile_script_bytes": 11454,
+  "requested_steps": 40,
+  "requested_boxes": 1024,
+  "profile": {
+    "completed_profiled_steps": 40,
+    "all_profiled_steps_accepted": true,
+    "advance_call_wall_s": 52.6755122160539,
+    "advance_gpu_stream_span_ms": 52674.08068847656,
+    "outer_phase_totals": {
+      "compose": {
+        "calls": 40,
+        "cpu_call_wall_s": 0.9869642397388816,
+        "gpu_stream_span_ms": 1639.1024713516235
+      },
+      "ordinary_refinement": {
+        "calls": 40,
+        "cpu_call_wall_s": 0.01190303172916174,
+        "gpu_stream_span_ms": 115.45395159721375
+      },
+      "ordinary_validation": {
+        "calls": 40,
+        "cpu_call_wall_s": 17.215294828638434,
+        "gpu_stream_span_ms": 17249.88314819336
+      },
+      "self_map_retry": {
+        "calls": 40,
+        "cpu_call_wall_s": 1.1010830467566848,
+        "gpu_stream_span_ms": 4.093984022736549
+      },
+      "sr_host_propagate": {
+        "calls": 40,
+        "cpu_call_wall_s": 0.5914224619045854,
+        "gpu_stream_span_ms": 610.9245429039001
+      },
+      "structural_picard": {
+        "calls": 40,
+        "cpu_call_wall_s": 0.5065393513068557,
+        "gpu_stream_span_ms": 612.2557444572449
+      },
+      "weighted_accepted": {
+        "calls": 40,
+        "cpu_call_wall_s": 30.50338755827397,
+        "gpu_stream_span_ms": 30503.34783935547
+      }
+    },
+    "graph_prune_steps": 40,
+    "graph_prune_wall_s": 0.09042618051171303,
+    "graph_prune_nonempty_steps": [
+      2,
+      3,
+      4,
+      9,
+      10,
+      20,
+      28,
+      30,
+      33
+    ],
+    "graph_prune_evicted_entries": 9,
+    "suppressed_calls_during_capture": 0,
+    "timing_limit": "CUDA events are stream spans, not kernel sums; outer phases exclude uncovered advance work. One extra sync per advance perturbs timing. No full-run speed inference."
+  },
+  "profile_rows": [
+    {
+      "step": 1,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007405297830700874,
+          "gpu_stream_span_ms": 29.053951263427734
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.08989794738590717,
+          "gpu_stream_span_ms": 77.98886108398438
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.5022622402757406,
+          "gpu_stream_span_ms": 504.98150634765625
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 1.8319583889096975,
+          "gpu_stream_span_ms": 1850.6854248046875
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.01172771118581295,
+          "gpu_stream_span_ms": 0.10307200253009796
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0028955815359950066,
+          "gpu_stream_span_ms": 5.547008037567139
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 1.536707521416247,
+          "gpu_stream_span_ms": 1536.707763671875
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 5.2467036210000515,
+      "advance_gpu_span_ms": 5246.68408203125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 2,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.006932878866791725,
+          "gpu_stream_span_ms": 6.9324798583984375
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0674947053194046,
+          "gpu_stream_span_ms": 73.04806518554688
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00012112036347389221,
+          "gpu_stream_span_ms": 2.8190720081329346
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3794670831412077,
+          "gpu_stream_span_ms": 395.75860595703125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027947613038122654,
+          "gpu_stream_span_ms": 0.09609600156545639
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002499902620911598,
+          "gpu_stream_span_ms": 2.840575933456421
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7481726808473468,
+          "gpu_stream_span_ms": 748.1717529296875
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.2538194004446268,
+      "advance_gpu_span_ms": 1253.78662109375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 3,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.005824458785355091,
+          "gpu_stream_span_ms": 5.824512004852295
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.08435418736189604,
+          "gpu_stream_span_ms": 96.09318542480469
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010874494910240173,
+          "gpu_stream_span_ms": 2.7545599937438965
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3862290419638157,
+          "gpu_stream_span_ms": 394.8257141113281
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027793952263891697,
+          "gpu_stream_span_ms": 0.1029760017991066
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002590930089354515,
+          "gpu_stream_span_ms": 2.8395519256591797
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7422873927280307,
+          "gpu_stream_span_ms": 742.2858276367188
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.26768740080297,
+      "advance_gpu_span_ms": 1267.65673828125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 4,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.005685482174158096,
+          "gpu_stream_span_ms": 5.6842241287231445
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.08735621720552444,
+          "gpu_stream_span_ms": 100.43494415283203
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010488275438547134,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.387694476172328,
+          "gpu_stream_span_ms": 394.829833984375
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027937820181250572,
+          "gpu_stream_span_ms": 0.10492800176143646
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00024335552006959915,
+          "gpu_stream_span_ms": 2.8231680393218994
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7427527718245983,
+          "gpu_stream_span_ms": 742.7514038085938
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.272740451619029,
+      "advance_gpu_span_ms": 1272.6180419921875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 5,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.006379775702953339,
+          "gpu_stream_span_ms": 6.390783786773682
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0012343274429440498,
+          "gpu_stream_span_ms": 13.645824432373047
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00014144554734230042,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.38849588483572006,
+          "gpu_stream_span_ms": 394.8820495605469
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027984287589788437,
+          "gpu_stream_span_ms": 0.09427200257778168
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002175942063331604,
+          "gpu_stream_span_ms": 2.801664113998413
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7417993741109967,
+          "gpu_stream_span_ms": 741.8001708984375
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1845925999805331,
+      "advance_gpu_span_ms": 1184.563232421875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 6,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007908185012638569,
+          "gpu_stream_span_ms": 6.726655960083008
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.000763164833188057,
+          "gpu_stream_span_ms": 13.619199752807617
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00011182576417922974,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3891543336212635,
+          "gpu_stream_span_ms": 394.8697509765625
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02788874600082636,
+          "gpu_stream_span_ms": 0.10374400019645691
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00027691200375556946,
+          "gpu_stream_span_ms": 2.815999984741211
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7423105165362358,
+          "gpu_stream_span_ms": 742.3095703125
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1789406249299645,
+      "advance_gpu_span_ms": 1178.90966796875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 7,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.0077668484300374985,
+          "gpu_stream_span_ms": 6.7000322341918945
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007296260446310043,
+          "gpu_stream_span_ms": 13.56287956237793
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.000102214515209198,
+          "gpu_stream_span_ms": 2.7494399547576904
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.38953310530632734,
+          "gpu_stream_span_ms": 394.82061767578125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027984175831079483,
+          "gpu_stream_span_ms": 0.09299200028181076
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00022351182997226715,
+          "gpu_stream_span_ms": 2.8098559379577637
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7435175916180015,
+          "gpu_stream_span_ms": 743.5158081054688
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1799903698265553,
+      "advance_gpu_span_ms": 1179.958251953125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 8,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00789644569158554,
+          "gpu_stream_span_ms": 6.8730878829956055
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007944619283080101,
+          "gpu_stream_span_ms": 13.538304328918457
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00011107977479696274,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.38921347446739674,
+          "gpu_stream_span_ms": 394.89434814453125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027917765080928802,
+          "gpu_stream_span_ms": 0.10492800176143646
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00024281349033117294,
+          "gpu_stream_span_ms": 2.825216054916382
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7422103667631745,
+          "gpu_stream_span_ms": 742.2105712890625
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1789291528984904,
+      "advance_gpu_span_ms": 1178.8984375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 9,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00789016205817461,
+          "gpu_stream_span_ms": 6.894591808319092
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.1069353437051177,
+          "gpu_stream_span_ms": 123.07968139648438
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010810047388076782,
+          "gpu_stream_span_ms": 2.752511978149414
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39155969582498074,
+          "gpu_stream_span_ms": 394.81036376953125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02800246700644493,
+          "gpu_stream_span_ms": 0.09628800302743912
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021862424910068512,
+          "gpu_stream_span_ms": 2.811903953552246
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7426968272775412,
+          "gpu_stream_span_ms": 742.6954345703125
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.2900126203894615,
+      "advance_gpu_span_ms": 1289.9830322265625,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 10,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.006351752206683159,
+          "gpu_stream_span_ms": 6.648831844329834
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.09397726133465767,
+          "gpu_stream_span_ms": 110.8111343383789
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010482780635356903,
+          "gpu_stream_span_ms": 2.7504639625549316
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39241714496165514,
+          "gpu_stream_span_ms": 394.79705810546875
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.028009084053337574,
+          "gpu_stream_span_ms": 0.09904000163078308
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021775811910629272,
+          "gpu_stream_span_ms": 2.8180480003356934
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7426406629383564,
+          "gpu_stream_span_ms": 742.639892578125
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.284791275858879,
+      "advance_gpu_span_ms": 1284.758544921875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 11,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007731631398200989,
+          "gpu_stream_span_ms": 6.998015880584717
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008034119382500648,
+          "gpu_stream_span_ms": 17.596416473388672
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010434538125991821,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39360180124640465,
+          "gpu_stream_span_ms": 394.82061767578125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027965924702584743,
+          "gpu_stream_span_ms": 0.09942399710416794
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002207346260547638,
+          "gpu_stream_span_ms": 2.80678391456604
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7437437074258924,
+          "gpu_stream_span_ms": 743.7430419921875
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1864904733374715,
+      "advance_gpu_span_ms": 1186.4595947265625,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 12,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008002818562090397,
+          "gpu_stream_span_ms": 7.0799360275268555
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007772874087095261,
+          "gpu_stream_span_ms": 17.577983856201172
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010264571756124496,
+          "gpu_stream_span_ms": 2.756608009338379
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3942005420103669,
+          "gpu_stream_span_ms": 394.7888488769531
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02796282432973385,
+          "gpu_stream_span_ms": 0.09609600156545639
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021961424499750137,
+          "gpu_stream_span_ms": 2.8047358989715576
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7418416570872068,
+          "gpu_stream_span_ms": 741.84228515625
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1831043753772974,
+      "advance_gpu_span_ms": 1183.0743408203125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 13,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007983013056218624,
+          "gpu_stream_span_ms": 7.117824077606201
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007769512012600899,
+          "gpu_stream_span_ms": 17.571840286254883
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010963808745145798,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3943700063973665,
+          "gpu_stream_span_ms": 394.8492736816406
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027865047566592693,
+          "gpu_stream_span_ms": 0.10784000158309937
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00023430585861206055,
+          "gpu_stream_span_ms": 2.8272640705108643
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7420651540160179,
+          "gpu_stream_span_ms": 742.0643920898438
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1834307899698615,
+      "advance_gpu_span_ms": 1183.382568359375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 14,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008014963008463383,
+          "gpu_stream_span_ms": 7.208960056304932
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007795644924044609,
+          "gpu_stream_span_ms": 17.59334373474121
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.0001033879816532135,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3944330979138613,
+          "gpu_stream_span_ms": 394.92608642578125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02797324676066637,
+          "gpu_stream_span_ms": 0.09990400075912476
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021323934197425842,
+          "gpu_stream_span_ms": 2.8047358989715576
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7420053752139211,
+          "gpu_stream_span_ms": 742.0042114257812
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1835746420547366,
+      "advance_gpu_span_ms": 1183.5443115234375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 15,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00813201628625393,
+          "gpu_stream_span_ms": 7.436287879943848
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007872302085161209,
+          "gpu_stream_span_ms": 17.60051155090332
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010763294994831085,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3944044401869178,
+          "gpu_stream_span_ms": 394.91583251953125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027909722179174423,
+          "gpu_stream_span_ms": 0.10489600151777267
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00024384446442127228,
+          "gpu_stream_span_ms": 2.8282880783081055
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7422959730029106,
+          "gpu_stream_span_ms": 742.2950439453125
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1841030158102512,
+      "advance_gpu_span_ms": 1184.0665283203125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 16,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008018319495022297,
+          "gpu_stream_span_ms": 7.369728088378906
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.000774875283241272,
+          "gpu_stream_span_ms": 17.57695960998535
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010745413601398468,
+          "gpu_stream_span_ms": 2.7494399547576904
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3944435818120837,
+          "gpu_stream_span_ms": 394.7950134277344
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027897778898477554,
+          "gpu_stream_span_ms": 0.09935999661684036
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00022976938635110855,
+          "gpu_stream_span_ms": 2.815999984741211
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7443748759105802,
+          "gpu_stream_span_ms": 744.373291015625
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1859114924445748,
+      "advance_gpu_span_ms": 1185.8800048828125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 17,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007947401143610477,
+          "gpu_stream_span_ms": 7.335936069488525
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007902653887867928,
+          "gpu_stream_span_ms": 17.582080841064453
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010327249765396118,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39462888054549694,
+          "gpu_stream_span_ms": 394.8779602050781
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027981603518128395,
+          "gpu_stream_span_ms": 0.0987199991941452
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002123648300766945,
+          "gpu_stream_span_ms": 2.802687883377075
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7437461940571666,
+          "gpu_stream_span_ms": 743.7447509765625
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1853503473103046,
+      "advance_gpu_span_ms": 1185.3209228515625,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 18,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007928363047540188,
+          "gpu_stream_span_ms": 7.368703842163086
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008175503462553024,
+          "gpu_stream_span_ms": 17.59334373474121
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010215304791927338,
+          "gpu_stream_span_ms": 2.743295907974243
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39457837399095297,
+          "gpu_stream_span_ms": 394.7909240722656
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02799940574914217,
+          "gpu_stream_span_ms": 0.09923200309276581
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021233875304460526,
+          "gpu_stream_span_ms": 2.795520067214966
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7428495725616813,
+          "gpu_stream_span_ms": 742.8492431640625
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.184383537620306,
+      "advance_gpu_span_ms": 1184.352294921875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 19,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008052241988480091,
+          "gpu_stream_span_ms": 7.579648017883301
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007598176598548889,
+          "gpu_stream_span_ms": 17.537023544311523
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010733120143413544,
+          "gpu_stream_span_ms": 2.7443199157714844
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39448291528970003,
+          "gpu_stream_span_ms": 394.7161560058594
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027948112227022648,
+          "gpu_stream_span_ms": 0.09689600020647049
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021453667432069778,
+          "gpu_stream_span_ms": 2.8078079223632812
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7428280925378203,
+          "gpu_stream_span_ms": 742.8276977539062
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.184457814320922,
+      "advance_gpu_span_ms": 1184.4290771484375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 20,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.11808790918439627,
+          "gpu_stream_span_ms": 116.74317169189453
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.11651324480772018,
+          "gpu_stream_span_ms": 135.1925811767578
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.0001087971031665802,
+          "gpu_stream_span_ms": 2.751487970352173
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39340841211378574,
+          "gpu_stream_span_ms": 394.8871765136719
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02786324732005596,
+          "gpu_stream_span_ms": 0.10601600259542465
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00023968704044818878,
+          "gpu_stream_span_ms": 2.8272640705108643
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7419788641855121,
+          "gpu_stream_span_ms": 741.9789428710938
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.4111217660829425,
+      "advance_gpu_span_ms": 1411.092529296875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 21,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007198669947683811,
+          "gpu_stream_span_ms": 8.194047927856445
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007607350125908852,
+          "gpu_stream_span_ms": 19.134464263916016
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010566692799329758,
+          "gpu_stream_span_ms": 2.7494399547576904
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3964643571525812,
+          "gpu_stream_span_ms": 394.787841796875
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027977404184639454,
+          "gpu_stream_span_ms": 0.09862399846315384
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021911878138780594,
+          "gpu_stream_span_ms": 2.8047358989715576
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7421877849847078,
+          "gpu_stream_span_ms": 742.1867065429688
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.190976277925074,
+      "advance_gpu_span_ms": 1190.9427490234375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 22,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007974964566528797,
+          "gpu_stream_span_ms": 7.827455997467041
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008167121559381485,
+          "gpu_stream_span_ms": 19.111936569213867
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00011011306196451187,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39632086269557476,
+          "gpu_stream_span_ms": 394.814453125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027973598800599575,
+          "gpu_stream_span_ms": 0.09865599870681763
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00022573955357074738,
+          "gpu_stream_span_ms": 2.8139519691467285
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.741533855907619,
+          "gpu_stream_span_ms": 741.5276489257812
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1852668030187488,
+      "advance_gpu_span_ms": 1185.238037109375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 23,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.007951862178742886,
+          "gpu_stream_span_ms": 7.795711994171143
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007699355483055115,
+          "gpu_stream_span_ms": 19.129344940185547
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010383687913417816,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3966298382729292,
+          "gpu_stream_span_ms": 394.8257141113281
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027996369637548923,
+          "gpu_stream_span_ms": 0.09516800194978714
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021226052194833755,
+          "gpu_stream_span_ms": 2.7934720516204834
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7428339859470725,
+          "gpu_stream_span_ms": 742.832763671875
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1865638494491577,
+      "advance_gpu_span_ms": 1186.5333251953125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 24,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00808761827647686,
+          "gpu_stream_span_ms": 7.993343830108643
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007843952625989914,
+          "gpu_stream_span_ms": 19.105791091918945
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010291766375303268,
+          "gpu_stream_span_ms": 2.7453439235687256
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3968142196536064,
+          "gpu_stream_span_ms": 394.8503112792969
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027836289256811142,
+          "gpu_stream_span_ms": 0.1136000007390976
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00024237390607595444,
+          "gpu_stream_span_ms": 2.8272640705108643
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7418778110295534,
+          "gpu_stream_span_ms": 741.8775024414062
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1858272664248943,
+      "advance_gpu_span_ms": 1185.797119140625,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 25,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008358430117368698,
+          "gpu_stream_span_ms": 8.318976402282715
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008024768903851509,
+          "gpu_stream_span_ms": 19.126272201538086
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010519195348024368,
+          "gpu_stream_span_ms": 2.746367931365967
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39675409998744726,
+          "gpu_stream_span_ms": 394.79296875
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027989262714982033,
+          "gpu_stream_span_ms": 0.09734400361776352
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021346285939216614,
+          "gpu_stream_span_ms": 2.802687883377075
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7422939278185368,
+          "gpu_stream_span_ms": 742.2916259765625
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.186506275087595,
+      "advance_gpu_span_ms": 1186.47705078125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 26,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008006883785128593,
+          "gpu_stream_span_ms": 8.062975883483887
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007896367460489273,
+          "gpu_stream_span_ms": 19.111936569213867
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010554399341344833,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39685572031885386,
+          "gpu_stream_span_ms": 394.79193115234375
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02759433351457119,
+          "gpu_stream_span_ms": 0.10047999769449234
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00022324547171592712,
+          "gpu_stream_span_ms": 2.8139519691467285
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7416714476421475,
+          "gpu_stream_span_ms": 741.6707763671875
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1856248918920755,
+      "advance_gpu_span_ms": 1185.596435546875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 27,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00797932967543602,
+          "gpu_stream_span_ms": 8.1080322265625
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0007700640708208084,
+          "gpu_stream_span_ms": 19.124223709106445
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010409392416477203,
+          "gpu_stream_span_ms": 2.7443199157714844
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3971124738454819,
+          "gpu_stream_span_ms": 394.8564453125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02785782888531685,
+          "gpu_stream_span_ms": 0.12067200243473053
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002586478367447853,
+          "gpu_stream_span_ms": 2.8375039100646973
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7423477247357368,
+          "gpu_stream_span_ms": 742.347412109375
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1864962223917246,
+      "advance_gpu_span_ms": 1186.4647216796875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 28,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.006830975413322449,
+          "gpu_stream_span_ms": 8.443903923034668
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.1099088890478015,
+          "gpu_stream_span_ms": 127.4071044921875
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00012400001287460327,
+          "gpu_stream_span_ms": 2.751487970352173
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39466421213001013,
+          "gpu_stream_span_ms": 394.8400573730469
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027848982252180576,
+          "gpu_stream_span_ms": 0.1080000028014183
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00024135317653417587,
+          "gpu_stream_span_ms": 2.8190720081329346
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.742654325440526,
+          "gpu_stream_span_ms": 742.6536865234375
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.301438333466649,
+      "advance_gpu_span_ms": 1301.40771484375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 29,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008867518045008183,
+          "gpu_stream_span_ms": 9.169919967651367
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008124643936753273,
+          "gpu_stream_span_ms": 19.569664001464844
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010996218770742416,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3971941666677594,
+          "gpu_stream_span_ms": 394.80218505859375
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027923794463276863,
+          "gpu_stream_span_ms": 0.10735999792814255
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00023227650672197342,
+          "gpu_stream_span_ms": 2.8190720081329346
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7427362445741892,
+          "gpu_stream_span_ms": 742.7365112304688
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1890663877129555,
+      "advance_gpu_span_ms": 1189.0299072265625,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 30,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.006302485242486,
+          "gpu_stream_span_ms": 8.0250883102417
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.10196823999285698,
+          "gpu_stream_span_ms": 120.29235076904297
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00012412387877702713,
+          "gpu_stream_span_ms": 2.7555840015411377
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3950486071407795,
+          "gpu_stream_span_ms": 394.89739990234375
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.028015241026878357,
+          "gpu_stream_span_ms": 0.10691200196743011
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00023110117763280869,
+          "gpu_stream_span_ms": 2.8149759769439697
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.743269981816411,
+          "gpu_stream_span_ms": 743.2662963867188
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.2950450982898474,
+      "advance_gpu_span_ms": 1295.0128173828125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 31,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008796787820756435,
+          "gpu_stream_span_ms": 9.191424369812012
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008129114285111427,
+          "gpu_stream_span_ms": 20.502527236938477
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010569952428340912,
+          "gpu_stream_span_ms": 2.751487970352173
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39844879135489464,
+          "gpu_stream_span_ms": 394.814453125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027924804016947746,
+          "gpu_stream_span_ms": 0.09651199728250504
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002209087833762169,
+          "gpu_stream_span_ms": 2.8129279613494873
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7427480965852737,
+          "gpu_stream_span_ms": 742.746337890625
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.189978095702827,
+      "advance_gpu_span_ms": 1189.9483642578125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 32,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008177541196346283,
+          "gpu_stream_span_ms": 8.571904182434082
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008543850854039192,
+          "gpu_stream_span_ms": 20.48204803466797
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010311603546142578,
+          "gpu_stream_span_ms": 2.751487970352173
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3985977442935109,
+          "gpu_stream_span_ms": 394.7991027832031
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.028021602891385555,
+          "gpu_stream_span_ms": 0.10502400249242783
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021871738135814667,
+          "gpu_stream_span_ms": 2.8241920471191406
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7432283954694867,
+          "gpu_stream_span_ms": 743.228271484375
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1891998313367367,
+      "advance_gpu_span_ms": 1189.171142578125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 33,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.006425491534173489,
+          "gpu_stream_span_ms": 8.415231704711914
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.10298556834459305,
+          "gpu_stream_span_ms": 121.39929962158203
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00011039897799491882,
+          "gpu_stream_span_ms": 2.7504639625549316
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3952096179127693,
+          "gpu_stream_span_ms": 394.8431396484375
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.02801407314836979,
+          "gpu_stream_span_ms": 0.11913599818944931
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002221856266260147,
+          "gpu_stream_span_ms": 2.8088319301605225
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7419545724987984,
+          "gpu_stream_span_ms": 741.953125
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.2950930781662464,
+      "advance_gpu_span_ms": 1295.056884765625,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 34,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00882647279649973,
+          "gpu_stream_span_ms": 9.349120140075684
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008367067202925682,
+          "gpu_stream_span_ms": 20.901887893676758
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00011459086090326309,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39895244035869837,
+          "gpu_stream_span_ms": 394.84210205078125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027883023023605347,
+          "gpu_stream_span_ms": 0.1103999987244606
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00025784876197576523,
+          "gpu_stream_span_ms": 2.8477439880371094
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.742609741166234,
+          "gpu_stream_span_ms": 742.6090698242188
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1905886325985193,
+      "advance_gpu_span_ms": 1190.5577392578125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 35,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008320223540067673,
+          "gpu_stream_span_ms": 8.840191841125488
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008779000490903854,
+          "gpu_stream_span_ms": 20.90496063232422
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010599475353956223,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3991082925349474,
+          "gpu_stream_span_ms": 394.7909240722656
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027990514412522316,
+          "gpu_stream_span_ms": 0.09673599898815155
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002569276839494705,
+          "gpu_stream_span_ms": 2.850816011428833
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7423548754304647,
+          "gpu_stream_span_ms": 742.3538208007812
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1891078231856227,
+      "advance_gpu_span_ms": 1189.075927734375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 36,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.008416573517024517,
+          "gpu_stream_span_ms": 9.0316801071167
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008650822564959526,
+          "gpu_stream_span_ms": 20.88652801513672
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010919664055109024,
+          "gpu_stream_span_ms": 2.7443199157714844
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39903660025447607,
+          "gpu_stream_span_ms": 394.8441467285156
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.0279095945879817,
+          "gpu_stream_span_ms": 0.10300800204277039
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00023605208843946457,
+          "gpu_stream_span_ms": 2.8293120861053467
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7431809986010194,
+          "gpu_stream_span_ms": 743.1802368164062
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1903370274230838,
+      "advance_gpu_span_ms": 1190.213623046875,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 37,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00838262028992176,
+          "gpu_stream_span_ms": 9.011199951171875
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0009488174691796303,
+          "gpu_stream_span_ms": 20.91417694091797
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00013622082769870758,
+          "gpu_stream_span_ms": 2.751487970352173
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39904722198843956,
+          "gpu_stream_span_ms": 394.7581481933594
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027992558665573597,
+          "gpu_stream_span_ms": 0.10249599814414978
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.0002221968024969101,
+          "gpu_stream_span_ms": 2.8190720081329346
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7429311033338308,
+          "gpu_stream_span_ms": 742.9295654296875
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1898117000237107,
+      "advance_gpu_span_ms": 1189.780517578125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 38,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.00832831859588623,
+          "gpu_stream_span_ms": 9.036800384521484
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.000832793302834034,
+          "gpu_stream_span_ms": 20.875263214111328
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00011184997856616974,
+          "gpu_stream_span_ms": 2.747391939163208
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3993274923413992,
+          "gpu_stream_span_ms": 394.77862548828125
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027798248454928398,
+          "gpu_stream_span_ms": 0.10473600029945374
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00024371221661567688,
+          "gpu_stream_span_ms": 2.8334081172943115
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7424257528036833,
+          "gpu_stream_span_ms": 742.4254760742188
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1893494669348001,
+      "advance_gpu_span_ms": 1189.3197021484375,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 39,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.009029476903378963,
+          "gpu_stream_span_ms": 9.789440155029297
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0017641764134168625,
+          "gpu_stream_span_ms": 20.892671585083008
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010391231626272202,
+          "gpu_stream_span_ms": 2.746367931365967
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.39836999401450157,
+          "gpu_stream_span_ms": 394.75201416015625
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.028006380423903465,
+          "gpu_stream_span_ms": 0.1043199971318245
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00022570230066776276,
+          "gpu_stream_span_ms": 2.8180480003356934
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7429118882864714,
+          "gpu_stream_span_ms": 742.9110107421875
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.1905114650726318,
+      "advance_gpu_span_ms": 1190.48095703125,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    },
+    {
+      "step": 40,
+      "phases": [
+        {
+          "phase": "sr_host_propagate",
+          "cpu_call_wall_s": 0.17922025453299284,
+          "gpu_stream_span_ms": 177.78073120117188
+        },
+        {
+          "phase": "compose",
+          "cpu_call_wall_s": 0.0008849082514643669,
+          "gpu_stream_span_ms": 20.985855102539062
+        },
+        {
+          "phase": "structural_picard",
+          "cpu_call_wall_s": 0.00010978057980537415,
+          "gpu_stream_span_ms": 2.748415946960449
+        },
+        {
+          "phase": "ordinary_validation",
+          "cpu_call_wall_s": 0.3970633950084448,
+          "gpu_stream_span_ms": 394.8595275878906
+        },
+        {
+          "phase": "self_map_retry",
+          "cpu_call_wall_s": 0.027968606911599636,
+          "gpu_stream_span_ms": 0.09808000177145004
+        },
+        {
+          "phase": "ordinary_refinement",
+          "cpu_call_wall_s": 0.00021353084594011307,
+          "gpu_stream_span_ms": 2.8088319301605225
+        },
+        {
+          "phase": "weighted_accepted",
+          "cpu_call_wall_s": 0.7428098721429706,
+          "gpu_stream_span_ms": 742.8088989257812
+        }
+      ],
+      "nested_call_counts": {
+        "weighted_failed": 2
+      },
+      "advance_call_wall_s": 1.3585879178717732,
+      "advance_gpu_span_ms": 1358.55712890625,
+      "accepted_lanes": 1024,
+      "all_lanes_accepted": true
+    }
+  ],
+  "comparison": {
+    "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/observer_on_002/data",
+    "profiled": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_post_trig_phase40_nohash_v2/run_001/data",
+    "arrays": {
+      "final_tube_12x2": {
+        "shape": [
+          1024,
+          12,
+          2
+        ],
+        "dtype": "float64",
+        "direct_equal": true
+      },
+      "final_endpoint_12x2": {
+        "shape": [
+          1024,
+          12,
+          2
+        ],
+        "dtype": "float64",
+        "direct_equal": true
+      },
+      "final_status": {
+        "shape": [
+          1024
+        ],
+        "dtype": "int8",
+        "direct_equal": true
+      }
+    },
+    "all_saved_observation_rows_direct_equal": true,
+    "observation_count_reference": 40,
+    "observation_count_profiled": 40,
+    "metrics_direct_equal": {
+      "B": true,
+      "steps": true,
+      "substeps": true,
+      "broken": true,
+      "ctrl_steps": true,
+      "final_hull": true,
+      "final_hull_width_sum_mean": true,
+      "order": true,
+      "coupling": true
+    },
+    "pass": true
+  },
+  "error": null,
+  "outer_wall_s": 58.80397620983422,
+  "full_horizon_inference": false,
+  "end_to_end_certificate": false
+}

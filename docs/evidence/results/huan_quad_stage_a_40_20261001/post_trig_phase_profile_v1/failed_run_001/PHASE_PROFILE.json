@@ -1,0 +1,35 @@
+{
+  "schema": "quad-old-author-p3-post-trig-phase-profile-nohash-v1",
+  "status": "failed",
+  "started_utc": "2026-10-02T15:11:34.722205+00:00",
+  "source_runner": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/quad_40.yaml",
+  "source_reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/observer_on_002/data",
+  "source_runner_bytes": 27639,
+  "profile_script_bytes": 11454,
+  "requested_steps": 40,
+  "requested_boxes": 1024,
+  "profile": {
+    "completed_profiled_steps": 0,
+    "all_profiled_steps_accepted": true,
+    "advance_call_wall_s": 0,
+    "advance_gpu_stream_span_ms": 0,
+    "outer_phase_totals": {},
+    "graph_prune_steps": 0,
+    "graph_prune_wall_s": 0,
+    "graph_prune_nonempty_steps": [],
+    "graph_prune_evicted_entries": 0,
+    "suppressed_calls_during_capture": 0,
+    "timing_limit": "CUDA events are stream spans, not kernel sums; outer phases exclude uncovered advance work. One extra sync per advance perturbs timing. No full-run speed inference."
+  },
+  "profile_rows": [],
+  "comparison": null,
+  "error": {
+    "type": "AttributeError",
+    "message": "module 'profile' has no attribute 'run'",
+    "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_post_trig_phase40_nohash_v1/profile.py\", line 206, in main\n    code = base.execute(argparse.Namespace(mode=\"observer_on\", source_config=args.source_config,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py\", line 420, in execute\n    driver_return = driver.main()\n                    ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1013, in main\n    lirpa_model = build_crown(\n                  ^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 277, in build_crown\n    model_ori = build_raw_net(config, experimental=input_layout == \"flat\")\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 252, in build_raw_net\n    import onnx2pytorch\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/__init__.py\", line 1, in <module>\n    from .convert import ConvertModel\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/__init__.py\", line 1, in <module>\n    from .model import ConvertModel\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/model.py\", line 12, in <module>\n    from onnx2pytorch.constants import (\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/constants.py\", line 4, in <module>\n    from onnx2pytorch.operations import (\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/operations/__init__.py\", line 18, in <module>\n    from .nonmaxsuppression import NonMaxSuppression\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/operations/nonmaxsuppression.py\", line 2, in <module>\n    import torchvision\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torchvision/__init__.py\", line 10, in <module>\n    from torchvision import _meta_registrations, datasets, io, models, ops, transforms, utils  # usort:skip\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torchvision/models/__init__.py\", line 2, in <module>\n    from .convnext import *\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torchvision/models/convnext.py\", line 8, in <module>\n    from ..ops.misc import Conv2dNormActivation, Permute\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torchvision/ops/__init__.py\", line 23, in <module>\n    from .poolers import MultiScaleRoIAlign\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torchvision/ops/poolers.py\", line 10, in <module>\n    from .roi_align import roi_align\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torchvision/ops/roi_align.py\", line 7, in <module>\n    from torch._dynamo.utils import is_compile_supported\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torch/_dynamo/__init__.py\", line 3, in <module>\n    from . import convert_frame, eval_frame, resume_execution\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py\", line 6, in <module>\n    import cProfile\n  File \"/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/cProfile.py\", line 23, in <module>\n    run.__doc__ = _pyprofile.run.__doc__\n                  ^^^^^^^^^^^^^^\nAttributeError: module 'profile' has no attribute 'run'\n"
+  },
+  "outer_wall_s": 2.110679999925196,
+  "full_horizon_inference": false,
+  "end_to_end_certificate": false
+}

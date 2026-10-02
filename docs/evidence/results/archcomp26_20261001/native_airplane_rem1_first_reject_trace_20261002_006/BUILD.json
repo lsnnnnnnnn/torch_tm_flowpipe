@@ -1,0 +1,77 @@
+{
+  "created_utc": "2026-10-02T15:05:22.208100+00:00",
+  "source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/flowstar/flowstar-toolbox/Continuous.cpp",
+  "airplane_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_build_002/archcomp/airplane/airplane_fullbox_order3_remainder1_smoke1.cpp",
+  "changes": [
+    "copy archive and instrument Expression<Real> SR first Picard only",
+    "one original full initial box, one h=0.01 step"
+  ],
+  "commands": [
+    [
+      "taskset",
+      "-c",
+      "18",
+      "/usr/bin/g++-15",
+      "-O3",
+      "-std=c++11",
+      "-fpermissive",
+      "-Wno-template-body",
+      "-fopenmp",
+      "-I",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/flowstar/flowstar-toolbox",
+      "-I",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/author_nncs_reproduction_v1/native_build/deps/extracted/usr/include",
+      "-I",
+      "/usr/include/jsoncpp",
+      "-c",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/build/Continuous.cpp",
+      "-o",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/build/Continuous.o"
+    ],
+    [
+      "ar",
+      "rcs",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/build/libflowstar.a",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/build/Continuous.o"
+    ],
+    [
+      "taskset",
+      "-c",
+      "18",
+      "/usr/bin/g++-15",
+      "-O3",
+      "-std=c++11",
+      "-fpermissive",
+      "-Wno-template-body",
+      "-fopenmp",
+      "-I",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/author_nncs_reproduction_v1/native_build/deps/extracted/usr/include",
+      "-I",
+      "/usr/include/jsoncpp",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/build/archcomp/airplane/airplane_first_reject_trace.cpp",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/build/libflowstar.a",
+      "-lmpfr",
+      "-lgmp",
+      "-lgsl",
+      "-lgslcblas",
+      "-lm",
+      "-lglpk",
+      "-lcolamd",
+      "-lamd",
+      "-lz",
+      "-lltdl",
+      "-ljsoncpp",
+      "-lcurl",
+      "-ljsonrpccpp-common",
+      "-ljsonrpccpp-client",
+      "-l:libboost_thread.so.1.90.0",
+      "-o",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_rem1_first_reject_trace_20261002_006/build/archcomp/airplane/airplane_first_reject_trace"
+    ]
+  ],
+  "returncodes": [
+    0,
+    0,
+    0
+  ]
+}

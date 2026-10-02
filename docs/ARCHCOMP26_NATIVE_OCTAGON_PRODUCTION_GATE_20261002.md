@@ -229,18 +229,25 @@ The previously saved historical VAR-tail patch at `/Users/shengenli/Documents/Ch
 
 With the rebuilt copy, both three-step harmonic variants accepted all three steps, observer on/off saved equal numerical outputs, and each original finite analytic regression had **0/1,512** violations. On the paper-equation QUAD first box, one original CROWN call per arm and one `h=0.005` symbolic-remainder step, observer off/on again had equal status, RPC, twelve terminal axes and saved range records. The same 513 relaxed-control numerical samples gave **0/20,520** direction/axis exceedances, including the previously excluded `x7/x8` witness. The repaired `x7` pre-composition terminal interval was `[-2.382516064701138e-6,5.675470465089593e-6]`, versus the original `[1.6384537157764776e-6,1.6545006846119772e-6]` and skip-refinement `[-5.575585333117811e-4,5.608514877121697e-4]`. The [saved comparison](evidence/results/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/quad/WIDTH_COMPARISON.json) shows all 32 compared intervals inside the skip-refinement intervals and 30 strictly narrower; repaired `x7/x8` terminal widths are about 139 times narrower than the skip variant.
 
-This repairs the observed finite-sample omission and retains narrowing in the isolated first step. It does **not** independently prove enclosure for every initial state, every control admitted by the affine relaxation, or every time inside the step; it also does not validate the controller bounder or a 50-period closed loop. The original-library failure remains the production gate evidence, and native octagon promotion stays closed. No new QUAD benchmark cell or long-task timing is claimed from this method diagnostic.
+This repairs the observed finite-sample omission and retains narrowing in the isolated first step. These finite checks alone do **not** prove enclosure for every initial state, every control admitted by the affine relaxation, or every time inside the step; they also do not validate the controller bounder or a 50-period closed loop. The original-library failure remains the production gate evidence, and native octagon promotion stays closed. No new QUAD benchmark cell or long-task timing is claimed from this method diagnostic.
+
+## Independent whole-set short-step interval check
+
+A separate [read-only interval gate](evidence/results/archcomp26_20261001/native_quad_independent_interval_gate_20261002_001/README.md) now covers the first initial box, an interval hull of **all** controls admitted by its saved float32 CROWN affine-plus-residual injection, and the entire first `0.005 s` step. Its 1,000 outward-rounded Decimal substeps each pass a strict Picard self-inclusion check; sine/cosine use Taylor enclosures with explicit remainder bounds. This is a mathematical plant ODE check over the recorded relaxed control hull, rather than a finite trajectory sample, but it does not independently validate the neural network or CROWN calculation. It does not start Flow* or modify the old run.
+
+The checker compares four `x1/x2` direction forms for the whole-step tube and propagated endpoint, plus 12 terminal axes in both pre and composed representations. Of 32 comparisons, the original frozen archive contains **23** independent intervals and the isolated VAR-tail repair contains **27**. For the repair, all eight `x1/x2` direction comparisons and both representations of `x7/x8` terminal axes contain the independent whole-set bounds. Five remaining repair comparisons are **inconclusive**: `x6` composed loses initial-state/control correlation in the independent box, while `x10/x11` pre and composed differ at approximately `2–3×10⁻¹⁵`. Noncontainment of a broad independent interval is not a reachable-state counterexample. The raw [original](evidence/results/archcomp26_20261001/native_quad_independent_interval_gate_20261002_001/original_AUDIT.json) and [repaired](evidence/results/archcomp26_20261001/native_quad_independent_interval_gate_20261002_001/repaired_AUDIT.json) comparison records retain each result. The 1,023 other initial boxes, later control periods, CROWN's own correctness, and independent NNCS proof remain outside this gate; native octagon production stays closed.
 
 ## Gate to continue
 
 1. Preserve both original-library counterexamples, both refinement-skip
    mechanism checks, and the separate two-site VAR-tail repair diagnostic.
    The short repaired candidate passes finite samples in the ordinary and
-   symbolic-remainder paths, but `COMPLETED_SAFE` is numerical status, not a
-   complete validity check.
-2. Requalify the actual paper-equation QUAD contract with a mathematically
-   justified enclosure test beyond the finite samples above. Compare observer
-   on/off on an isolated short subset after any candidate repair. Do not alter
+   symbolic-remainder paths and 27/32 independent whole-set interval
+   comparisons. `COMPLETED_SAFE` is numerical status, not a complete validity
+   check.
+2. Resolve the five remaining short-step interval comparisons and requalify
+   the actual paper-equation QUAD contract beyond this one box and one step.
+   Compare observer on/off on an isolated short subset after any candidate repair. Do not alter
    the frozen full50 source or its original receipt; do not infer from this
    one-box failure that every saved long-run range is wrong.
 3. Only then add a streaming support observer with per-lane accepted step
