@@ -1,0 +1,36 @@
+{
+  "schema": "archcomp26-airplane-p3-xyz-rem0p1-saved-trace-audit-v1",
+  "profile": "xyz Picard remainder guesses [-0.1,0.1], other 16 [-0.01,0.01]",
+  "other_generated_config_fields_equal_previous_solution_order_smoke": true,
+  "trace_event_count": 43,
+  "recorded_trace_numbers_all_finite": true,
+  "initial_self_map_ok": true,
+  "initial_self_map_bad_nonfinite": false,
+  "initial_self_map_failed_components": [],
+  "initial_self_map_xyz_proposal": [
+    [
+      -0.05077170298099375,
+      0.05244133050503847
+    ],
+    [
+      -0.049382686976157525,
+      0.0503423319237774
+    ],
+    [
+      -0.0227573486719841,
+      0.02341137885883231
+    ]
+  ],
+  "advance_return_accepted": true,
+  "advance_return_status_code": 0,
+  "post_advance_exception_type": "FloatingPointError",
+  "post_advance_exception": "invalid accepted interval at 1",
+  "post_advance_failed_check_source": "run.py:117-123: finite bounds, ordered tube/endpoint, endpoint included in tube; exact failed predicate and bounds were not recorded",
+  "outer_status": "failed",
+  "outer_exit_code": 1,
+  "outer_wall_s": 11.70055471174419,
+  "outer_timed_out": false,
+  "saved_ranges_bytes": 0,
+  "observations_bytes": 0,
+  "property_status": "unassessed: no accepted interval passed the independent save check"
+}

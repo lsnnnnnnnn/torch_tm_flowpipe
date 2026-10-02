@@ -10,14 +10,14 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 105,
+  "attempt_count": 112,
   "status_counts": {
-    "completed": 26,
+    "completed": 27,
     "running": 0,
     "early_stopped": 6,
     "failed": 4,
-    "not_attempted": 24,
-    "short_prefix_only": 4
+    "not_attempted": 21,
+    "short_prefix_only": 6
   },
   "methods": [
     "pytorch_gpu",
@@ -318,11 +318,11 @@
       "instance_id": "airplane-continuous",
       "method": "pytorch_gpu",
       "work_status": "failed",
-      "attempt_count": 2,
-      "selected_attempt_number": 93,
-      "selected_attempt_status": "incomplete_rejected_first_substep",
-      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_smoke1_001",
-      "selected_wall_s": 12.5000836038962,
+      "attempt_count": 4,
+      "selected_attempt_number": 111,
+      "selected_attempt_status": "failed_observer_invalid_interval",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_xyz_rem0p1_trace_smoke1_001",
+      "selected_wall_s": 11.70055471174419,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
@@ -341,6 +341,20 @@
           "role": "official full initial box, one-period working/validation-P3 solution_order smoke",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_smoke1_001",
           "local_summary": "docs/evidence/results/archcomp26_20261001/AIRPLANE_P3_FULLBOX_SMOKES_20261002.md"
+        },
+        {
+          "index": 109,
+          "status": "incomplete_failed_contraction",
+          "role": "isolated full-initial-box one-period first-rejection diagnostic with P3 refinement callback",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_first_reject_trace_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/airplane_p3_first_reject_trace_smoke1_001/SUMMARY.md"
+        },
+        {
+          "index": 111,
+          "status": "failed_observer_invalid_interval",
+          "role": "full-initial-box first-period numerical diagnostic with only x/y/z initial remainder guesses widened to [-0.1,0.1]",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_xyz_rem0p1_trace_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/airplane_p3_xyz_rem0p1_trace_smoke1_001/SUMMARY.md"
         }
       ]
     },
@@ -617,17 +631,25 @@
     {
       "instance_id": "balancing-reach",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
+      "work_status": "short_prefix_only",
+      "attempt_count": 1,
+      "selected_attempt_number": 106,
+      "selected_attempt_status": "completed_short_prefix",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_p3_smoke1_001",
+      "selected_wall_s": 5.230873153544962,
+      "selected_property_verdict": "NOT_APPLICABLE_SHORT_PREFIX",
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
+      "attempts": [
+        {
+          "index": 106,
+          "status": "completed_short_prefix",
+          "role": "fixed-repository raw-four-state full-initial-box first-period P3 diagnostic",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_p3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_p3_smoke1_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "balancing-reach",
@@ -1059,17 +1081,32 @@
     {
       "instance_id": "nav-standard",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
+      "work_status": "short_prefix_only",
+      "attempt_count": 2,
+      "selected_attempt_number": 112,
+      "selected_attempt_status": "completed_short_prefix",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_working_p3_fullgrid_firstperiod_001",
+      "selected_wall_s": 5.243638020008802,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
+      "attempts": [
+        {
+          "index": 110,
+          "status": "completed_short_prefix",
+          "role": "first box of 640, first 0.2 s control period working-P3 gate",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_working_p3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_smoke1_001/INDEPENDENT_SAVED_RANGE_AUDIT.json"
+        },
+        {
+          "index": 112,
+          "status": "completed_short_prefix",
+          "role": "full 640-box first-control-period working-P3 gate, stop at first numerical rejection",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_working_p3_fullgrid_firstperiod_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_fullgrid_firstperiod_001/INDEPENDENT_SAVED_RANGE_AUDIT.json"
+        }
+      ]
     },
     {
       "instance_id": "nav-standard",
@@ -1112,17 +1149,32 @@
     {
       "instance_id": "nav-standard",
       "method": "flowstar_native",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 108,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_native_full30_001",
+      "selected_wall_s": 1478.865919311531,
+      "selected_property_verdict": "VERIFIED",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 107,
+          "status": "completed_short_prefix",
+          "role": "first box of 640, first 0.2 s control period native plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_native_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/nav_author_standard_native_smoke1_001/INDEPENDENT_SAVED_RANGE_SCAN.json"
+        },
+        {
+          "index": 108,
+          "status": "completed",
+          "role": "new isolated 640-box x 30-period native full-horizon run after separate smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_native_full30_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/nav_author_standard_native_full30_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "nav-robust",

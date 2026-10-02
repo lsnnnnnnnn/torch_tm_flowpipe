@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "bash",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/run_archcomp26_nav_author_native_pair.sh"
+  ],
+  "contract_label": "nav-2026-official-author-execution-full640x30-single-new-attempt",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_nav_standard_author_build_001/archcomp/nav_standard",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "nav-standard",
+  "method": "flowstar_native",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "AUTHOR_INITIAL_BOXES": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_standard_boxes.json",
+    "CUDA_VISIBLE_DEVICES": "1",
+    "NAV_BINARY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_nav_standard_author_build_001/archcomp/nav_standard/nav_standard_full30",
+    "NAV_CPUSET": "6-9",
+    "NAV_MODEL": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_prep_001/official_nn-nav-point.onnx",
+    "NAV_OLD_STANDARD_NATIVE_TIMEOUTS": "native_threads4_300s_220of600,native_matched_300s_240of600",
+    "NAV_OVERLAY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_rpc_overlay_preflight_001/rpc_overlay",
+    "NAV_RUN_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_native_full30_001",
+    "NAV_SERVER_PYTHON": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "NAV_TIMING_QUALIFICATION": "single_new_sample_no_speed_ranking",
+    "NAV_WORKDIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_nav_standard_author_build_001/archcomp/nav_standard",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_utc": "2026-10-02T02:21:41.051342+00:00",
+  "timeout_s": 3600.0
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "archcomp26-balancing-fixed-raw4-p3-nohash-v1",
+  "started_utc": "2026-10-02T02:18:54.486180+00:00",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/cartpole_official_f32.yaml",
+  "official_text": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_accelerated/benchmarks/CartPole/official",
+  "controller": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/CartPole/model.onnx",
+  "cpu_model_preflight": {
+    "input_shape": [
+      1,
+      4
+    ],
+    "output_shape": [
+      1,
+      1
+    ],
+    "operators": [
+      "Gemm",
+      "Tanh",
+      "Gemm",
+      "Tanh",
+      "Gemm",
+      "Tanh"
+    ],
+    "zero_state_force": -0.0024986890484101345,
+    "cuda_initialized": false
+  },
+  "profile": "balancing-fixed-repo-raw4",
+  "mode": "preflight",
+  "method": "p3",
+  "initial_physical_box": [
+    [
+      -0.1,
+      0.1
+    ],
+    [
+      -0.05,
+      0.05
+    ],
+    [
+      -0.1,
+      0.1
+    ],
+    [
+      -0.05,
+      0.05
+    ]
+  ],
+  "physical_box_count": 1,
+  "controller_input_order": [
+    "x1",
+    "x2",
+    "x3",
+    "x4"
+  ],
+  "controller_output": "raw force f held for 0.02 s",
+  "property": "x1,x3,x4 in [-0.001,0.001] for 8<t<=10; checker includes t=8 by continuity of the closed plant and target box",
+  "paper_feature5_contract": false,
+  "period_s": 0.02,
+  "ode_step_s": 0.005,
+  "ode_order": 3,
+  "full_period_count": 500,
+  "qualification": "working P3 plant, strict endpoint/injection, CROWN diagnostic; no independent end-to-end floating-point NN certificate"
+}

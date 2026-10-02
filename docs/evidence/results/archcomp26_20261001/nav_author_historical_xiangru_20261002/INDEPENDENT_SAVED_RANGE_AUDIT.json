@@ -1,0 +1,68 @@
+{
+  "schema": "archcomp26-nav-historical-xiangru-saved-range-audit-nohash-v1",
+  "audited_utc": "2026-10-02T02:15:24Z",
+  "scope": "Read-only scan of the two existing September 23 Xiangru NAV full runs; no new experiment or content digest",
+  "record_layout": "little-endian: lane uint64, substep uint64, h float64, 4 physical states x (tube_lo,tube_hi,endpoint_lo,endpoint_hi) float64",
+  "record_bytes": 152,
+  "checks": [
+    "exact file length and expected record count",
+    "contiguous substep-major, lane-minor record order",
+    "h=0.01 for all records",
+    "all physical tube and endpoint intervals finite and ordered",
+    "each saved physical x/y tube disjoint from the closed obstacle [1,2] x [1,2]",
+    "each final-step physical x/y endpoint contained in the closed target [-0.5,0.5] x [-0.5,0.5]",
+    "each saved endpoint contained in its same-substep tube"
+  ],
+  "standard": {
+    "remote_ranges": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_v1/nav_standard_xiangru/ranges.bin",
+    "bytes": 58368000,
+    "expected_records": 384000,
+    "record_count": 384000,
+    "initial_boxes": 640,
+    "substeps": 600,
+    "ordered_step_lane": true,
+    "step_h_is_point_01": true,
+    "finite_ordered": true,
+    "all_saved_tubes_disjoint_obstacle": true,
+    "terminal_endpoint_in_target": true,
+    "max_endpoint_outside_tube": 0.0,
+    "terminal_endpoint_union_xy": [
+      [-0.08803818270400292, -0.007714880465252999],
+      [0.08895643289004677, 0.3534297034666618]
+    ],
+    "full_saved_tube_union_xy": [
+      [-0.08803818490871876, 3.10000000124708],
+      [-0.5431820514044612, 3.100000000087264]
+    ],
+    "first_order_error": null,
+    "first_invalid_interval": null,
+    "first_obstacle_overlap": null,
+    "first_terminal_target_miss": null
+  },
+  "robust": {
+    "remote_ranges": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_v1/nav_robust_xiangru/ranges.bin",
+    "bytes": 2280000,
+    "expected_records": 15000,
+    "record_count": 15000,
+    "initial_boxes": 25,
+    "substeps": 600,
+    "ordered_step_lane": true,
+    "step_h_is_point_01": true,
+    "finite_ordered": true,
+    "all_saved_tubes_disjoint_obstacle": true,
+    "terminal_endpoint_in_target": true,
+    "max_endpoint_outside_tube": 0.0,
+    "terminal_endpoint_union_xy": [
+      [0.1074805687559851, 0.1977835916197828],
+      [-0.06319188958683246, -0.04838890242461219]
+    ],
+    "full_saved_tube_union_xy": [
+      [-0.03700950337549669, 3.1000000012986453],
+      [-0.0778970325353753, 3.10000000016231]
+    ],
+    "first_order_error": null,
+    "first_invalid_interval": null,
+    "first_obstacle_overlap": null,
+    "first_terminal_target_miss": null
+  }
+}

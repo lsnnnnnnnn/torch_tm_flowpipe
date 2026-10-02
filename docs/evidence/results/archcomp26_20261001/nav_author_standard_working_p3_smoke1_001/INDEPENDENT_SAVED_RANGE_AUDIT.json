@@ -1,0 +1,55 @@
+{
+  "schema": "archcomp26-nav-p3-saved-interval-scan-nohash-v1",
+  "source": "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_smoke1_001/observations.jsonl",
+  "expected_boxes": 1,
+  "expected_substeps": 20,
+  "observed_substeps": 20,
+  "accepted_lane_substeps": 20,
+  "expected_lane_substeps": 20,
+  "complete_saved_grid": true,
+  "first_rejection": null,
+  "errors": {
+    "nonfinite": 0,
+    "reversed": 0,
+    "endpoint_outside_tube": 0,
+    "obstacle_intersections": 0,
+    "first_initial_outside_tube": 0
+  },
+  "tube_union": [
+    [
+      2.880197988915839,
+      2.905000001242454
+    ],
+    [
+      2.897353100520727,
+      2.9125000001207404
+    ],
+    [
+      -0.20000000000556734,
+      3.047684649679318e-16
+    ],
+    [
+      -3.5226513166021068e-06,
+      0.19939521829598036
+    ]
+  ],
+  "final_endpoint_union": [
+    [
+      2.8801980823379663,
+      2.885198320659243
+    ],
+    [
+      2.897353100520727,
+      2.9098526572675762
+    ],
+    [
+      -0.20000000000556734,
+      -0.2000000000055461
+    ],
+    [
+      0.19925431224330875,
+      0.19939521829598036
+    ]
+  ],
+  "qualification": "saved numerical intervals only; no independent NNCS floating-point proof"
+}

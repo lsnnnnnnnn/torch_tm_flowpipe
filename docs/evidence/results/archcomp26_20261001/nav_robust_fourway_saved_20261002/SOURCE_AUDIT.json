@@ -1,0 +1,102 @@
+{
+  "schema": "archcomp26-nav-fourway-saved-nohash-v1",
+  "instance": "nav-robust",
+  "initial_boxes_per_method": 25,
+  "record_layout": "little endian uint64 lane, uint64 step, float64 h, then for each of four states (tube_lo,tube_hi,endpoint_lo,endpoint_hi)",
+  "source_policy": "paths, byte sizes, and parsed contents only; no content digest",
+  "interpretation": "Old GPU ours/Huan/Xiangru versus new standard native or old robust native; no four-way runtime ranking or independent NNCS proof",
+  "methods": [
+    {
+      "method": "ours",
+      "generation": "2026-09-23 historical GPU",
+      "source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_v1/nav_robust_ours/ranges.bin",
+      "source_bytes": 2280000,
+      "boxes": 25,
+      "steps": 600,
+      "records": 15000,
+      "record_bytes": 152,
+      "saved_tube_obstacle_overlaps": 0,
+      "terminal_target_misses": 0,
+      "terminal_xy_endpoint_union": {
+        "x": [
+          0.10687878005933842,
+          0.1982224989787494
+        ],
+        "y": [
+          -0.06339464372791995,
+          -0.04827831107305184
+        ]
+      },
+      "qualification": "saved intervals only; historical/current engines and resources differ"
+    },
+    {
+      "method": "huan",
+      "generation": "2026-09-23 historical GPU",
+      "source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_v1/nav_robust_huan/ranges.bin",
+      "source_bytes": 2280000,
+      "boxes": 25,
+      "steps": 600,
+      "records": 15000,
+      "record_bytes": 152,
+      "saved_tube_obstacle_overlaps": 0,
+      "terminal_target_misses": 0,
+      "terminal_xy_endpoint_union": {
+        "x": [
+          0.1074805687559851,
+          0.1977835916197828
+        ],
+        "y": [
+          -0.06319188958683246,
+          -0.04838890242461219
+        ]
+      },
+      "qualification": "saved intervals only; historical/current engines and resources differ"
+    },
+    {
+      "method": "xiangru",
+      "generation": "2026-09-23 historical GPU",
+      "source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_v1/nav_robust_xiangru/ranges.bin",
+      "source_bytes": 2280000,
+      "boxes": 25,
+      "steps": 600,
+      "records": 15000,
+      "record_bytes": 152,
+      "saved_tube_obstacle_overlaps": 0,
+      "terminal_target_misses": 0,
+      "terminal_xy_endpoint_union": {
+        "x": [
+          0.1074805687559851,
+          0.1977835916197828
+        ],
+        "y": [
+          -0.06319188958683246,
+          -0.04838890242461219
+        ]
+      },
+      "qualification": "saved intervals only; historical/current engines and resources differ"
+    },
+    {
+      "method": "flowstar_native",
+      "generation": "2026-09-23 historical native",
+      "source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/native_matched/nav_robust/ranges.bin",
+      "source_bytes": 2280000,
+      "boxes": 25,
+      "steps": 600,
+      "records": 15000,
+      "record_bytes": 152,
+      "saved_tube_obstacle_overlaps": 0,
+      "terminal_target_misses": 0,
+      "terminal_xy_endpoint_union": {
+        "x": [
+          0.10708168848705917,
+          0.19808018604018326
+        ],
+        "y": [
+          -0.06337211080872229,
+          -0.048295620925280607
+        ]
+      },
+      "qualification": "saved intervals only; historical/current engines and resources differ"
+    }
+  ]
+}

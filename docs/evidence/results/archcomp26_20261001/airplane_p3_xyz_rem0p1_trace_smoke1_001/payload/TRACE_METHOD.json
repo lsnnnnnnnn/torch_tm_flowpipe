@@ -1,0 +1,9 @@
+{
+  "schema": "archcomp26-airplane-p3-first-rejection-trace-v1",
+  "physical_initial_boxes": 1,
+  "maximum_control_periods": 1,
+  "maximum_ode_substeps": 10,
+  "stop_policy": "first numerical rejection or saved tube outside safe set",
+  "validation_policy": "solution_order",
+  "callback_effect": "refinement_callback selects the engine eager refinement path; diagnostic time is not a production timing sample"
+}
