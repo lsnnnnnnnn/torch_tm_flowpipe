@@ -46,7 +46,7 @@ Double Pendulum 旧 native 300 秒作业超时。只读审计发现其二进制�
 
 ## 21:55 本地补记：QUAD P3、SP 与 TORA 两方
 
-- **2026 论文方程 QUAD / P3**：独立新目录 `quad_paper_p3_nohash_v1/full50_001` 完成 1,024 盒 × 1,000 小步，1,024,000/1,024,000 盒步接受，50 次控制刷新、`broken=0`，外层进程 wall 1,357.555 s；`T=5` 的 `x3` endpoint union 为 `[0.9584732146312492,1.0256989633476477]`，在目标 `[0.94,1.06]` 内。驱动打印 `VERIFIED`，但明确记录 `end_to_end_strict_certificate=false`，不能把该诊断提升为独立端到端浮点 NNCS 证书。其终点宽 0.06722574871639841，比新 Huan/Xiangru P2 parity 的 0.04774181696742297 宽；各只有一次样本、设备与路线不同，不给速度排名。见[原始证据摘要](evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md)。论文方程 native 全程作业仍在运行，未填其终点或完成时间。
+- **2026 论文方程 QUAD / P3**：独立新目录 `quad_paper_p3_nohash_v1/full50_001` 完成 1,024 盒 × 1,000 小步，1,024,000/1,024,000 盒步接受，50 次控制刷新、`broken=0`，外层进程 wall 1,357.555 s；`T=5` 的 `x3` endpoint union 为 `[0.9584732146312492,1.0256989633476477]`，在目标 `[0.94,1.06]` 内。驱动打印 `VERIFIED`，但明确记录 `end_to_end_strict_certificate=false`，不能把该诊断提升为独立端到端浮点 NNCS 证书。其终点宽 0.06722574871639841，比新 Huan/Xiangru P2 parity 的 0.04774181696742297 宽；各只有一次样本、设备与路线不同，不给速度排名。见[原始证据摘要](evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md)。该时点论文方程 native 全程作业仍在运行；最终结果见下方 10 月 2 日补记。
 - **Single Pendulum / 原生补完**：两物理态加辅助时钟的原生全程已完成 1 盒 × 100 小步，wall 4.726027 s；Huan/Xiangru 分别为 5.430762 / 5.528731 s。三方在性质要求的闭时间窗 `t∈[0.5,1]` 保存的 `x1` tube 均位于 `[0,1]`。见[原生摘要](evidence/results/archcomp26_20261001/native_sp_two_state_full20_001/SUMMARY.md)和[两方摘要](evidence/results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md)。
 - **TORA remain / 作者两方新尝试**：原生已全程完成并由作者 checker 报 `VERIFIED`，进程 wall 8.339151 s、2,400/2,400 条范围，见[原生摘要](evidence/results/archcomp26_20261001/native_tora_remain_full20_001/SUMMARY.md)。Huan/Xiangru 各观察到 200 小步，但只接受 2357/2400 盒步，作者 checker 均报 `Unknown.`；首次保存 tube 出安全带在步185，首次拒绝在步190。两方全部盒接受且保存 tube 安全的共同前缀仅 `t≤18.4`。其失败进程 wall 8.371523 / 8.270158 s 不与原生完整时间排名，区间出带不是独立实际轨迹反例。见[两方摘要](evidence/results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md)。
 - 新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)当前由 35 条 attempt 重算：10 个方法格有单次完整时域数值记录、1 格运行中、5 格早停或未完成。它独立于旧哈希绑定矩阵，完成格也尚不构成四方同资源、多次测量或端到端证明。阶段 [DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx) 与 [PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.pdf) 已按这批事实更新并逐页检查，仍非最终完整报告。
@@ -64,7 +64,7 @@ Double Pendulum 旧 native 300 秒作业超时。只读审计发现其二进制�
 
 - **ACC participant-order 三方全程**：Huan/Xiangru 各自在独立新目录完成一期 smoke 和全 50 期，均 50/50 小步接受，50 次安全评价，保存 tube 的半空间保守下界最小都是 `16.16503470756421>0`；两方全程区间记录和安全记录逐字节一致。进程 wall 分别为 7.259717 s、7.311630 s。与原生修复 VAR 尾项的 7.930 s 共同形成这个明确命名合同的三方单次完整数值记录；独立证书及稳定多次计时尚缺。见[三方证据汇总](evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md)。我方 P3 适配正在独立评估，未填完整结果。
 - **Attitude Control 来源错误**：旧 native/Xiangru checker 把官方危险盒的 `x4≥-0.7` 误写成 `x4≥-0.4`，而上界仍为 `x4≤-0.6`，所检危险集为空。旧 `VERIFIED` 不可沿用为 2026 正确规格结果；新隔离修正与预检继续进行。
-- **论文方程 QUAD / native**：只读确认独立新作业仍在运行，目前到第 26 个控制期；未启动第二份或重启旧六小时实验，完整 T=5 结果尚未产生。
+- **论文方程 QUAD / native 当时状态**：只读确认独立新作业运行到第 26 个控制期；未启动第二份或重启旧六小时实验。该时点完整 T=5 结果尚未产生，最终结果见下方 10 月 2 日补记。
 
 最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **41 条**新尝试重算：**13 格**有单次完整数值时域记录、1 格运行中、5 格早停、1 格失败，其余 44 格尚无尝试。上述先前“35 条”“37 条”是各阶段快照，不表示当前计数。
 
@@ -104,7 +104,7 @@ Double Pendulum 旧 native 300 秒作业超时。只读审计发现其二进制�
 - **ACC 24 次独立进程 campaign**：在同一明确命名的 participant-order 合同下，四种方法各有 1 次本 campaign 首轮新进程和 5 次后续新进程；轮次轮换，共 24/24 全时域完整、已保存 tube 安全。统一外层 `Popen` 前至子进程回收 wall，GPU 2、CPU 10–13 顺序执行。后五次中位数分别为原生 **7.736304 s**、Huan **8.237208 s**、Xiangru **7.987532 s**、P3 **8.740510 s**；各自逐次 min/max、首轮时间、50 步/RPC/控制器调用和 24 个独立原始目录在[正式 campaign 摘要](evidence/results/archcomp26_20261001/acc_fourway_campaign_001/SUMMARY.md)。首轮不是重启主机后的冷机；GPU 1 同时运行 QUAD 长作业，且缺独立端到端浮点 NN 证明，这组时间只作当前资源条件下的描述，暂不宣称稳定速度排名。最初各方法的一次单独运行仍保留，没有混入这 24 个样本。
 - **TORA remain / P3**：独立一期 smoke 后，新全程尝试完成 12 初盒 × 20 控制期 × 10 小步 = 2400/2400 盒步接受，外层 wall **10.411001 s**。对保存的 2400 条范围独立扫描，四态全时 tube 均在 `[-2,2]^4`，无拒绝、首越界或终点超出同段 tube；作者 checker 无失败输出。末端四态绝对 `lo/hi/width` 与原始收据见[新 P3 摘要](evidence/results/archcomp26_20261001/p3_tora_remain_v1/SUMMARY.md)。原生也完整，Huan/Xiangru 仍是 `t≤18.4` 共同安全前缀；[四方绝对区间和空值表](evidence/results/archcomp26_20261001/tora_remain_fourway_common_prefix_20261002/SUMMARY.md)区分了这两类结局。失败进程 wall 不和完整时间排名；P3 的安全数值记录不等于独立端到端 NNCS 浮点证书。
 
-最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **79 条**新尝试重算：**20 格**记录完整数值时域、1 格论文方程 QUAD 原生仍在运行、5 格早停、1 格失败，37 格尚未尝试。先前 53 条是上一阶段快照。
+当时[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **79 条**新尝试重算：**20 格**记录完整数值时域、1 格论文方程 QUAD 原生仍在运行、5 格早停、1 格失败，37 格尚未尝试。先前 53 条是上一阶段快照。
 
 TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261001/tora_remain_fourway_common_prefix_20261002/plots/SUMMARY.md)已从新运行原始范围逐步重画，提供 PNG/PDF/MATLAB `.m` 与几何 JSON。原生/P3 展示完整 200 步；Huan/Xiangru 只画 184 步合格前缀，后续标为未知，不把幸存盒延伸到 T=20。
 
@@ -168,11 +168,18 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 - 为避免把旧 `u=22(f−0.5)` 成绩误认成 2026 官方 `u=11f`，另建唯一[TORA 官方文件一期 Huan 诊断](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag/SUMMARY.md)。固定 `.mat` 四层 sigmoid 经显式构造后，ONNX 图内 `Mul(11)+Add(0)`，外部 `output_scale=1/output_offset=0`，完整单初盒的一个 0.5 秒控制期、50/50 ODE 小步全部接受。原始 `START/RESULT`、50 条范围、日志与独立有限/有序扫描均保存；`T=0.5` 末端 `x1∈[-0.8850144075,-0.8573825037]`、`x2∈[-0.0066841850,0.0219011293]`，外层单次 wall `5.345883 s`。没有判定 5 秒内到达目标，没有启动旧 500 步或 tanh，且没有速度排名资格。由于论文和官方网络激活冲突，仍须用户选主合同；本结果按官方文件 profile 单列。纳入此短前缀后工作矩阵为 **105 条**尝试、25 格完整、1 格运行中、6 格早停、4 格失败、**4 格仅短前缀**、24 格未尝试。
 - 原有论文方程 QUAD native 长作业在 2026-10-02 00:26:29 UTC 的只读复核仍为 `RESULT_PENDING`：日志在第 49 个控制期的 Flow* 计算，原始 `ranges.bin` 已写前 **980/1000** 小步，native 与 RPC 进程仍存活且 CPU 时间持续增长。未启动副本、重启或干预；没有第 50 期的完整时间、终点宽度或性质结论。
 
+## 10 月 2 日补记：原生论文方程 QUAD 自然完成及四方数值边界
+
+- 原有 `native_quad_paper_full50_001` 在 **2026-10-02 00:30:15 UTC** 自然完成，原始 `RESULT.json` 为 `completed`、exit 0、未超时，外层 wall **47058.886571 s**（单次）；native 日志打印 `VERIFIED`、内部 `time cost: 46918.890000 s`。这是上条 00:26 仍运行作业的**同一原始运行**，没有重启旧六小时实验、增加副本或重复登记 attempt。原始 START/RESULT、日志、50 次 RPC、构建源码及[只读范围扫描](evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SUMMARY.md)已保存到分支的小证据包，417,792,000 字节 `ranges.bin` 保持在原服务器路径。
+- 原始范围按“50 期→1024 盒→期内 20 小步”精确覆盖 **1,024,000/1,024,000** 条唯一 `(盒,小步)` 记录；有限性、区间顺序、endpoint 含于对应 tube、盒/步/步长检查均为零异常。`T=5` 的 `x3` endpoint union `[0.965771839016746,1.0167484756616678]`、宽 0.0509766366449218，位于目标 `[0.94,1.06]`。最后一小步 tube 宽 0.05097738677735586，与 endpoint 分列；全时 `x3` tube `[−0.40817151558335585,1.452252535346294]` 不能冒充终点。原生源码 checker 只用 `fp_end_of_time.isInTarget` 终点判定；step 775–1000 保存 tube 连续落目标带只是额外数值诊断，**论文 reach-and-remain 时间语义与独立端到端浮点 NNCS 证明仍未闭合**。
+- 2026 论文方程 QUAD 的 P3、Huan、Xiangru、原生现各有一次完整 1024×1000 数值记录；四方 `T=5` 的十二态 endpoint 绝对下/上界与并集宽见[48 行 CSV](evidence/archcomp26_quad_paper_endpoint_4methods_20261002.csv)。四方 `x3` endpoint 宽依次为 **0.067225749 / 0.047741817 / 0.047741817 / 0.050976637**；运行路线、资源和观察器不同，不据单次时间或宽度做速度/正确性排名。原生原作业的索引行已就地更新，工作矩阵仍为 **105 条尝试**、64 个方法单元中 **26 格完整数值时域、0 格运行中、6 格早停、4 格失败、4 格仅短前缀、24 格未尝试**。
+- 新[四方 QUAD t–x3 图与数据包](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/SUMMARY.md)以原生和 P3 各 1,000 小步的完整初盒保存 tube 画曲线；Huan/Xiangru 没有保存逐步范围，只以 T=5 endpoint 标记。目标 `[0.94,1.06]` 只作为终点目标，MATLAB `.m` 已导出但没有 MATLAB/Octave 实跑证据，也不能由轴对齐投影恢复 Flow* octagon。
+
 ### 仍需外部材料或明确选择的字段
 
 | 实例 | 具体缺件或选择 | 在此之前可独立推进的工作 |
 | --- | --- | --- |
-| QUAD reach-and-remain | 2026 参与者实际运行的全时间窗 checker 源码或同等权威执行记录；当前只有终点包含检查可复核。 | 原生论文方程长作业继续跑；保存全时 tube，终点结果按其已证范围单列。 |
+| QUAD reach-and-remain | 2026 参与者实际运行的全时间窗 checker 源码或同等权威执行记录；目前四方完整数值时域及原生终点检查已保存，仍不足以固定全时间窗语义。 | 保留四方终点和原生逐步 tube；所见 step 775–1000 连续入带仅作数值诊断。 |
 | Single Pendulum 官方三态 | 第三状态的初值和三态 MATLAB 闭环执行入口；现有四方仅是明确命名的两物理态加辅助时钟合同。 | 保留两态 profile 的四方结果及图。 |
 | Airplane discrete | 参与者离散转移与控制更新次序的源码或权威记录。 | 可单列实施已明示的 `paper-Euler-controller-first` 四方比较约定。 |
 | Balancing 论文五特征 | 五输入控制器文件，或作者明确的五特征到固定四输入模型映射/执行源码。 | 可单列实施 `balancing-fixed-repo-raw4`。 |

@@ -2,7 +2,7 @@
 
 来源：`benchmarks/archcomp26/manifest.json` 与 `docs/evidence/archcomp26_nohash_attempts_20261001.json`。仅按路径归属，不做内容摘要；与历史冻结的 `benchmarks/archcomp26/execution_matrix.json` 独立。
 
-16 个实例 × 4 种方法 = 64 个单元；本轮索引 105 条尝试。完成 25；运行中 1；早停 6；失败 4；仅短前缀 4；未尝试 24。
+16 个实例 × 4 种方法 = 64 个单元；本轮索引 105 条尝试。完成 26；运行中 0；早停 6；失败 4；仅短前缀 4；未尝试 24。
 
 | 实例 | P3 GPU | Huan | Xiangru | FlowStar native |
 | --- | --- | --- | --- | --- |
@@ -16,7 +16,7 @@
 | double-pendulum-more-robust | 仅短前缀 | 早停 | 早停 | 早停 |
 | nav-standard | 未尝试 | 仅短前缀 | 未尝试 | 未尝试 |
 | nav-robust | 未尝试 | 仅短前缀 | 未尝试 | 未尝试 |
-| quad-reach | 完成 | 完成 | 完成 | 运行中 |
+| quad-reach | 完成 | 完成 | 完成 | 完成 |
 | single-pendulum-reach | 完成 | 完成 | 完成 | 完成 |
 | tora-remain | 完成 | 早停 | 早停 | 完成 |
 | tora-reach-sigmoid | 未尝试 | 仅短前缀 | 未尝试 | 未尝试 |

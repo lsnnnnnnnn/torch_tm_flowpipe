@@ -69,3 +69,13 @@ x1,x2,x3,x4`, `--step-size 0.1`, `--expected-steps 200`, and
 the all-time `[-2,2]^4` Safe region. The native run has a separate completed
 process receipt and independent saved-range scan; the plotting entry itself
 continues to label acceptance as unbound to the binary records.
+
+The completed 2026 paper-equation QUAD comparison has a separate
+[four-method `t,x3` figure and source guide](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/SUMMARY.md).
+Its full-time curves come from all 1,024 boxes at each of 1,000 saved steps
+for native Flow* and P3. Huan and Xiangru saved only terminal bounds, so their
+two methods appear as `T=5` endpoint intervals; no intermediate curve is
+interpolated. The `[0.94,1.06]` band applies to the terminal target only.
+The native whole-step bounds are axis-aligned box projections, not octagon
+support values. The included MATLAB script is generated but has not been run
+in MATLAB or Octave.

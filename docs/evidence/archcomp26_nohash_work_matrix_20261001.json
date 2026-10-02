@@ -12,8 +12,8 @@
   "cell_count": 64,
   "attempt_count": 105,
   "status_counts": {
-    "completed": 25,
-    "running": 1,
+    "completed": 26,
+    "running": 0,
     "early_stopped": 6,
     "failed": 4,
     "not_attempted": 24,
@@ -1299,16 +1299,16 @@
     {
       "instance_id": "quad-reach",
       "method": "flowstar_native",
-      "work_status": "running",
+      "work_status": "completed",
       "attempt_count": 2,
       "selected_attempt_number": 16,
-      "selected_attempt_status": "running",
+      "selected_attempt_status": "completed",
       "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_paper_full50_001",
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "selected_wall_s": 47058.886571025476,
+      "selected_property_verdict": "VERIFIED at T=5 endpoint",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "Dated attempt index records an in-progress run; no final time, width, or verdict in this index.",
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
       "attempts": [
         {
           "index": 15,
@@ -1319,10 +1319,10 @@
         },
         {
           "index": 16,
-          "status": "running",
+          "status": "completed",
           "role": "paper equation, full 1024-box 50-period attempt",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_paper_full50_001",
-          "local_summary": null
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SUMMARY.md"
         }
       ]
     },
