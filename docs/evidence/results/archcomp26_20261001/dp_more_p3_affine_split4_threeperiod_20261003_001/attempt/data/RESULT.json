@@ -1,0 +1,408 @@
+{
+  "status": "completed",
+  "driver_return": 0,
+  "expected_substeps": 12,
+  "completed_substeps": 12,
+  "accepted_lane_substeps": 2700,
+  "all_lanes_accepted": true,
+  "whole_tube_inside_safe_box": true,
+  "per_substep_accepted": [
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225
+  ],
+  "per_substep_inside_safe_box": [
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225,
+    225
+  ],
+  "trig_counters": {
+    "exec_calls": 6,
+    "completed_execs": 6,
+    "failed_execs": 0,
+    "trig_calls": 90,
+    "original_bodies": 72,
+    "reuse_hits": 18,
+    "ineligible_calls": 60,
+    "outside_exec_forwarded": 0
+  },
+  "trig_plan": {
+    "trig_calls": 15,
+    "eligible_direct_calls": 5,
+    "unique_direct_plans": 2,
+    "potential_reuse_hits": 3,
+    "interval_coefficients": true,
+    "order": 4
+  },
+  "controller_audit": [
+    {
+      "period": 0,
+      "envelope": "affine-split4",
+      "crown_bias_inversion_count": 8,
+      "crown_bias_min_gap": -8.881784197001252e-16,
+      "directed_residual_width_max": 0.12863359971751231,
+      "directed_residual_width_median": 0.028014135829587783,
+      "directed_network_first_lane": [
+        [
+          -4.661445950230227,
+          -4.390573425407296
+        ],
+        [
+          -4.840650416322026,
+          -4.209620538560782
+        ]
+      ],
+      "directed_linear_first_lane": null,
+      "directed_residual_first_lane": [
+        [
+          -1.7025357764792695,
+          -1.6923754455997078
+        ],
+        [
+          -0.45367597356819644,
+          -0.4051317149831008
+        ]
+      ],
+      "affine_layer_diagnostics": {
+        "whole_layers": [
+          {
+            "layer": 1,
+            "A_interval_width": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "b_interval_width": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "relu_active": 1532,
+            "relu_inactive": 3904,
+            "relu_crossing": 189,
+            "relu_error_upper": {
+              "max": 0.07286990209546591,
+              "mean": 0.0008643724117737383
+            },
+            "R_interval_width_after_relu": {
+              "max": 0.07286990209546591,
+              "mean": 0.0008643724117737383
+            }
+          },
+          {
+            "layer": 2,
+            "A_interval_width": {
+              "max": 5.329070518200751e-15,
+              "mean": 3.0501943563502704e-16
+            },
+            "b_interval_width": {
+              "max": 2.220446049250313e-15,
+              "mean": 2.0576380105947263e-16
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.3370617063634045,
+              "mean": 0.015632088157679178
+            },
+            "relu_active": 1696,
+            "relu_inactive": 3840,
+            "relu_crossing": 89,
+            "relu_error_upper": {
+              "max": 0.17027996643763046,
+              "mean": 0.0017822910683603925
+            },
+            "R_interval_width_after_relu": {
+              "max": 0.20791927629107881,
+              "mean": 0.005661221470634665
+            }
+          },
+          {
+            "layer": 3,
+            "A_interval_width": {
+              "max": 5.329070518200751e-15,
+              "mean": 1.4090349257737481e-15
+            },
+            "b_interval_width": {
+              "max": 3.552713678800501e-15,
+              "mean": 2.1637013168805827e-15
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.14928252792593974,
+              "mean": 0.04428918491921211
+            }
+          },
+          {
+            "final_A_minus_T_interval_width": {
+              "max": 5.329070518200751e-15,
+              "mean": 1.4090349257737481e-15
+            },
+            "final_residual_width": {
+              "max": 0.14928252792595176,
+              "mean": 0.04428918491922176
+            }
+          }
+        ],
+        "subboxes_per_input_box": 256,
+        "global_T_reused": true,
+        "whole_width_max": 0.14928252792595176,
+        "union_width_max": 0.12863359971751231,
+        "tight_width_max": 0.12863359971751231,
+        "improved_outputs": 351
+      }
+    },
+    {
+      "period": 1,
+      "envelope": "affine-split4",
+      "crown_bias_inversion_count": 1,
+      "crown_bias_min_gap": -4.440892098500626e-16,
+      "directed_residual_width_max": 0.061392492480412564,
+      "directed_residual_width_median": 0.012446366809860221,
+      "directed_network_first_lane": [
+        [
+          -4.883543230965885,
+          -4.347041855632609
+        ],
+        [
+          -3.781063021292691,
+          -3.2549124843828707
+        ]
+      ],
+      "directed_linear_first_lane": null,
+      "directed_residual_first_lane": [
+        [
+          -0.7121936803988533,
+          -0.712193680398846
+        ],
+        [
+          -1.1279701484194302,
+          -1.1279701484194253
+        ]
+      ],
+      "affine_layer_diagnostics": {
+        "whole_layers": [
+          {
+            "layer": 1,
+            "A_interval_width": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "b_interval_width": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "relu_active": 1800,
+            "relu_inactive": 3825,
+            "relu_crossing": 0,
+            "relu_error_upper": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "R_interval_width_after_relu": {
+              "max": 0.0,
+              "mean": 0.0
+            }
+          },
+          {
+            "layer": 2,
+            "A_interval_width": {
+              "max": 1.7763568394002505e-15,
+              "mean": 1.8068879725774425e-16
+            },
+            "b_interval_width": {
+              "max": 8.881784197001252e-16,
+              "mean": 1.7541523789077474e-16
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "relu_active": 1570,
+            "relu_inactive": 3834,
+            "relu_crossing": 221,
+            "relu_error_upper": {
+              "max": 0.11487600439394531,
+              "mean": 0.0031982945737231397
+            },
+            "R_interval_width_after_relu": {
+              "max": 0.11487600439394531,
+              "mean": 0.0031982945737231397
+            }
+          },
+          {
+            "layer": 3,
+            "A_interval_width": {
+              "max": 2.6645352591003757e-15,
+              "mean": 1.140729100685473e-15
+            },
+            "b_interval_width": {
+              "max": 2.1094237467877974e-15,
+              "mean": 1.3103098852853791e-15
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.07630342793336439,
+              "mean": 0.02338504513710964
+            }
+          },
+          {
+            "final_A_minus_T_interval_width": {
+              "max": 2.6645352591003757e-15,
+              "mean": 1.140729100685473e-15
+            },
+            "final_residual_width": {
+              "max": 0.07630342793337319,
+              "mean": 0.023385045137116384
+            }
+          }
+        ],
+        "subboxes_per_input_box": 256,
+        "global_T_reused": true,
+        "whole_width_max": 0.07630342793337319,
+        "union_width_max": 0.06980506520989538,
+        "tight_width_max": 0.061392492480412564,
+        "improved_outputs": 281
+      }
+    },
+    {
+      "period": 2,
+      "envelope": "affine-split4",
+      "crown_bias_inversion_count": 0,
+      "crown_bias_min_gap": 0.0008541343921644184,
+      "directed_residual_width_max": 0.08581963261260173,
+      "directed_residual_width_median": 0.05444794604862868,
+      "directed_network_first_lane": [
+        [
+          -4.6917939498340555,
+          -4.105717092735338
+        ],
+        [
+          -3.322609791381533,
+          -2.599381827545531
+        ]
+      ],
+      "directed_linear_first_lane": null,
+      "directed_residual_first_lane": [
+        [
+          -0.7252951664116061,
+          -0.6743503638391101
+        ],
+        [
+          -0.655799279806896,
+          -0.5744391198445156
+        ]
+      ],
+      "affine_layer_diagnostics": {
+        "whole_layers": [
+          {
+            "layer": 1,
+            "A_interval_width": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "b_interval_width": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "relu_active": 1579,
+            "relu_inactive": 3823,
+            "relu_crossing": 223,
+            "relu_error_upper": {
+              "max": 0.05849880640577607,
+              "mean": 0.001706840568361401
+            },
+            "R_interval_width_after_relu": {
+              "max": 0.05849880640577607,
+              "mean": 0.001706840568361401
+            }
+          },
+          {
+            "layer": 2,
+            "A_interval_width": {
+              "max": 3.552713678800501e-15,
+              "mean": 3.344028757605126e-16
+            },
+            "b_interval_width": {
+              "max": 1.7763568394002505e-15,
+              "mean": 2.702381528428709e-16
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.09501597120362534,
+              "mean": 0.017001307081439893
+            },
+            "relu_active": 1764,
+            "relu_inactive": 3656,
+            "relu_crossing": 205,
+            "relu_error_upper": {
+              "max": 0.13177943091560396,
+              "mean": 0.0030362368188593747
+            },
+            "R_interval_width_after_relu": {
+              "max": 0.13645320750964196,
+              "mean": 0.008840424182872553
+            }
+          },
+          {
+            "layer": 3,
+            "A_interval_width": {
+              "max": 3.9968028886505635e-15,
+              "mean": 1.52442102151361e-15
+            },
+            "b_interval_width": {
+              "max": 2.7755575615628914e-15,
+              "mean": 1.6485578334545102e-15
+            },
+            "R_interval_width_before_relu": {
+              "max": 0.11171051295127157,
+              "mean": 0.062017037765448174
+            }
+          },
+          {
+            "final_A_minus_T_interval_width": {
+              "max": 3.9968028886505635e-15,
+              "mean": 1.52442102151361e-15
+            },
+            "final_residual_width": {
+              "max": 0.11171051295128087,
+              "mean": 0.06201703776545654
+            }
+          }
+        ],
+        "subboxes_per_input_box": 256,
+        "global_T_reused": true,
+        "whole_width_max": 0.11171051295128087,
+        "union_width_max": 0.08581963261260173,
+        "tight_width_max": 0.08581963261260173,
+        "improved_outputs": 450
+      }
+    }
+  ],
+  "wall_s": 14.442959759384394,
+  "timing_scope": "driver plus full per-lane tube/endpoint diagnostic observation and JSONL writes",
+  "end_to_end_strict_certificate": false
+}

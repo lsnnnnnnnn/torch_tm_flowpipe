@@ -10,7 +10,7 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 198,
+  "attempt_count": 200,
   "status_counts": {
     "completed": 38,
     "running": 0,
@@ -1237,12 +1237,12 @@
       "instance_id": "double-pendulum-more-robust",
       "method": "pytorch_gpu",
       "work_status": "early_stopped",
-      "attempt_count": 2,
-      "selected_attempt_number": 117,
-      "selected_attempt_status": "early_stopped_numerical_rejection",
-      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001",
-      "selected_wall_s": 16.6163630746305,
-      "selected_property_verdict": null,
+      "attempt_count": 4,
+      "selected_attempt_number": 200,
+      "selected_attempt_status": "early_stopped_checker_unsafe",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_affine_split4_full20_20261003_001",
+      "selected_wall_s": 62.360383642837405,
+      "selected_property_verdict": "Unsafe.",
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
       "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
@@ -1260,6 +1260,20 @@
           "role": "full 225-box, 20-period T=0.4 attempt under the fixed 2026 more-robust continuous contract, first numerical rejection stop",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001",
           "local_summary": "docs/evidence/results/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/SUMMARY.md"
+        },
+        {
+          "index": 199,
+          "status": "completed_short_prefix",
+          "role": "supplemental full-initial-set 3-of-20-period controller-envelope diagnostic; not a T=0.4 result",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_affine_split4_threeperiod_20261003_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/dp_more_p3_affine_split4_threeperiod_20261003_001/README.md"
+        },
+        {
+          "index": 200,
+          "status": "early_stopped_checker_unsafe",
+          "role": "main-cell candidate full T=0.4 request with affine-split4 controller envelope; property checker early stop",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_affine_split4_full20_20261003_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/dp_more_p3_affine_split4_full20_20261003_001/README.md"
         }
       ]
     },

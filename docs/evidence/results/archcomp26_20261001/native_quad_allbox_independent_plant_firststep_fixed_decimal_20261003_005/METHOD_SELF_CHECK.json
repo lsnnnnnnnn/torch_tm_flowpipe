@@ -1,0 +1,29 @@
+{
+  "schema": "native-quad-fixed-decimal-primitive-self-check-nohash-v1",
+  "checks": {
+    "default_context_precision": 28,
+    "copy_abs_exact": true,
+    "context_abs_inexact": true,
+    "copy_negate_exact": true,
+    "interval_negation_contains_exact": true,
+    "add_contains_endpoint": true,
+    "subtract_contains_endpoint": true,
+    "multiply_contains_endpoint": true,
+    "divide_contains_endpoint": true,
+    "sine_remainder_up": true,
+    "sine_negative_remainder_exact": true,
+    "cosine_remainder_up": true,
+    "cosine_negative_remainder_exact": true
+  },
+  "passed": true,
+  "direct_decimal_operations_audited": [
+    "I.__neg__: copy_negate exact",
+    "sine/cosine interval magnitude: copy_abs exact",
+    "sine/cosine Taylor remainder negative radius: copy_negate exact",
+    "load_contract/control construction radius: copy_negate exact",
+    "Picard proposal epsilon negative radius: copy_negate exact",
+    "ODE decimal 0.054-0.104 and 0.104-0.054: short exact terminating differences",
+    "H/STEPS=0.005/1000: exact terminating decimal 0.000005",
+    "other interval +,* and reciprocal divisions: localcontext directed down/up"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "native-quad-decimal-negation-first-blocker-nohash-v1",
+  "saved_rpc_lane": 0,
+  "control": "u2",
+  "default_decimal_context_precision": 28,
+  "exact_control_lower": "-1840416354803908036795013/1237940039285380274899124224",
+  "computed_decimal_control_lower": "-0.00148667649191338571031282828912348696577428093252432050874748",
+  "computed_minus_exact_lower": "3355443199999999999999999999999214313037/26843545600000000000000000000000000000000000000000000000000000000000000",
+  "computed_minus_exact_lower_approx": 1.25e-31,
+  "lower_hull_omitted": true,
+  "radius_exact_decimal": "0.008403869462199509143829345703125",
+  "radius_unary_negation": "-0.008403869462199509143829345703",
+  "radius_copy_negate": "-0.008403869462199509143829345703125",
+  "unary_negation_exact": false,
+  "example_exact_decimal": "0.0014866764919133856025224016406127702794037759304046630859375",
+  "example_unary_negation": "-0.001486676491913385602522401641",
+  "example_copy_negate": "-0.0014866764919133856025224016406127702794037759304046630859375",
+  "example_abs": "0.001486676491913385602522401641",
+  "example_copy_abs": "0.0014866764919133856025224016406127702794037759304046630859375",
+  "abs_exact": false,
+  "trig_remainder_exact_decimal": "1.98412698412698441610470631359485125123143584644818933621461E-18",
+  "trig_remainder_unary_negation": "-1.984126984126984416104706314E-18",
+  "trig_remainder_copy_negate": "-1.98412698412698441610470631359485125123143584644818933621461E-18",
+  "trig_unary_negation_exact": false,
+  "affected_sites": [
+    "tools/check_native_quad_fullset_interval_gate_nohash.py I.__neg__",
+    "tools/check_native_quad_fullset_interval_gate_nohash.py sine I(-r,r)",
+    "tools/check_native_quad_fullset_interval_gate_nohash.py cosine I(-r,r)",
+    "tools/check_native_quad_fullset_interval_gate_nohash.py sine/cosine abs(x.lo), abs(x.hi)"
+  ],
+  "meaning": "The first-box probe stopped before Picard. This is a directed-Decimal method defect, not a Flow* containment failure or a plant counterexample."
+}

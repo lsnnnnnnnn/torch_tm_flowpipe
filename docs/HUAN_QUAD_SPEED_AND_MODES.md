@@ -446,3 +446,9 @@ removable cost. Full intermediate arrays remain at the server path in the
 round-gate evidence README; compact masks, change witnesses, original
 receipts and the independent audit are saved locally. This bounded result
 does not predict a 1,000-step speedup or establish end-to-end strictness.
+
+## Old-author P3 one-round weighted variant: bounded 40-step gate (2026-10-03)
+
+The [new single-factor run and saved-array audit](evidence/results/huan_quad_stage_a_40_20261001/weighted_one_round40_v1/README.md) changed only `refine_accepted` from two rounds to one. It kept the old-author equations, all 1,024 boxes, P3/P2/P4, strict arithmetic boundary, `h=0.005`, two controller calls, full host K20 SR, trig reuse, and per-step observation. The old two-round intermediate arrays could not answer how a one-round state propagates after its first step, so this distinct 40-step run was necessary; no old full run was restarted.
+
+All 40 steps and 40,960 lane-steps were accepted, with no rejected lane. Every saved step was wider than the two-round reference. At step 40, the sum of per-box twelve-state tube widths was `2697.8759514297453` versus `2697.875935884544`; all 22,528 changed tube endpoints and all 22,528 changed endpoint endpoints moved outward, with a maximum endpoint difference of `3.836081063912644e-09`. Thus one round is a **numerically different, slightly wider algorithm variant**, not an implementation-equivalent optimization. Its single outer wall was 45.207353 s, versus a differently instrumented two-round process on another date; this is not a measured net saving or a prediction of a 1,000-step result. The shortened runner's `FALSIFIED` is the original T=5 target check applied at `t=0.2`, not a full-time property verdict. This candidate has no complete 1,000-step or end-to-end certificate qualification.

@@ -1,0 +1,148 @@
+--- saved_onebox/quad_gate.cpp
++++ new_allbox/quad_allbox.cpp
+@@ -140,8 +140,17 @@
+     }
+ 
+ 
+-    initial_sets.resize(1);
+-    initial_boxes.resize(1);
++    if (initial_sets.size() != 1024 || initial_boxes.size() != 1024)
++        throw std::runtime_error("unexpected source partition size");
++    {
++        std::ofstream boxes(std::string(quad_gate::directory()) + "/source_boxes.csv");
++        boxes << std::setprecision(17) << "lane,coord,lo,hi\n";
++        for (unsigned lane = 0; lane < initial_boxes.size(); ++lane)
++            for (unsigned coord = 0; coord < 12; ++coord)
++                boxes << lane << ',' << coord + 1 << ','
++                      << initial_boxes[lane][coord].inf() << ','
++                      << initial_boxes[lane][coord].sup() << '\n';
++    }
+     vector<Symbolic_Remainder> symbolic_remainders;
+     vector<Result_of_Reachability> results;
+     for (int sub_iter = 0; sub_iter < initial_sets.size(); sub_iter++)
+@@ -154,11 +163,8 @@
+     }
+ 
+     auto start = std::chrono::steady_clock::now();
+-    unsigned int num_threads = 4; // explicit common CPU budget
+-
+     for (int iter = 0; iter < steps; iter++)
+     {
+-        boost::asio::thread_pool pool(num_threads);
+         cout << "Step " << iter << endl;
+         cout << "Constructing input." << endl;
+         Json::Value input_lb(Json::arrayValue);
+@@ -181,6 +187,22 @@
+         cout << "Calling CROWN." << endl;
+         cl.CallMethod("CROWN_reach", params, output_coefficients);
+         quad_gate::save_rpc(params, output_coefficients);
++        if (input_lb.size() != 1024 * num_nn_input ||
++            input_ub.size() != 1024 * num_nn_input ||
++            output_coefficients["T"].size() != 1024)
++            throw std::runtime_error("CROWN batch cardinality mismatch");
++        for (unsigned lane = 0; lane < initial_boxes.size(); ++lane) {
++            for (unsigned coord = 0; coord < 12; ++coord) {
++                const unsigned pos = lane * 12 + coord;
++                if (input_lb[pos].asDouble() > initial_boxes[lane][coord].inf() ||
++                    input_ub[pos].asDouble() < initial_boxes[lane][coord].sup()) {
++                    cerr << "RPC_INPUT_OMITS_SOURCE lane=" << lane
++                         << " coord=" << coord + 1 << endl;
++                    return 3;
++                }
++            }
++        }
++        cout << "RPC_COVERS_ALL_SOURCE_BOXES" << endl;
+         // Unpack results from CROWN
+         cout << "Unpacking output from CROWN." << endl;
+         for (int sub_iter = 0; sub_iter < initial_sets.size(); sub_iter++)
+@@ -221,31 +243,23 @@
+ 
+         // Flow*
+         cout << "Flow* started." << endl;
+-        std::atomic<bool> terminate(false);
+         for (int sub_iter = 0; sub_iter < initial_sets.size(); sub_iter++)
+         {
+-            boost::asio::post(pool, [&, sub_iter] {
+-                author_matched::reach(dynamics, results[sub_iter], initial_sets[sub_iter], 0.005, setting, safeSet, symbolic_remainders[sub_iter]);
+-                if (results[sub_iter].status == COMPLETED_SAFE || results[sub_iter].status == COMPLETED_UNSAFE || results[sub_iter].status == COMPLETED_UNKNOWN)
+-                {
+-                    initial_sets[sub_iter] = results[sub_iter].fp_end_of_time;
+-                }
+-                else
+-                {
+-                    cout << "Flow* terminated." << endl;
+-                    cout << "Broken branch: " << sub_iter << endl;
+-                    cout << initial_boxes[sub_iter][0] << "\t" << initial_boxes[sub_iter][1] << "\t" << initial_boxes[sub_iter][2] << "\t" 
+-                         << initial_boxes[sub_iter][3] << "\t" << initial_boxes[sub_iter][4] << "\t" << initial_boxes[sub_iter][5] << endl;
+-                    terminate.store(true);
+-                }
+-            });
+-        }
+-        pool.join();
+-        quad_gate::save_state(results, setting);
+-        arch_ranges::record(results); 
+-        if (terminate.load())
+-        {
+-            break;
++            auto box_start = std::chrono::steady_clock::now();
++            author_matched::reach(dynamics, results[sub_iter], initial_sets[sub_iter],
++                                  0.005, setting, safeSet, symbolic_remainders[sub_iter]);
++            auto box_end = std::chrono::steady_clock::now();
++            double seconds = std::chrono::duration<double>(box_end - box_start).count();
++            quad_gate::save_state(sub_iter, results[sub_iter], setting, seconds);
++            cout << "BOX " << sub_iter << " status=" << results[sub_iter].status
++                 << " accepted=" << results[sub_iter].flowpipes.size()
++                 << " seconds=" << seconds << endl;
++            if (results[sub_iter].status != COMPLETED_SAFE &&
++                results[sub_iter].status != COMPLETED_UNSAFE &&
++                results[sub_iter].status != COMPLETED_UNKNOWN)
++                return 2;
++            if (results[sub_iter].flowpipes.size() != 1)
++                return 2;
+         }
+         cout << "Flow* finished. GATE_PREFIX_ONLY T=0.005" << endl;
+         // auto end_temp = std::chrono::steady_clock::now();
+@@ -254,37 +268,7 @@
+     }
+ 
+ 
+-    vector<Constraint> targetSet;
+-    vector<string> constraints = {"-x3 + 0.94", "x3 - 1.06"};
+-
+-    for (int i = 0; i < 2; i++)
+-    {
+-        Constraint c_temp(constraints[i], vars);
+-        targetSet.push_back(c_temp);
+-    }
+-
+-    bool is_reachable = 1;
+-    for (int sub_iter = 0; sub_iter < initial_sets.size(); sub_iter++)
+-    {
+-        bool b = results[sub_iter].fp_end_of_time.isInTarget(targetSet, setting);
+-        if (!b)
+-        {
+-            is_reachable = 0;
+-            cout << "Unknown branch:" << endl;
+-            cout << initial_boxes[sub_iter][0] << "\t" << initial_boxes[sub_iter][1] << "\t" << initial_boxes[sub_iter][2] << "\t" 
+-                 << initial_boxes[sub_iter][3] << "\t" << initial_boxes[sub_iter][4] << "\t" << initial_boxes[sub_iter][5] << endl;
+-            break;
+-        }
+-    }
+-
+-    if (is_reachable)
+-    {
+-        cout << "VERIFIED" << endl;
+-    }
+-    else
+-    {
+-        cout << "UNKNOWN" << endl;
+-    }
++    cout << "PROPERTY_NOT_CHECKED_FIRST_PERIOD_ONLY" << endl;
+ 
+     auto end = std::chrono::steady_clock::now();
+     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+@@ -304,4 +288,4 @@
+     // plot_setting.plot_2D_octagon_MATLAB("./", "quad_" + to_string(steps), combined_results, setting);
+     
+     return 0;
+-}+}

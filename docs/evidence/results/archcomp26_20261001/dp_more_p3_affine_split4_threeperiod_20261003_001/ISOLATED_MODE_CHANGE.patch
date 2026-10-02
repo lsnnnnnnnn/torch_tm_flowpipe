@@ -1,0 +1,20 @@
+--- /Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/tools/archcomp26_dp_p3_nohash.py	2026-10-02 17:25:58
++++ /Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/dp_more_p3_affine_split4_threeperiod_20261003_001/source/archcomp26_dp_p3_nohash.py	2026-10-03 01:55:05
+@@ -322,6 +322,8 @@
+         config["split_vars"] = []
+     if mode in ("smoke", "batch-smoke"):
+         config["steps"] = 1
++    elif mode == "three-period":
++        config["steps"] = 3
+     path.write_text(yaml.safe_dump(config, sort_keys=False))
+     return config
+ 
+@@ -530,7 +532,7 @@
+     parser.add_argument("--output", type=Path, required=True)
+     parser.add_argument("--contract", choices=("less", "more"), default="less")
+     parser.add_argument("--contract-file", type=Path)
+-    parser.add_argument("--mode", choices=("smoke", "batch-smoke", "full"), required=True)
++    parser.add_argument("--mode", choices=("smoke", "batch-smoke", "three-period", "full"), required=True)
+     parser.add_argument("--controller-envelope", choices=("interval", "affine", "affine-split2", "affine-split4"), default="interval")
+     args = parser.parse_args()
+     if args.contract == "more" and args.contract_file is None:

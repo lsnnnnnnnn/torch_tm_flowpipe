@@ -8,6 +8,7 @@ not the neural network, the other 1023 boxes, or the full QUAD horizon.
 
 import csv
 from decimal import Decimal as D, ROUND_CEILING, ROUND_FLOOR, localcontext
+from fractions import Fraction as F
 import json
 import math
 from pathlib import Path
@@ -35,8 +36,8 @@ def up(f):
 
 class I:
     def __init__(self, lo, hi=None):
-        self.lo = lo if isinstance(lo, D) else D(str(lo))
-        self.hi = self.lo if hi is None else (hi if isinstance(hi, D) else D(str(hi)))
+        self.lo = decimal_exact(lo)
+        self.hi = self.lo if hi is None else decimal_exact(hi)
         if self.lo > self.hi:
             raise ValueError("reversed interval")
 
@@ -47,7 +48,8 @@ class I:
     __radd__ = __add__
 
     def __neg__(self):
-        return I(-self.hi, -self.lo)
+        # Decimal unary minus uses the ambient context; copy_negate is exact.
+        return I(self.hi.copy_negate(), self.lo.copy_negate())
 
     def __sub__(self, other):
         return self + -interval(other)
@@ -82,28 +84,34 @@ def interval(x):
     return x if isinstance(x, I) else I(x)
 
 
+def decimal_exact(value):
+    if isinstance(value, D):
+        return value
+    return D.from_float(value) if isinstance(value, float) else D(str(value))
+
+
 def trig_remainder(magnitude, power, factorial):
     return up(lambda: magnitude ** power / D(factorial))
 
 
 def sine(x):
     x = interval(x)
-    m = max(abs(x.lo), abs(x.hi))
+    m = max(x.lo.copy_abs(), x.hi.copy_abs())
     if m >= D("0.1"):
         raise ValueError("small-angle sine enclosure exceeded")
     p = x - (x*x*x)/6 + (x*x*x*x*x)/120
     r = trig_remainder(m, 7, 5040)
-    return p + I(-r, r)
+    return p + I(r.copy_negate(), r)
 
 
 def cosine(x):
     x = interval(x)
-    m = max(abs(x.lo), abs(x.hi))
+    m = max(x.lo.copy_abs(), x.hi.copy_abs())
     if m >= D("0.1"):
         raise ValueError("small-angle cosine enclosure exceeded")
     p = 1 - (x*x)/2 + (x*x*x*x)/24
     r = trig_remainder(m, 6, 720)
-    return p + I(-r, r)
+    return p + I(r.copy_negate(), r)
 
 
 def ode(x, u):
@@ -160,7 +168,11 @@ def load_contract(root):
         if low > high:
             raise ValueError("reversed residual control interval")
         center, radius = (high+low)/2, (high-low)/2
-        control = I(exact_float(center)) + I(-exact_float(radius), exact_float(radius))
+        if (F.from_float(center) != (F.from_float(high)+F.from_float(low))/2 or
+                F.from_float(radius) != (F.from_float(high)-F.from_float(low))/2):
+            raise ValueError("binary64 center/radius rounded a controller endpoint")
+        radius_exact = exact_float(radius)
+        control = I(exact_float(center)) + I(radius_exact.copy_negate(), radius_exact)
         for i in range(12):
             control += t[j][i]*x0[i]
         u.append(control)
@@ -183,7 +195,7 @@ def run(root):
     tube = [None]*4
     for step in range(STEPS):
         fx = ode(x, u)
-        y = [x[i] + I(0, h)*fx[i] + I(-EPS, EPS) for i in range(12)]
+        y = [x[i] + I(0, h)*fx[i] + I(EPS.copy_negate(), EPS) for i in range(12)]
         fy = ode(y, u)
         picard = [x[i] + I(0, h)*fy[i] for i in range(12)]
         if not all(picard[i].inside(y[i], strict=True) for i in range(12)):
@@ -232,6 +244,9 @@ def run(root):
 def demo():
     a, b = I("-0.1", "0.2"), I("2", "3")
     assert (a*b).pair() == ["-0.3", "0.6"]
+    exact_binary = D.from_float(0.1)
+    assert I(0.1).lo == exact_binary
+    assert (-I(exact_binary)).lo == exact_binary.copy_negate()
     assert sine(I(0)).lo <= 0 <= sine(I(0)).hi
     assert cosine(I(0)).lo <= 1 <= cosine(I(0)).hi
 

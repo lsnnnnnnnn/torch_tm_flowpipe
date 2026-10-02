@@ -1,0 +1,14 @@
+{
+  "schema": "native-quad-firstbox-saved-receipt-crosscheck-nohash-v1",
+  "checks": {
+    "rpc_input_lb_equal": true,
+    "rpc_input_ub_equal": true,
+    "T_equal_after_float32_transport": true,
+    "u_min_equal_after_float32_transport": true,
+    "u_max_equal_after_float32_transport": true,
+    "octagon.csv_lane0_equal": true,
+    "terminal_axes.csv_lane0_equal": true
+  },
+  "all_passed": true,
+  "meaning": "All-box lane 0 has the same saved binary64 RPC input, float32-transported coefficients, and observer rows as the earlier independently checked first physical box. This compares saved data only, not CROWN validity."
+}

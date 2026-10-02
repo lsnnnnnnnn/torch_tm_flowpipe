@@ -1,0 +1,99 @@
+{
+  "schema": "native-quad-fixed-decimal-lane7-bootstrap-stop-nohash-v1",
+  "lane": 7,
+  "source_box_x1_to_x6_exact": [
+    [
+      "-3602879701896397/9007199254740992",
+      "-2702159776422297/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "-2702159776422297/9007199254740992"
+    ],
+    [
+      "-1801439850948199/18014398509481984",
+      "1/36028797018963968"
+    ],
+    [
+      "0",
+      "3602879701896397/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "3602879701896397/9007199254740992"
+    ],
+    [
+      "-3602879701896397/9007199254740992",
+      "3602879701896397/9007199254740992"
+    ]
+  ],
+  "saved_rpc_control_hulls_exact": [
+    [
+      "1351331837454495092931342967/154742504910672534362390528",
+      "1886237366315694820479254293/154742504910672534362390528"
+    ],
+    [
+      "-3770845186185430530762191/1237940039285380274899124224",
+      "9896967935978281343016757/618970019642690137449562112"
+    ],
+    [
+      "-60808335586992629232341/9671406556917033397649408",
+      "6712826871444374236843957/618970019642690137449562112"
+    ]
+  ],
+  "bootstrap_inequalities": {
+    "x10_rate": {
+      "bound_exact": "49484839679891406715083785/33424381060705267422276354048",
+      "limit_exact": "3/2000",
+      "bound_approx": 0.001480501302029114,
+      "limit_approx": 0.0015,
+      "strict_pass": true
+    },
+    "x11_rate": {
+      "bound_exact": "33564134357221871184219785/33424381060705267422276354048",
+      "limit_exact": "1/1000",
+      "bound_approx": 0.0010041811782920613,
+      "limit_approx": 0.001,
+      "strict_pass": false
+    },
+    "x4": {
+      "bound_exact": "56364730767611268149/140737488355328000000",
+      "limit_exact": "1",
+      "bound_approx": 0.4004955,
+      "limit_approx": 1.0,
+      "strict_pass": true
+    },
+    "x5": {
+      "bound_exact": "56365082611332156469/140737488355328000000",
+      "limit_exact": "1",
+      "bound_approx": 0.400498,
+      "limit_approx": 1.0,
+      "strict_pass": true
+    },
+    "x6": {
+      "bound_exact": "1501418128002691508020986672421809/3384992294920961689177292800000000",
+      "limit_exact": "1",
+      "bound_approx": 0.44355141672124515,
+      "limit_approx": 1.0,
+      "strict_pass": true
+    },
+    "x7": {
+      "bound_exact": "60001/7999600000",
+      "limit_exact": "1/100",
+      "bound_approx": 7.50050002500125e-06,
+      "limit_approx": 0.01,
+      "strict_pass": true
+    },
+    "x8": {
+      "bound_exact": "1/200000",
+      "limit_exact": "1/100",
+      "bound_approx": 5e-06,
+      "limit_approx": 0.01,
+      "strict_pass": true
+    }
+  },
+  "failed_inequalities": [
+    "x11_rate"
+  ],
+  "meaning": "The fixed first-box bootstrap constants cannot close this lane. No Picard substep or saved Flow* comparison ran for lane 7; no actual trajectory or Flow* counterexample is inferred."
+}

@@ -12,7 +12,7 @@
 | 峰值进程树RSS | 6,049,177,600字节（5.634GiB） |
 | 峰值自有GPU显存 | 11,972,640,768字节（11.150GiB） |
 
-数值配置：官方QUAD动力学与NN、冻结8dd初始盒，B=1024，h=0.005，T=5；控制周期0.1秒，每20个ODE步更新一次NN，共50次。工作三阶/点值代码二阶/验证四阶（P3/point2/validation4），strict余项cap±0.1、cutoff=1e-6、SR容量1000且保留完整历史、host重组周期K20。硬件为GPU3 Tesla V100 16GB，CPU14–17。这些条件与本次对照的原P3保持一致。
+数值配置：旧作者/仓库 QUAD 方程与NN、冻结8dd初始盒，B=1024，h=0.005，T=5；控制周期0.1秒，每20个ODE步更新一次NN，共50次。此处不是 2026 论文方程新主表合同。工作三阶/点值代码二阶/验证四阶（P3/point2/validation4），strict余项cap±0.1、cutoff=1e-6、SR容量1000且保留完整历史、host重组周期K20。硬件为GPU3 Tesla V100 16GB，CPU14–17。这些条件与本次对照的原P3保持一致。
 
 只有一次启动：watch1660449/solver1660452，watch completed/exit0；两进程已实际确认退出。原allocator13.5GiB、GPU14GiB/RSS11.5GiB及36000秒watch上限不变。GPU2原native作业未改动。已完成候选自己的真实40步和cold20→21资格后，才启动此长程；原GPU14 main/LongRuntime、1000步/SR1000/50NN与逐子盒失败语义保持。
 

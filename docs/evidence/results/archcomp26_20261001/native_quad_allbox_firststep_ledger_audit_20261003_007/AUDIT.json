@@ -1,0 +1,47 @@
+{
+  "schema": "native-quad-allbox-firststep-independent-ledger-audit-v1",
+  "status": "saved_ledgers_consistent",
+  "segments": [
+    {
+      "directory": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_quad_allbox_independent_plant_firststep_fixed_decimal_20261003_005/probe_lane0",
+      "start_lane": 0,
+      "checked_boxes": 1,
+      "physical_outward_inside": 20,
+      "physical_unexpanded_binary64_inside": 20,
+      "bootstrap_mode": "fixed_firstbox"
+    },
+    {
+      "directory": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_quad_allbox_independent_plant_firststep_fixed_decimal_20261003_005/remainder_1_1023",
+      "start_lane": 1,
+      "checked_boxes": 6,
+      "physical_outward_inside": 120,
+      "physical_unexpanded_binary64_inside": 120,
+      "bootstrap_mode": "fixed_firstbox"
+    },
+    {
+      "directory": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_quad_allbox_independent_plant_adaptive_bootstrap_20261003_006/probe_lane7",
+      "start_lane": 7,
+      "checked_boxes": 1,
+      "physical_outward_inside": 20,
+      "physical_unexpanded_binary64_inside": 20,
+      "bootstrap_mode": "adaptive"
+    },
+    {
+      "directory": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_quad_allbox_independent_plant_adaptive_bootstrap_20261003_006/remainder_8_1023",
+      "start_lane": 8,
+      "checked_boxes": 1016,
+      "physical_outward_inside": 20320,
+      "physical_unexpanded_binary64_inside": 20320,
+      "bootstrap_mode": "adaptive"
+    }
+  ],
+  "source_boxes_checked": 1024,
+  "independent_control_hulls_reconstructed": 3072,
+  "strict_bootstrap_inequalities_recomputed": 7168,
+  "recorded_bootstrap_inequalities_checked": 7154,
+  "picard_substeps_per_box": 1000,
+  "saved_physical_comparisons_inside": 20480,
+  "scope": "saved source-defined 1024 QUAD first-call boxes, first paper-ODE h=0.005 plant step under each saved affine-plus-residual control hull",
+  "limits": "No independent CROWN/NN proof, Flow* parser/runtime certificate, other small steps, later controls, T=5 reach-and-remain, or native production promotion",
+  "native_production_gate": "CLOSED"
+}

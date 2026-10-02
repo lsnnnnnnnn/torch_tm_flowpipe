@@ -1,0 +1,191 @@
+{
+  "schema": "native-quad-legacy-narrow-rpc-fixed-decimal-recheck-v1",
+  "status": "completed_saved_evidence_recheck",
+  "original_library": {
+    "old_historical_inside": 23,
+    "fixed_outward_inside": 23,
+    "total": 32,
+    "changed_boolean_keys": [],
+    "failed_keys": [
+      [
+        "terminal_composed",
+        6
+      ],
+      [
+        "terminal_pre",
+        7
+      ],
+      [
+        "terminal_composed",
+        7
+      ],
+      [
+        "terminal_pre",
+        8
+      ],
+      [
+        "terminal_composed",
+        8
+      ],
+      [
+        "terminal_pre",
+        10
+      ],
+      [
+        "terminal_composed",
+        10
+      ],
+      [
+        "terminal_pre",
+        11
+      ],
+      [
+        "terminal_composed",
+        11
+      ]
+    ],
+    "saved_csv_bounds_checked": 64
+  },
+  "var_tail_copy": {
+    "old_historical_inside": 27,
+    "fixed_outward_inside": 27,
+    "total": 32,
+    "changed_boolean_keys": [],
+    "failed_keys": [
+      [
+        "terminal_composed",
+        6
+      ],
+      [
+        "terminal_pre",
+        10
+      ],
+      [
+        "terminal_composed",
+        10
+      ],
+      [
+        "terminal_pre",
+        11
+      ],
+      [
+        "terminal_composed",
+        11
+      ]
+    ],
+    "saved_csv_bounds_checked": 64
+  },
+  "repaired_exact_algebraic": {
+    "exact_algebraic_comparisons": [
+      {
+        "kind": "terminal_pre",
+        "coord": 10,
+        "physical_bound_exact": [
+          "-2300520443504885005336205/16712190530352633711138177024",
+          "97254051929300462290281875/66848762121410534844552708096"
+        ],
+        "saved_outward_exact": [
+          "-5078581623467899/36893488147419103232",
+          "6709251409969157/4611686018427387904"
+        ],
+        "inside_outward": true,
+        "inside_unexpanded_binary64": true,
+        "pre_column_is_not_pre_set_proof": true
+      },
+      {
+        "kind": "terminal_composed",
+        "coord": 10,
+        "physical_bound_exact": [
+          "-2300520443504885005336205/16712190530352633711138177024",
+          "97254051929300462290281875/66848762121410534844552708096"
+        ],
+        "saved_outward_exact": [
+          "-5078581623467905/36893488147419103232",
+          "6709251409969157/4611686018427387904"
+        ],
+        "inside_outward": true,
+        "inside_unexpanded_binary64": true,
+        "pre_column_is_not_pre_set_proof": false
+      },
+      {
+        "kind": "terminal_pre",
+        "coord": 11,
+        "physical_bound_exact": [
+          "-14110458937103392465212895/22282920707136844948184236032",
+          "63749456334591932092148765/66848762121410534844552708096"
+        ],
+        "saved_outward_exact": [
+          "-1460154327367681/2305843009213693952",
+          "8795749304276921/9223372036854775808"
+        ],
+        "inside_outward": true,
+        "inside_unexpanded_binary64": true,
+        "pre_column_is_not_pre_set_proof": true
+      },
+      {
+        "kind": "terminal_composed",
+        "coord": 11,
+        "physical_bound_exact": [
+          "-14110458937103392465212895/22282920707136844948184236032",
+          "63749456334591932092148765/66848762121410534844552708096"
+        ],
+        "saved_outward_exact": [
+          "-5840617309470725/9223372036854775808",
+          "4397874652138461/4611686018427387904"
+        ],
+        "inside_outward": true,
+        "inside_unexpanded_binary64": true,
+        "pre_column_is_not_pre_set_proof": false
+      },
+      {
+        "kind": "terminal_composed",
+        "coord": 6,
+        "physical_bound_exact": [
+          "-6035071096396058639593554156796611/13539969179683846756709171200000000",
+          "4733356991352726022074636661171611/13539969179683846756709171200000000"
+        ],
+        "saved_outward_exact": [
+          "-8038016353748475/18014398509481984",
+          "6301724923651425/18014398509481984"
+        ],
+        "inside_outward": true,
+        "inside_unexpanded_binary64": true,
+        "pre_column_is_not_pre_set_proof": false
+      }
+    ],
+    "all_five_inside_outward": true,
+    "fixed_picard_plus_exact_algebraic_numeric_columns_inside": 32,
+    "composed_physical_state_comparisons_inside": 20,
+    "composed_physical_state_comparisons_total": 20,
+    "pre_symbolic_set_inclusion_proven": false,
+    "strict_bootstrap": {
+      "x4": [
+        "56364730767611268149/140737488355328000000",
+        "1"
+      ],
+      "x5": [
+        "56365082611332156469/140737488355328000000",
+        "1"
+      ],
+      "x6": [
+        "878667384980628548717606799542373/1934281311383406679529881600000000",
+        "1"
+      ],
+      "x7": [
+        "60001/7999600000",
+        "1/100"
+      ],
+      "x8": [
+        "1/200000",
+        "1/100"
+      ]
+    }
+  },
+  "source_first_box_x1_x3_lower_binary64": "-0.4",
+  "saved_rpc_x1_x3_lower_binary64": "-0.39999999999999997",
+  "omitted_source_lower_strip_exact": "1/18014398509481984",
+  "float32_residual_channels_exact_center_radius_per_arm": 3,
+  "source_first_box_fully_covered_by_rpc": false,
+  "scope": "saved narrow first-call RPC domain, one h=0.005 paper-ODE step, saved float32 affine-plus-residual controls",
+  "limits": "No source-full-first-box certificate, pre symbolic-set proof, CROWN/NN certificate, Flow* parser/runtime certificate, other boxes or steps, or T=5 property; native production gate CLOSED"
+}
