@@ -212,7 +212,15 @@ class Tee:
         self.stream.flush()
 
 
+class FirstNumericalRejection(Exception):
+    """Stop an isolated diagnostic after preserving its first rejected step."""
+
+
 def run(args):
+    if args.ode_step_size not in (0.1, 0.05):
+        raise ValueError("supported TORA ODE step sizes are 0.1 and 0.05 s")
+    if args.ode_step_size != 0.1 and (args.mode != "full" or not args.stop_at_first_rejection):
+        raise ValueError("h=0.05 is an isolated full-horizon, first-rejection diagnostic")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     started = time.perf_counter()
@@ -225,6 +233,7 @@ def run(args):
         config, box_rows, _ = checked_contract(SOURCE_CONFIG, BOXES, MODEL, check_model=False)
         config["model_dir"] = str(MODEL)
         config["steps"] = 1 if args.mode == "smoke1" else 20
+        config["ode_step_size"] = args.ode_step_size
         config_path = output / "config.yaml"
         config_path.write_text(yaml.safe_dump(config, sort_keys=False))
         cells = torch.tensor(box_rows, dtype=torch.float64)
@@ -251,6 +260,8 @@ def run(args):
             "cpu_affinity": sorted(os.sched_getaffinity(0)),
             "controller_boundary": "raw ONNX f(x) injected into u1; plant dx4=u1-10 applies offset once",
             "method": "author sparse engine, Taylor order 3, strict plant, box same-slope CROWN, native input layout, rpc-float32",
+            "numerical_profile": {"ode_step_size": args.ode_step_size,
+                                  "stop_at_first_rejection": args.stop_at_first_rejection},
             "property": "all four physical states in [-2,2] over every substep of T=20; smoke covers only T=1",
             "qualification": "shared controller driver and unqualified floating NN injection; not an independent end-to-end proof",
         }
@@ -259,6 +270,7 @@ def run(args):
                           ("bounds", "<f8", (4, 4))])
         tube_union = np.array([[np.inf, -np.inf]] * 4, dtype=np.float64)
         final_endpoint = None
+        stopped_on_first_rejection = False
         original_advance = driver.advance_sparse
         with (output / "ranges.bin").open("xb") as ranges, (output / "observations.jsonl").open("x") as log:
             def observed(*call_args, **call_kwargs):
@@ -295,9 +307,13 @@ def run(args):
                 row = {"substep": step_number, "accepted_count": int(valid.sum()),
                        "rejected_lanes": np.flatnonzero(~valid).tolist(),
                        "tube_inside_safe_for_accepted": safe}
+                if args.stop_at_first_rejection:
+                    row["status_codes"] = state.status.detach().cpu().tolist()
                 log.write(json.dumps(row) + "\n")
                 log.flush()
                 observations.append(row)
+                if args.stop_at_first_rejection and not valid.all():
+                    raise FirstNumericalRejection()
                 return state, accepted
 
             driver.advance_sparse = observed
@@ -312,14 +328,20 @@ def run(args):
             tee = Tee(sys.stdout)
             try:
                 with redirect_stdout(tee):
-                    driver_code = driver.main()
+                    try:
+                        driver_code = driver.main()
+                    except FirstNumericalRejection:
+                        driver_code = None
+                        stopped_on_first_rejection = True
             finally:
                 sys.argv = previous
 
-        expected = config["steps"] * 10
+        expected = config["steps"] * round(config["step_size"] / config["ode_step_size"])
         complete = (driver_code == 0 and len(observations) == expected
                     and all(row["accepted_count"] == 12 for row in observations))
-        if "Unsafe." in tee.lines or "FALSIFIED" in tee.lines:
+        if stopped_on_first_rejection:
+            checker = "NOT_RETURNED_AFTER_PROBE_STOP"
+        elif "Unsafe." in tee.lines or "FALSIFIED" in tee.lines:
             checker = "UNSAFE_OR_FALSIFIED"
         elif any(line in tee.lines for line in ("Unknown.", "UNKNOWN", "Flow* terminated.")):
             checker = "UNKNOWN"
@@ -328,9 +350,11 @@ def run(args):
         else:
             checker = "UNRESOLVED"
         result.update(
-            status=("completed_short_prefix" if args.mode == "smoke1" else "completed")
-            if complete else "incomplete",
+            status=("stopped_first_numerical_rejection" if stopped_on_first_rejection else
+                    (("completed_short_prefix" if args.mode == "smoke1" else "completed")
+                     if complete else "incomplete")),
             driver_return=driver_code, expected_substeps=expected,
+            first_rejection=(observations[-1] if stopped_on_first_rejection else None),
             observed_substeps=len(observations),
             accepted_lane_substeps=sum(row["accepted_count"] for row in observations),
             all_lanes_accepted=complete,
@@ -365,6 +389,8 @@ def main():
     parser.add_argument("--controller", type=Path, default=MODEL)
     parser.add_argument("--backend", choices=ENGINES)
     parser.add_argument("--mode", choices=("smoke1", "full"))
+    parser.add_argument("--ode-step-size", type=float, default=0.1)
+    parser.add_argument("--stop-at-first-rejection", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     guard_digests_and_builds()

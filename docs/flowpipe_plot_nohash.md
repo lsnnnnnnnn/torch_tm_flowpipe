@@ -123,3 +123,18 @@ run. The existing 2026 QUAD/native/P3 saved ranges contain no correlated TM,
 so their figures remain explicitly box projections until a new accepted-step
 directional observer is attached to those engines; the old long runs are not
 repeated just for plotting.
+
+The CPU multi-step solver now has an optional `accepted_segment_observer`
+callback. `OctagonJSONLObserver` writes the actual directional supports after
+each validated step, while `segment.tm` and the propagated `segment.final_tm`
+still exist; it stops on an observation error. The solver still retains its
+segment list in memory. Replaying the JSONL through
+`geometry_from_stream` produces an **accepted-prefix** plot. The separate
+[three-step streaming smoke](evidence/results/archcomp26_20261001/tm_octagon_stream_harmonic_smoke_20261002_001/SUMMARY.md)
+and an unobserved same-contract control both validated 3/3 steps and had
+identical tube and endpoint directional supports. This path is CPU scalar TM
+only. Native Flow* would need a C++ observer over each accepted `Flowpipe`'s
+correlated Taylor models before `arch_ranges::record` reduces them to boxes;
+the P3 GPU driver would need a per-lane directional range before its current
+`hull_ranges_s`/endpoint range union. Neither adapter is present, and no
+saved native/P3 `ranges.bin` or JSONL row can be relabeled as an octagon.

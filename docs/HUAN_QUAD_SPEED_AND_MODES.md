@@ -45,6 +45,15 @@ The existing result and timing evidence is frozen in
 [`huan_parity_campaign.json`](../research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json),
 and [`quad_trig_full1000.md`](../research/gpu_verified_20260930/report/evidence/quad_trig_full1000.md).
 
+The roughly 80-second study uses the **historical author equations**. Its
+saved YAML has the repository/author expressions for `x2'`, `x4'`, and `x5'`,
+which differ from the equations printed in the 2026 report. The user selected
+the printed equations for the **new** four-method main table; that decision and
+the three expressions are documented in the
+[paper-contract decision](ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md).
+Neither the historical 75.250099 s nor its T=5 widths are measurements of the
+new paper-equation plant.
+
 ## Identity and evidence boundary
 
 | Item | Verified identity / boundary |
@@ -137,6 +146,29 @@ start there.
 | Huan strict, hybrid, native-f64, SR chunk | no | 597 | 611,930 | failed diagnostic only | 36.596 s process; not a full-runtime sample |
 | Current PyTorch P3 strict+trig | yes | none | 1,024,000 | one completion run | 1,533.752052 s watchdog |
 | Native matched initial-affine-cover variant (otherwise original-library P2/f64) | no | no rejection in complete prefix | 614,400 (=600×1,024) | natural six-hour timeout | 21,609.612654 s watchdog; no T=5 width; fullbatch/end-to-end qualification flags remain false |
+
+The successful Huan row has five individual samples, all with the same saved
+non-timing numerical metrics and 1,024,000 accepted lane-steps. The workload is
+`[-0.4,0.4]^6 × {0}^6` split `8×8×8×2×1×1`, with `h=0.005`, 50 controller
+periods of 0.1 s, 1,000 ODE steps, working order 2, validation level 1,
+`box`/`same-slope`, native-f64 transfer, and the batch-only SR chunk. The
+individual times, rather than just the nested medians, are retained in the
+[campaign record](../research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json):
+
+| Fresh process | Internal loop (s) | `driver.main()` (s) | Child process (s) |
+|---:|---:|---:|---:|
+| 1 | 70.135791 | 71.499330 | 74.346705 |
+| 2 | 71.900225 | 73.327830 | 76.304439 |
+| 3 | 70.090028 | 71.451791 | 74.330623 |
+| 4 | 71.429727 | 72.844456 | 75.757465 |
+| 5 | 70.727803 | 72.173857 | 75.250099 |
+| Median | **70.727803** | **72.173857** | **75.250099** |
+
+The process span is 74.330623–76.304439 s. The five runs show repeatability
+for this saved configuration; they do not identify which order, arithmetic,
+memory, or scheduling difference causes the gap to the P3 route. The separate
+2026 paper-equation Huan run is one new 94.583 s process sample under the
+changed plant and belongs to the new contract, not this five-run median.
 
 At Huan strict step 597, 79 lanes reject with no bad-domain count. For the
 first failing lane, the validation ranges for x5/x6 exceed the ±0.1 cap, and

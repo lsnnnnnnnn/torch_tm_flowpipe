@@ -11,7 +11,9 @@ import struct
 RECORD = struct.Struct("<QQd16d")  # lane, substep, h, four (tube lo/hi, endpoint lo/hi)
 
 
-def scan(run_dir):
+def scan(run_dir, expected_h=0.1):
+    if not math.isfinite(expected_h) or expected_h <= 0:
+        raise ValueError("expected ODE step must be positive and finite")
     observations = [json.loads(line) for line in
                     (run_dir / "payload/observations.jsonl").read_text().splitlines()]
     raw = (run_dir / "payload/ranges.bin").read_bytes()
@@ -36,7 +38,7 @@ def scan(run_dir):
         for lane in range(12):
             offset = ((step - 1) * 12 + lane) * RECORD.size
             row = RECORD.unpack_from(raw, offset)
-            if (row[0], row[1]) != (lane, step) or row[2] != 0.1:
+            if (row[0], row[1]) != (lane, step) or row[2] != expected_h:
                 raise ValueError(f"unexpected lane/step/h at {lane}/{step}")
             if lane in rejected[step]:
                 if first_rejection is None:
@@ -70,6 +72,7 @@ def scan(run_dir):
     return {
         "schema": "archcomp26-tora-ranges-scan-nohash-v1",
         "source_run_dir": str(run_dir),
+        "expected_ode_step_s": expected_h,
         "record_count": len(raw) // RECORD.size,
         "observed_substeps": len(observations),
         "accepted_lane_substeps": accepted_count,
@@ -89,8 +92,9 @@ def scan(run_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
+    parser.add_argument("--expected-h", type=float, default=0.1)
     args = parser.parse_args()
-    result = scan(args.run_dir.resolve())
+    result = scan(args.run_dir.resolve(), args.expected_h)
     output = args.run_dir / "INDEPENDENT_INTERVAL_SCAN.json"
     with output.open("x") as out:
         json.dump(result, out, indent=2, allow_nan=False)

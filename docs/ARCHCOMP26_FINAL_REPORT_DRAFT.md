@@ -1,10 +1,10 @@
 # ARCH-COMP26 非 VCAS 四方实验报告：可审阅草稿（不可作为最终成绩）
 
-> 2026-10-02 接续修订。本文件保留恢复执行前生成的 16×4 **哈希绑定基线矩阵**，它的 `not_started=64` 只描述旧矩阵记录，不能用来否认本轮新尝试。新尝试列在下方独立索引与[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)，以各自原始运行目录为准；ACC 已有四方重复进程计时，但仍不具备跨方法稳定排名所需的全部资格。实时接续状态见 [执行进度](GOAL_EXECUTION_PROGRESS_20261001.md)。
+> 2026-10-02 接续修订。本稿按[187 条本轮尝试](evidence/archcomp26_nohash_attempts_20261001.json)和九格经审计历史全程重建 16 个实例小节，仍是可审阅阶段稿，不是最终四方成绩。当前覆盖与各项原始运行目录见[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)、[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)及[执行进度](GOAL_EXECUTION_PROGRESS_20261001.md)。
 
-> 本轮按用户要求**没有计算或校验任何内容摘要**。旧冻结证据只按既存记录陈述，不重新验证身份；新 DP 原生结果保留无哈希路径、配置、日志、范围记录与图，尚未注入旧矩阵的资格字段。旧 Huan、旧 PyTorch 与旧 Flow* 数字也不冒充 2026 新合同结果。
+> 本轮按用户要求没有计算或校验内容摘要。历史结果只按已有收据和合同审计引用；新作业保留路径、配置、日志和保存范围，旧与新运行的模型、数值配置和计时资格分别标明。
 
-> 下方逐实例章节仍含恢复前自动生成的旧矩阵模板（例如 `not_started`、旧版“哈希绑定图”门槛）。那些句子不适用于本轮；本轮状态以本页接续记录、[当前无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)和[历史覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)为准。待完整报告重排时将旧模板整体替换。
+> 下方 16 个逐实例小节按当前 187-attempt 截点重排，数值全程、性质、计时、图与缺件分别注明。恢复前旧基线矩阵只用于历史边界，不决定本轮状态。
 
 ## 摘要与边界
 
@@ -13,7 +13,6 @@
 - 报告状态：**可审阅、不可发布为完整四方成绩**。
 - 执行状态：2026-10-01 已恢复；新工作索引中 DP less 四方、论文方程 QUAD 四方、Single Pendulum 两物理态四方、TORA remain P3/原生、ACC participant-order 四方、修正 unsafe 后 Attitude 四方、Docking 四方、Unicycle 论文方程四方、TORA reach-sigmoid 官方 `u=11f` 四方，以及 NAV standard 当前 P3/原生、NAV robust 当前 P3，共 **37 个方法单元**有完整数值时域记录。Docking 四方性质均为 `Unknown`，Unicycle Huan/Xiangru 的终点包含判据未过；Airplane 连续版完整初盒的 P3/Huan/Xiangru/Flow* native 新入口均失败且未得可接受全时流管；DP more 四方均未完成 T=0.4，其中 P3 完整合同尝试在第 9 小步早停，TORA remain Huan/Xiangru 全程尝试有拒绝盒与 `Unknown.`。本轮未尝试的 10 格包括缺权威离散语义的 Airplane 四格，以及已有同合同历史全程的 NAV/TORA reach-tanh 六格；另外三个短前缀格也有同合同历史全程证据。
 - 覆盖：16 个实例 × 4 个方法 = 64 个 cell。
-- 旧基线矩阵计数：`not_started=64`；它不是本轮实际 attempt 计数。新 attempt 见[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)。
 - 当前可写的实测结论：新原生 DP less 225×100、修正危险集的 Attitude 四方 1×60、论文方程 QUAD 四方 1024×1000、Single Pendulum 两物理态四方 1×100、TORA remain P3/原生 12×200、ACC participant-order 四方 1×50、Docking 四方 1×400 均有完整数值运行；DP less P3 分区仿射版本与 Huan/Xiangru 225×100 也完整；P3 仍无端到端严格证书。Docking 四方的非线性安全性质未决；原生外层 `failed/exit 2` 因 checker `UNKNOWN`，原始状态未改写。ACC、具名两物理态 Single Pendulum 与修正危险盒后的 Attitude 各有四方每法 5 次后续独立进程计时；这些完成时间不能仅凭当前数据做稳定速度排名或声称独立端到端浮点 NNCS 证明。失败前缀时间不外推为完成时间。
 
 [16×4 新旧覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)单独核对了九格同合同历史完整时域：NAV standard/robust 共五格及 TORA reach-tanh 四格。故 64 格按证据来源分为 **37 格本轮新全程、9 格同合同旧全程、14 格无全程、4 格 Airplane discrete 合同阻塞**。历史九格未增记为 187 条新尝试；“全程”只指保存的数值时域，并不提升模型身份、性质或计时资格。可编辑的[当前两页进度 DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STATUS_20261002.docx)和[Word 导出 PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STATUS_20261002.pdf)按此截点重建；此前 105/26 的长篇阶段稿保留为历史快照。
@@ -197,1125 +196,147 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 - 四方共同前缀由合同采样网格上的逐时刻宽度序列交集派生；不同 domain、变量顺序或单位不会合并。
 - 排名资格由四方 campaign、轮换、运行资源、完整分区覆盖和证书共同派生，结果 cell 不能自行声明。
 - `failed`、`timeout`、`interrupted` 与有证据的 `unsupported/skipped` 都保留。
-- Campaign：`{"active_run_receipt":{"path":null,"sha256":null},"campaign_id":null,"cpu_thread_budget":null,"gpu_device_budget":null,"hardware_identity":null,"host_identity":null,"launch_guard":{"hold_scope":"fresh_audit_through_terminal_fsync_v1","lock_identity":{"device":null,"inode":null,"mode":384,"nlink":1,"owner_uid":null},"lock_path":"<fixed-server-lock>","protocol":"posix-flock-exclusive-nonblocking-v1","schema_version":"archcomp26-atomic-launch-guard-v2","wrapper_module":"torch_tm_flowpipe.archcomp26_launch","wrapper_path":"src/torch_tm_flowpipe/archcomp26_launch.py","wrapper_sha256":null},"prelaunch_audit":{"path":null,"sha256":null},"resource_limits":null,"rotation":{"policy":"balanced_round_robin_by_instance_and_steady_round_v1","schedule_artifact":{"path":null,"sha256":null},"steady_rounds":5},"schema_version":"archcomp26-comparison-campaign-v1","timeout_s":null,"timing_boundary":{"phase_fields":["driver_total","compile","controller_nn","solver_core","validation","observer","output","plot_report"],"start_event":"immediately_before_fresh_process_spawn","stop_event":"after_result_and_width_artifacts_are_durable","version":"total_configuration_v2"}}`。
-
-## 全部非 VCAS 配置覆盖矩阵（恢复执行前的哈希绑定基线快照）
-
-下表尚未接纳 2026-10-01 的无哈希尝试；此处的 `not_started` 是该旧矩阵字段。实际新尝试及失败诊断见上节，不能把新 native DP 自动提升为已完成的四方 cell。
-
-| 实例 | PyTorch/GPU | Huan | Xiangru | Flow* native |
-|---|---|---|---|---|
-| `acc-safe-distance` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `airplane-continuous` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `airplane-discrete` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `attitude-control-avoid` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `balancing-reach` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `docking-constraint` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `double-pendulum-less-robust` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `double-pendulum-more-robust` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `nav-standard` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `nav-robust` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `quad-reach` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `single-pendulum-reach` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `tora-remain` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `tora-reach-sigmoid` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `tora-reach-tanh` | `not_started` | `not_started` | `not_started` | `not_started` |
-| `unicycle-reach` | `not_started` | `not_started` | `not_started` | `not_started` |
-
-## 旧 14 项到 2026 manifest 的差异索引
-
-旧结果仅作回归线索；下表不会把旧完成状态或时间提升为 2026 重跑成绩。
-
-| 2026 实例 | 旧配置候选 | 映射状态 | 合同状态 | 已知差异/阻断数 |
-|---|---|---|---|---:|
-| `acc-safe-distance` | `acc` | `candidate_only` | `unresolved` | 3 |
-| `airplane-continuous` | `airplane` | `candidate_only` | `unresolved` | 1 |
-| `airplane-discrete` | `—` | `missing_from_legacy_14` | `unresolved` | 1 |
-| `attitude-control-avoid` | `attitude_control` | `candidate_only` | `unresolved` | 3 |
-| `balancing-reach` | `cartpole` | `candidate_name_mapping_only` | `unresolved` | 3 |
-| `docking-constraint` | `—` | `missing_from_legacy_14` | `unresolved` | 3 |
-| `double-pendulum-less-robust` | `double_pendulum_less_robust` | `candidate_only` | `unresolved` | 1 |
-| `double-pendulum-more-robust` | `double_pendulum_more_robust` | `wrong_controller_and_initial_set` | `unresolved` | 1 |
-| `nav-standard` | `nav_standard` | `candidate_only` | `unresolved` | 2 |
-| `nav-robust` | `nav_robust` | `candidate_only` | `unresolved` | 2 |
-| `quad-reach` | `quad` | `dynamics_mismatch_unresolved` | `unresolved` | 2 |
-| `single-pendulum-reach` | `single_pendulum` | `candidate_only` | `unresolved` | 1 |
-| `tora-remain` | `tora_homogeneous` | `candidate_name_mapping_only` | `unresolved` | 1 |
-| `tora-reach-sigmoid` | `tora_sigmoid` | `candidate_only` | `unresolved` | 1 |
-| `tora-reach-tanh` | `tora_relu_tanh` | `candidate_name_mapping_only` | `unresolved` | 2 |
-| `unicycle-reach` | `unicycle` | `candidate_only` | `unresolved` | 2 |
-
-## 1. ACC — safe-distance (`acc-safe-distance`)
-
-### 模型、控制器、初始集合与性质
-
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：distance over time。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
-### 完整性、性质与结果资格
+## 当前 16×4 非 VCAS 覆盖与历史复用
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
+[本轮工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)登记 187 条新尝试；[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)另核对九格同合同旧全程。64 格互斥分为本轮完整数值时域 37、历史同合同全程 9、无完整数值时域 14、Airplane 离散合同阻塞 4。“全程”只表示请求的数值时间段已保存；性质、浮点保证和计时资格分别读各节。旧结果未计入 187 条新尝试。
 
-### 派生的四方可比性（非 cell 自报）
+| 2026 实例 | 我方 GPU | Huan | Xiangru | Flow* native |
+| --- | --- | --- | --- | --- |
+| ACC safe-distance | 新全程 | 新全程 | 新全程 | 新全程 |
+| Airplane continuous | 无全程 | 无全程 | 无全程 | 无全程 |
+| Airplane discrete | 合同阻塞 | 合同阻塞 | 合同阻塞 | 合同阻塞 |
+| Attitude Control avoid | 新全程 | 新全程 | 新全程 | 新全程 |
+| Balancing reach | 无全程 | 无全程 | 无全程 | 无全程 |
+| Docking constraint | 新全程 | 新全程 | 新全程 | 新全程 |
+| Double Pendulum less-robust | 新全程 | 新全程 | 新全程 | 新全程 |
+| Double Pendulum more-robust | 无全程 | 无全程 | 无全程 | 无全程 |
+| NAV standard | 新全程 | 旧全程 | 旧全程 | 新全程 |
+| NAV robust | 新全程 | 旧全程 | 旧全程 | 旧全程 |
+| QUAD reach | 新全程 | 新全程 | 新全程 | 新全程 |
+| Single Pendulum reach | 新全程 | 新全程 | 新全程 | 新全程 |
+| TORA remain | 新全程 | 无全程 | 无全程 | 新全程 |
+| TORA reach-sigmoid | 新全程 | 新全程 | 新全程 | 新全程 |
+| TORA reach-tanh | 旧全程 | 旧全程 | 旧全程 | 旧全程 |
+| Unicycle reach | 新全程 | 新全程 | 新全程 | 新全程 |
 
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
+九格旧全程仅为 NAV 五格和 TORA reach-tanh 四格，逐格原始 result 与合同审计列于[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)。NAV 固定官方 point/set 文件与旧使用副本已直接比对；作者另一 Git LFS 仓库模型的二进制身份尚未建立。TORA tanh 的旧“我方”是旧代引擎，不是当前 working P3 新运行；Huan/Xiangru 共用主要数值驱动、保存区间相同，不能视为相互独立的正确性证据。旧 14 项到 2026 的主要变化包括新增 Docking 与 Airplane discrete、修正 Attitude 危险盒、区分论文 QUAD 与作者旧动力学、分列 Balancing 五特征和仓库四输入、冻结 TORA reach 缩放与 Unicycle 扰动语义；下列执行合同逐项解释。
 
-### 时间
+每节按现行合同、四方状态、时间/宽度与图、未决项陈述。精确命令、环境、失败尝试以链接中的 START/RESULT、配置和[原始尝试索引](evidence/archcomp26_nohash_attempts_20261001.json)为准。单次、短前缀或混合历史的时间不构成四方速度排名；保存区间观察不自动成为独立端到端浮点 NNCS 证明。
 
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+## 1. ACC — safe-distance
 
-#### 全部原始 attempt（失败不删除、不外推）
+- **合同与性质：** 具名 participant-order profile 使用固定 2026 ONNX、单个完整初盒、50 个 0.1 秒控制期到 T=5。参与者源码的相对速度取 v_lead−v_ego；全时检查 x_lead−x_ego−1.4v_ego−10≥0。[合同审计](ARCHCOMP26_ACC_PARTICIPANT_CONTRACT_20261001.md)记录论文未定义该符号的差异。
+- **四方状态：** 我方 P3、Huan、Xiangru、原生均有新完整数值时域；四方保存 tube 的安全裕量下界均为正。[四方运行汇总](evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md)指向原始收据。Huan/Xiangru 共享控制驱动。
+- **时间、宽度、图和复现：** [24 次轮换进程原始表](evidence/results/archcomp26_20261001/acc_fourway_campaign_001/SUMMARY.md)含首轮与各五次后续完成样本；[六态绝对上下界](evidence/results/archcomp26_20261001/acc_fourway_saved_ranges_20261001/acc_t5_endpoint_and_full_tube_long.csv)和上方宽度表给出 endpoint 与全时 tube；[四方安全裕量图](evidence/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_four_method_t_safe_distance_margin_tube.png)附 PDF/MATLAB/几何数据。
+- **未决：** 轮换在共享主机进行，不据描述统计宣布稳定方法排名；VAR 尾项修复仅有针对性单步证据，四方均无独立端到端证书。
 
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
+## 2. Airplane — continuous
 
-### 绝对宽度与共同前缀
+- **合同与性质：** 官方完整初集是一个未分割 12 物理态盒，六个速度/姿态分量各为 [0,1]，固定 12→6 控制器；连续方程与 0.1 秒采样到 T=2，全时要求 sy、phi、theta、psi∈[-1,1]。[来源审计](ARCHCOMP26_AIRPLANE_2026_ENTRY_AUDIT.md)将它与历史单点区分。
+- **四方状态：** P3、Huan、Xiangru、原生均无完整数值时域。P3 全盒入口建表溢出或首步拒绝，定向余项诊断在观察器检查前没有可用保存段；Huan 高阶入口遇资源阻断，两作者低阶全盒首步拒绝；原生三种隔离数值 profile 首步均为 UNCOMPLETED_SAFE。[P3](evidence/results/archcomp26_20261001/AIRPLANE_P3_FULLBOX_SMOKES_20261002.md)、[两作者](evidence/results/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/SUMMARY.md)、[原生](evidence/results/archcomp26_20261001/native_airplane_fullbox_smokes_20261002/SUMMARY.md)保留原始收据。
+- **时间、宽度、图和复现：** 现有 wall 只属于入口失败或短诊断；没有完整 T=2 宽度或全程图。上述摘要链接命令、配置和日志；[P3 首拒回调](evidence/results/archcomp26_20261001/airplane_p3_first_reject_trace_smoke1_001/SUMMARY.md)只定位独立诊断路径。
+- **未决：** 需数值入口真正接受完整初盒并通过保存区间检查，之后才能判全时性质。首步失败和候选包络越带都不是实际轨迹反例。
 
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+## 3. Airplane — discrete
 
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
+- **合同与性质：** 报告指定 forward Euler、Δt=0.1 秒、20 次转移，在 k=0…20 检查 sy、phi、theta、psi∈[-1,1]；初盒与网络见[离散执行门](ARCHCOMP26_AIRPLANE_DISCRETE_EXECUTION_GATE_20261002.md)。门内“旧状态先求 NN、同步更新 12 态”只是具名新比较约定，尚非参与者实际离散提交的权威顺序。
+- **四方状态：** 我方、Huan、Xiangru、原生均未在权威离散合同下启动。四方之外的[CPU 区间诊断](evidence/results/archcomp26_20261001/airplane_discrete_paper_euler_exactzero_prefix_001/AUDIT.md)只得到 1/20 次转移的安全端点前缀，不能填方法格。
+- **时间、宽度、图和复现：** 尚无四方离散运行时间、完整 endpoint 序列、宽度或图；连续版 tube、ODE 阶数和时间不能代用。CPU 诊断保留自身命令与原始记录。
+- **未决：** 具体缺 2026 参与者离散转移/控制取样与更新顺序源码或等价权威执行记录；取得后仍需四个真正的离散入口和全初盒 21 索引证据。
 
-### Flowpipe 图、失败与未决项
+## 4. Attitude Control — avoid
 
-- 目标图：distance over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：Historical native result required the VAR-tail correction; old completion/width cannot be promoted without the corrected latest contract.
-- 未决：The report names v_rel as a controller input but does not define its sign convention; the input transform must be frozen from authoritative execution code.
-- 未决：The safety property is a linear halfspace, not an axis-aligned box.
+- **合同与性质：** 固定六态完整初盒、30 个 0.1 秒周期到 T=3；避免官方六维闭危险盒，其 x4 范围为 [-0.7,-0.6]。[合同审计](ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md)记录历史 checker 把它误写成空集，旧 VERIFIED 不用于新性质。
+- **四方状态：** 修正危险盒后，P3、Huan、Xiangru、原生新入口均完成 30/30 期与 60/60 小段；保存六维 tube 与危险盒不相交，原生 checker 打印 VERIFIED，三 GPU checker 未打印 Unsafe/Unknown。[四方汇总](evidence/results/archcomp26_20261001/ATTITUDE_AVOID_4METHODS_SUMMARY.md)给出运行目录。
+- **时间、宽度、图和复现：** [24 次轮换收据](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/SUMMARY.md)和上方描述统计保留单次与后五次；[六态绝对界](evidence/archcomp26_attitude_avoid_4methods_abs_bounds_20261001.csv)及[原生 t–x4 图](evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/plots/attitude_native_t_x4_tube.png)可重读。
+- **未决：** 单轴图不替代六维判交，保存盒与作者性质标签也不是独立端到端证明；描述性计时不转成稳定排名。
 
-## 2. Airplane — continuous (`airplane-continuous`)
+## 5. Balancing — reach
 
-**本轮合同与新尝试：** 固定 2026 官方 ONNX 已取得并读图，12 输入/6 输出；旧同名模型在检查时逐字节相同，但旧参与者和我方配置只使用一个单点。连续格要求完整 `[0,1]^6` 初盒、周期起点控制更新和全时 tube 检查。新 P3/Huan/Xiangru/Flow* native 均已按完整盒做隔离入口 smoke，尚无任何可接受的完整 2 秒运行或性质结论；见[合同与初盒](ARCHCOMP26_AIRPLANE_2026_ENTRY_AUDIT.md)、[Huan/Xiangru 尝试](evidence/results/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/SUMMARY.md)、[P3 两次尝试](evidence/results/archcomp26_20261001/AIRPLANE_P3_FULLBOX_SMOKES_20261002.md)与[原生三次尝试](evidence/results/archcomp26_20261001/native_airplane_fullbox_smokes_20261002/SUMMARY.md)。下方表格是旧冻结模板，空项不能解释为本轮未尝试。
+- **合同与性质：** 论文五特征控制器缺对应模型或权威五到四映射；另名 fixed-repo-raw4 profile 使用官方仓库四原态网络、完整四态初盒、500 个 0.02 秒周期到 T=10，在固定规格 8<t≤10 检查 x1、x3、x4∈[-0.001,0.001]。[执行门](ARCHCOMP26_BALANCING_EXECUTION_GATE_20261002.md)另列论文闭窗 [8,10]。
+- **四方状态：** 对 raw4，P3 第 87 小步、Huan/Xiangru 各第 99 小步首拒；原生保存 83 段，第 84 段 UNCOMPLETED_SAFE。四方均未进入性质窗，无完整数值时域。[P3](evidence/results/archcomp26_20261001/balancing_fixed_raw4_p3_full500_001/SUMMARY.md)、[Xiangru](evidence/results/archcomp26_20261001/balancing_fixed_raw4_xiangru_20261002/SUMMARY.md)、[原生](evidence/results/archcomp26_20261001/native_balancing_raw4_20261002/SUMMARY.md)保留失败收据；Huan 见执行门。
+- **时间、宽度、图和复现：** 只有拒绝前缀 wall 与区间，不能给完整 T=10 时间、8–10 秒宽度或正式全程图；上述摘要链接命令。旧小初盒一秒结果是另一合同。
+- **未决：** 论文五输入控制器或权威映射、raw4 数值收缩的可行方案，以及完整时间窗性质证据；保存区间越带不是直接轨迹反例。
 
-### 模型、控制器、初始集合与性质
+## 6. Docking — constraint
 
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 2 and 7。
+- **合同与性质：** 四态 (sx,sy,vx,vy)，完整初盒 [70,106]²×[-0.28,0.28]²，固定四输入两力输出，每秒更新到 T=40；全时要求 q=√(vx²+vy²)−0.2−0.002054√(sx²+sy²)≤0。[来源合同](ARCHCOMP26_DOCKING_BALANCING_SOURCE_CONTRACT_20261001.md)解释图内预/后处理。
+- **四方状态：** P3、Huan、Xiangru、原生各保存 400 个 0.1 秒小段；四方性质均 UNKNOWN。原生外层为 failed/exit 2，但 40 期、400 tubes 与 40 RPC 齐全。q 的保守盒上界在首段为正，只说明包络不足以判安全。[三 GPU](evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md)和[原生](evidence/results/archcomp26_20261001/native_docking_full40_001/SUMMARY.md)保留原始状态。
+- **时间、宽度、图和复现：** 单次外层 wall 按 P3/Huan/Xiangru/原生为 17.412/12.699/12.668/9.139 秒；[四态绝对界](evidence/results/archcomp26_20261001/docking_fourway_saved_widths_20261002.csv)和[四方 q 图](evidence/results/archcomp26_20261001/plots/nohash_saved_20261001/docking_fullbox_4method_q_upper.png)来自保存范围；命令见两份摘要。
+- **未决：** 需要更有力的耦合性质判定或可信反例才能解决 UNKNOWN；单次时间不可排名，宽度不代表正确性。
 
-### 完整配置、状态与复现入口
+## 7. Double Pendulum — less-robust
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+- **合同与性质：** 官方 less-robust 控制器，完整 [1,1.3]^4 分为 225 盒，20 个 0.05 秒控制期、100 个 0.01 秒子步到 T=1；全时要求四态在 [-1.7,2]^4。[合同审计](ARCHCOMP26_DOUBLE_PENDULUM_LESS_CONTRACT_20261001.md)记录控制器和分区。
+- **四方状态：** P3 有向仿射四分、Huan、Xiangru、原生各保存 225×100 完整数值时域，tube 均在安全盒内；原生 checker 打印 VERIFIED。P3 先前失败候选仍独立保留。[P3 分区审计](ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md)及[四方保存数据](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/SUMMARY.md)给出源 run。
+- **时间、宽度、图和复现：** 单次外层 wall 按 P3/Huan/Xiangru/原生为 74.274085/9.539174/8.387790/1107.127423 秒；[绝对宽度与每盒统计](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/endpoint_stats.csv)、[100 步四方图](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/fourway_tube_union.png)和同目录 MATLAB/PDF 均来自保存范围。P3 时间包含逐盒观察写盘。
+- **未决：** Huan/Xiangru 有少量保存 endpoint 末位超出同段 tube，摘要分别保留两种界；路径、资源和观察器不同，单次 wall 不可排名，均缺独立端到端证书。
 
-### 完整性、性质与结果资格
+## 8. Double Pendulum — more-robust
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
+- **合同与性质：** 官方独立 more-robust 网络、完整 [1,1.3]^4、225 盒、20 个 0.02 秒控制期到 T=0.4，全时安全盒 [-1.5,1.5]^4。历史入口误用 less-robust 网络且只取角点，不能迁入本格。[来源合同](ARCHCOMP26_NEXT_CONTRACT_SOURCE_AUDIT_20261001.md)列模型与变量次序。
+- **四方状态：** 均无完整 T=0.4 数值流管。原生保存 64/80 小步后性质 UNKNOWN；Huan/Xiangru 各保存 72/80 后作者 checker 早停；P3 全合同新尝试于第 9/80 小步全部盒 FAILED_CONTRACTION，前 8 步完整接受。[P3](evidence/results/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/SUMMARY.md)、[两作者](evidence/results/archcomp26_20261001/author_dp_more_v1/SUMMARY.md)、[原生](evidence/results/archcomp26_20261001/native_dp_more_full20_001/SUMMARY.md)保留停止原因。
+- **时间、宽度、图和复现：** 只有共同有效前缀范围和早停 wall；[P3 首周期](evidence/results/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001/SUMMARY.md)与上述 run 可用于前缀图/宽度，不报 T=0.4 终点和完整时间。[数值轨迹候选](evidence/results/archcomp26_20261001/dp_more_interior_point_candidate_20261002/SUMMARY.md)不是第五个 flowpipe 方法。
+- **未决：** 区间跨安全带仅使证明未决；点轨迹尚非独立严格反例。需先解决收缩失败或取得可核反例，不外推失败前缀。
 
-### 派生的四方可比性（非 cell 自报）
+## 9. NAV — standard
 
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
+- **合同与性质：** 固定官方 point ONNX，作者可执行顺序 [x,y,speed,heading]→[speed_rate,heading_rate]；640 初盒、0.2 秒×30 到 T=6，全时避开 [1,2]²，终点进入 [-0.5,0.5]²。[执行合同](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)保留论文文字和网络层宽冲突。
+- **四方状态：** 当前 working P3 和原生各有本轮完整 640×600 盒步；Huan/Xiangru 是经审计同合同历史全程。新 Huan 首盒首周期不替代旧全程。[新 P3](evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/SUMMARY.md)、[新原生](evidence/results/archcomp26_20261001/nav_author_standard_native_full30_001/SUMMARY.md)与[九格历史附表](evidence/archcomp26_coverage_overlay_20261002.md)给出性质与原始收据。
+- **时间、宽度、图和复现：** 新 P3/原生单次 wall 为 28.999885/1478.865919 秒；[新 P3 逐步 x/y](evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/xy_saved_curves.csv)、[历史四方 x/y](evidence/results/archcomp26_20261001/nav_standard_fourway_saved_20261002/xy_saved_curves.csv)和[同轴及放大图](evidence/results/archcomp26_20261001/nav_fourway_historical_vs_new_20261002/README.md)保存绝对界与差值。历史 wall 只按原资格引用。
+- **未决：** 作者另一 Git LFS 模型身份未建立；旧我方 NAV 不是当前 working P3，混合历史和新计时不能拼为同资源排名；作者 VERIFIED 及保存盒检查均非独立浮点证书。
 
-### 时间
+## 10. NAV — robust
 
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+- **合同与性质：** 同一官方可执行方程，用 set ONNX 和 25 初盒，0.2 秒×30 到 T=6；全时避开 [1,2]²、终点进入 [-0.5,0.5]²。robust 指控制器训练方式，plant 不另加训练噪声。[执行合同](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)给出接口。
+- **四方状态：** 当前 working P3 有本轮完整 25×600 盒步；Huan、Xiangru、原生是经审计的同合同历史全程。新 Huan 首盒首周期仅作入口诊断。[新 P3 原始摘要](evidence/results/archcomp26_20261001/nav_author_robust_working_p3_full30_001/SUMMARY.md)与[历史附表](evidence/archcomp26_coverage_overlay_20261002.md)逐格追溯。
+- **时间、宽度、图和复现：** 新 P3 单次 wall 18.703898 秒；[新 P3 逐步 x/y](evidence/results/archcomp26_20261001/nav_author_robust_working_p3_full30_001/xy_saved_curves.csv)、[旧四方 x/y](evidence/results/archcomp26_20261001/nav_robust_fourway_saved_20261002/xy_saved_curves.csv)和[同轴/差值图](evidence/results/archcomp26_20261001/nav_fourway_historical_vs_new_20261002/README.md)区分代际和来源，历史时间不并入本轮 campaign。
+- **未决：** 作者另一 Git LFS 模型身份和部分历史逐步范围本地副本不足；旧我方与新 P3 不同代，不据混合样本排名或断言独立证明。
 
-#### 全部原始 attempt（失败不删除、不外推）
+## 11. QUAD — reach
 
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
+- **合同与性质：** 新主表按用户指定的 2026 论文十二态方程；约 80 秒研究仍按作者旧合同。[逐式对照](ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md)列 x2、x4、x5 差异。新运行覆盖 1024 初盒、50 个 0.1 秒期、1000 个 0.005 秒子步到 T=5；[0.94,1.06] 是 x3 终点目标带，不是起飞全程安全带。
+- **四方状态：** P3、Huan、Xiangru、原生各一次完整 1024×1000 数值运行，T=5 的 x3 endpoint 并集均在目标内。原生 checker 仅核终点却打印 VERIFIED；P3/原生保存包络分别自约 T=3.95/3.87 连续入带，Huan/Xiangru 没有逐步坐标范围。[四方保存说明](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/SUMMARY.md)链接源 run。
+- **时间、宽度、图和复现：** 单次 wall 按 P3/Huan/Xiangru/原生为 1357.555/94.583/108.018/47058.887 秒；[十二态终点绝对界](evidence/archcomp26_quad_paper_endpoint_4methods_20261002.csv)和上方 x3 表给宽度；[四方真实保存粒度图](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/quad_paper_fourway_t_x3_pooled_tube.png)仅把 Huan/Xiangru 画成终点。
+- **未决：** 缺参与者 reach-and-remain 全时间窗 checker 源码或等价权威执行记录；后缀扫描不代替该语义。阶数/资源不同，单次时间和宽度不可直接排优劣，四方均缺独立端到端浮点证书。
 
-### 绝对宽度与共同前缀
+## 12. Single Pendulum — reach
 
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+- **合同与性质：** 当前具名两物理态 profile 用官方前两条 ODE 和固定控制器，完整初盒 [1,1.175]×[0,0.2]，20 个 0.05 秒期到 T=1；在全部 t∈[0.5,1] 检查 x1∈[0,1]。辅助时钟不进入网络。[来源审计](ARCHCOMP26_NEXT_CONTRACT_SOURCE_AUDIT_20261001.md)解释固定 MATLAB 第三导数缺初值。
+- **四方状态：** P3、Huan、Xiangru、原生各有本轮完整 100 小步，保存性质窗内 x1 tube 均在闭带内；这不是尚缺执行材料的官方三态 MATLAB 身份。[P3](evidence/results/archcomp26_20261001/single_pendulum_two_state_p3_full20_001/SUMMARY.md)、[原生](evidence/results/archcomp26_20261001/native_sp_two_state_full20_001/SUMMARY.md)、[四方 campaign](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/SUMMARY.md)保存命令。
+- **时间、宽度、图和复现：** 各方法有首轮和五次后续独立进程，逐次见 campaign；P3 安全窗 x1 tube union 为 [0.5645452654370386,0.9932406822927875]，其它三方界见原始摘要。完整四方论文风格图及统一逐态宽度表尚未发布，不能补估。
+- **未决：** 官方三态复现仍缺第三态初值、重置及控制/检查入口；两态结果不可冒名。保存范围和计时不构成独立端到端证书或稳定跨合同排名。
 
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
+## 13. TORA — remain
 
-### Flowpipe 图、失败与未决项
+- **合同与性质：** 完整初盒切成 12 盒，控制输出只减一次 10；20 个 1 秒期、200 个 0.1 秒子步到 T=20，全时安全盒 [-2,2]^4。[共享合同](ARCHCOMP26_TORA_REMAIN_CONTRACT_20261001.md)记录初盒与注入。
+- **四方状态：** P3/原生有完整数值流管且保存 tube 在安全盒内；Huan/Xiangru 虽观察 200 步，却各只接受 2357/2400 盒步，第 185 步起保存区间跨带、第 190 步首盒拒绝，末步仅 6/12 盒。全初集接受且保存安全的共同前缀为 184 步；Unknown 不是拒绝原因。[拒绝审计](ARCHCOMP26_TORA_REMAIN_NUMERIC_STOP_AUDIT_20261002.md)列原始限度。
+- **时间、宽度、图和复现：** P3/原生完整单次 wall 为 10.411001/8.339151 秒；Huan/Xiangru 约 8 秒仅为失败进程。[共同前缀与终点绝对界](evidence/results/archcomp26_20261001/tora_remain_fourway_common_prefix_20261002/RANGES.csv)把未完成终点留空，[四方 t–x4 图](evidence/results/archcomp26_20261001/tora_remain_fourway_common_prefix_20261002/plots/tora_remain_2026_fourway_t_x4_saved_tube.png)明确截断失败段；运行命令见共享合同及上方总表。
+- **未决：** 固定 `h=0.1` 作者两法缺全初集接受的 T=20 流管；关闭性质 checker 无法补齐。区间越带不是实际反例，作者标签不是独立端到端证明。
 
-- 目标图：states 2 and 7；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The repository top-level table says continuous [0,20], but the report and instance specification agree on a 2-second continuous horizon. Method-specific integration settings remain unresolved.
+**另列数值步长变体：** [Huan/Xiangru `h=0.05` 隔离诊断](evidence/results/archcomp26_20261001/author_tora_remain_h005_probe_20261002/SUMMARY.md)保持上述动力学、官方 ONNX、12 初盒、1 秒控制周期及全时安全性质，仅把 ODE 小步从 `0.1` 减半。两方各 400/400 小步、4800/4800 盒步接受，独立扫描的全部保存 tube 在安全盒内；作者 checker 无输出，单次外层 wall 各约 10.899 秒。这解释了固定设置失败后一个可行的数值设置，**不改写上方固定 `h=0.1` 四方格**，也不是同设置速度排名或独立端到端 NNCS 证明。
 
-## 3. Airplane — discrete (`airplane-discrete`)
+## 14. TORA — reach-sigmoid
 
-**本轮合同审计与独立诊断：** 论文给出 forward Euler 总规则、20 次转移及 `k=0..20` 共 21 个性质检查索引；固定官方 Airplane 目录没有离散转移程序，旧参与者 C++ 是连续积分入口。[离散执行门](ARCHCOMP26_AIRPLANE_DISCRETE_EXECUTION_GATE_20261002.md)逐项列出完整初盒、12 态同步更新和四方现有入口。`NN(X_k)` 在 Euler 更新前执行可以作为显式命名的新四方比较约定，尚不能称为已核实的官方 2026 离散提交顺序；若要求忠实复现，具体缺参与者离散执行源码或等价的控制应用顺序记录。
+- **合同与性质：** 用户选定官方 2026 四层 sigmoid 模型及 u=11f；四态完整初盒、0.5 秒×10 到 T=5，目标 x1∈[-0.1,0.2]、x2∈[-0.9,-0.6]。[执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)区分旧 u=22(f−0.5)；终点包含仅是“五秒内到达”的充分条件。
+- **四方状态：** P3、Huan、Xiangru、原生均有本轮 500/500 小步，保存 T=5 目标坐标全盒入目标。P3/Huan/Xiangru 未执行性质 checker，只有原生作者终点 checker 打印 VERIFIED；Huan/Xiangru 共用驱动。[四方终点来源](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_terminal_fourway.csv)和执行门链接源 run。
+- **时间、宽度、图和复现：** P3/原生单次 wall 为 13.741791/8.991666 秒，Huan/Xiangru 时间见各[Huan](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_002/SUMMARY.md)和[Xiangru](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_full500_001/SUMMARY.md)摘要；四态终点绝对界见 CSV。本轮无四方统一 tube 图，不用终点条带伪造曲线。
+- **未决：** 论文合并激活文字与官方模型不同，选择已明示；除原生终点 checker 外无作者性质判定，四方均缺独立端到端证书和可排名重复计时。
 
-按该新命名约定，使用固定 12→6 ONNX 和完整 12 维单盒做了一次[CPU directed 区间一步入口](evidence/results/archcomp26_20261001/airplane_discrete_paper_euler_interval_smoke1_001/AUDIT.md)。初态 `r=p=q=0` 令首步三个角度导数在实数代数上恰为零；通用外舍入运算仍把角度 `[0,1]` 的上下端各扩大一个浮点格，原始 checker 因而在 `k=1` 为 `Unknown`。保留该原始结果后，[精确零恒等式独立新诊断](evidence/results/archcomp26_20261001/airplane_discrete_paper_euler_exactzero_prefix_001/AUDIT.md)仅在这三个旧态角速度分量确为零时应用 `x+0=x`：`k=1` 四个性质坐标均在闭安全带，**安全端点前缀为 1/20 次转移**；`k=2` 的 `sy∈[-6.656618,7.305040]`、`phi∈[-0.709067,1.809969]` 等外包络实质性越带，首次 `Unknown` 即停。该宽盒未构成实际轨迹反例，且这两个 CPU 区间诊断均不属于 P3/Huan/Xiangru/native 四方方法成绩；四格仍未尝试。下方表格仍是旧冻结模板。
+## 15. TORA — reach-tanh
 
-### 模型、控制器、初始集合与性质
+- **合同与性质：** 固定官方 ReLU³/tanh 网络及 u=11f；和 sigmoid 共用四态 ODE、初盒、0.5 秒×10 与终点目标。[执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)列激活和缩放。
+- **四方状态：** 本轮只做 Huan 全初盒首周期一致性门检，未重启旧全程；[历史审计](evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_firstperiod_diag_001/HISTORICAL_REUSE_AUDIT.json)确认旧我方、Huan、Xiangru、原生各有 500 步同合同完整数值记录。旧我方引擎不是当前 working P3。
+- **时间、宽度、图和复现：** 原始四方 result 和合同审计逐格见[历史覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)；本轮没有同资源四方时间，也尚未把旧四态终点绝对宽度统一导出当前主表或制作四方图。新一期 wall 不作全程时间。
+- **未决：** 旧作者终点标签与保存区间不构成独立端到端证书；若需要当前 working P3 同代成绩，应另立新任务，不能把旧我方结果改名。
 
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`discrete_execution_contract_v1`。
-- 计划可视化：states 2 and 7。
+## 16. Unicycle — reach
 
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 2 and 7；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The report defines forward Euler with delta_t=0.1 and k=0..20, but the pinned repository has no selected executable discrete transition or exact control-application ordering. A continuous ODE result is not a substitute.
-
-## 4. Attitude Control — avoid (`attitude-control-avoid`)
-
-### 模型、控制器、初始集合与性质
-
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 1 and 2。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The legacy property verdict was not independently audited.
-- 未决：Two distinct official ONNX candidates are present without a repository-level selection.
-- 未决：The report says both that the unsafe set should be avoided and that the goal is to show the specification does not hold; freeze checker polarity before execution.
-
-## 5. Balancing — reach (`balancing-reach`)
-
-**本轮来源冲突：** [执行门](ARCHCOMP26_BALANCING_EXECUTION_GATE_20261002.md)区分论文 `f(x1,x2,sin(x3),cos(x3),x4)` 五特征控制器与固定官方 ONNX 的四原态输入。论文忠实主合同仍缺五输入模型，或作者给出的五到四映射与执行源码。固定仓库四原态版本可单列为 `balancing-fixed-repo-raw4` 新比较 profile，需全初盒、500 个 `0.02 s` 控制期和 `[8,10]`/`(8,10]` 全时窗 checker；旧一秒小盒记录不能代用。下方表格仍是旧冻结模板。
-
-**新命名 profile 的实际尝试：** Huan 的完整初盒一期 smoke 接受 4/4 小步；全 500 期作业在第 99 个内步拒绝，之前 98 个接受，保存有效前缀到 `t=0.49 s`。报告目标时间窗尚未开始，性质 `UNKNOWN`。第一次 smoke 因性质窗与短前缀不相交在推进前失败，第二次 smoke 的原始 `VERIFIED_BY_SAVED_BOX_CHECKS` 标签在零次检查时是空量词错误，已在[审计](evidence/results/archcomp26_20261001/balancing_fixed_raw4_huan/AUDIT.md)更正而未改原记录。此 profile 不可填为论文五特征主合同的完整成绩；下方旧模板不随它自动升级。
-
-### 模型、控制器、初始集合与性质
-
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 1 and 3。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 3；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：Balancing is the top-level name for the CartPole folder.
-- 未决：The report writes a five-feature controller expression using sin/cos of the pole angle, while the repository dynamics comment and ONNX graph use four raw state inputs.
-- 未决：The report uses the closed property interval [8,10], while the repository specification says t > 8.
-
-## 6. Docking — constraint (`docking-constraint`)
-
-### 模型、控制器、初始集合与性质
-
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：state 1 over time。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：state 1 over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：No legacy four-way configuration is present.
-- 未决：The instance file omits the 40-second horizon supplied by the report.
-- 未决：The coupled nonlinear safety inequality cannot be represented as an axis-aligned property box.
-
-## 7. Double Pendulum — less-robust (`double-pendulum-less-robust`)
-
-**本轮新证据（不写入下方旧冻结模板表）：** 原生、Huan、Xiangru 与 P3 split4 均在新 225 盒 × 100 小步合同中有单次完整数值记录。P3 先前未完成的区间、整盒仿射与 split2 尝试仍独立保留；256 子盒的控制器局部包络使新 P3 完成全部盒步。见[原生摘要](evidence/results/archcomp26_20261001/native_dp_less_full20_001/SUMMARY.md)、[两方摘要](evidence/results/archcomp26_20261001/author_dp_less_v1/SUMMARY.md)与[P3 分区审计](ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md)。四方排名与端到端 NNCS 证明均未成立。
-
-### 模型、控制器、初始集合与性质
-
-- 新版连续数学合同已核明：物理状态顺序 `[θ₁, θ₂, θ̇₁, θ̇₂]`，全初盒 `[1,1.3]^4`，共同比较选择 `5×5×3×3=225` 子盒，少鲁棒性控制器先求界再保持 0.05 s，20 个控制期到 `T=1`。性质是四个物理状态对**所有连续时间**均在 `[-1.7,2]`，见[逐项合同](ARCHCOMP26_DOUBLE_PENDULUM_LESS_CONTRACT_20261001.md)。
-- 下方自动生成的旧矩阵表格仍显示 `not_started`，没有被本轮无哈希尝试改写；读者应使用本节接续记录判断实际进度。
-
-### 本轮新 native 全程运行（独立于旧矩阵）
-
-新原生入口使用已保存的 `matched_threads4` 与同端口 5100 的 RPC server；[START 配置](evidence/results/archcomp26_20261001/native_dp_less_full20_001/START.json)记录 GPU 1、CPU 6–9、3600 s 上限及实际命令。`h=0.01`，Taylor 阶数 4，100 个 ODE 子步覆盖 20 个控制期。单次[RESULT](evidence/results/archcomp26_20261001/native_dp_less_full20_001/RESULT.json)为 `completed`、退出码 0、未超时，全进程 wall 1107.127423 s；求解器日志自报 1100.101000 s。20 次控制器 RPC 各含 225 个四态输入盒。这个样本尚无相同资源预算、相同合同的其它三方全程样本，也没有五次 steady 中位数。
-
-本地[数据副本与来源记录](evidence/results/archcomp26_20261001/native_dp_less_full20_001/COPY.json)包含 `START.json`、`RESULT.json`、native/server/RPC 日志及 3,420,000 字节的 `ranges.bin`，记录远端与本地路径、列出的字节数和复制时间；本轮没有做内容摘要或源/二进制重新身份校验。读回检查得到 225 盒 × 100 步的 22,500 个唯一 `(lane,step)` 记录，`h` 均为 0.01，无非有限、逆序或 endpoint 超出 tube；所有保存 tube 坐标均落在全时安全带。作者 checker 的 `VERIFIED` 是该方法的运行 verdict，读回检查只核保存区间，不独立证明控制器浮点包络或端到端 NNCS 定理。原生 `ranges.bin` 不带 accepted/status 字段，图中的 `complete` 只代表每步 225 条记录齐全。
-
-| 物理态 | 全时 tube union `[lo,hi]` | `T=1` endpoint union `[lo,hi]` | endpoint union width | 225 盒 endpoint width mean / max |
-|---|---|---|---:|---:|
-| θ₁ | `[0.9999996919513104, 1.9046282475863074]` | `[1.2931267868053968, 1.7771271322473556]` | 0.4840003454419588 | 0.19436106403259815 / 0.32901199826617344 |
-| θ₂ | `[-0.12483376545118097, 1.3577873248942236]` | `[-0.12483376474059484, 0.44168221003359853]` | 0.5665159747741934 | 0.19434017388097222 / 0.32931871755154307 |
-| θ̇₁ | `[-0.8405067547489368, 1.6969121773641698]` | `[-0.8405067511825203, -0.044472647141243334]` | 0.796034104041277 | 0.23414675502031784 / 0.743550142361634 |
-| θ̇₂ | `[-1.618490164931325, 1.3000427612783]` | `[-1.618490164931325, -0.6019052691880047]` | 1.0165848957433203 | 0.3158350652162677 / 1.0165848957433203 |
-
-这些是保存区间的绝对范围，不是采样轨迹。全时 tube union 扫描全部 22,500 条记录；`T=1` endpoint 和每盒宽度只取第 100 步的 225 条记录。[完整原值与计时边界](evidence/results/archcomp26_20261001/native_dp_less_full20_001/SUMMARY.md)可复查。
-
-![DP less native：θ₁ 随时间的 whole-tube 盒投影；绿色为全时 Safe 区域](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_tube.png)
-
-上图使用全部 100 个保存步骤；[对应 PDF](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_tube.pdf)、[MATLAB `.m`](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_tube.m)及[几何/回执](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_tube.geometry.json)保留了来源和显示语义。另有 [`t,θ₁` endpoint PNG](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_endpoint.png)、[其 MATLAB `.m`](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_endpoint.m)。
-
-![DP less native：θ₁–θ₂ endpoint 状态盒；仅抽样显示六步，不减少原始数值覆盖](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_theta1_theta2_endpoint.png)
-
-状态图仅显示步 `1,5,25,50,75,100`，每步保留 225 个单独的轴对齐盒；解析器仍检查了全部 100 步。[对应 PDF](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_theta1_theta2_endpoint.pdf)、[MATLAB `.m`](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_theta1_theta2_endpoint.m)和[几何 JSON](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_theta1_theta2_endpoint.geometry.json)可重画。两图均为 box 投影，不恢复 Flow* octagon 的坐标相关性；Safe 绿色区域是性质范围，不是已经认证的子盒。MATLAB 脚本尚未在 MATLAB/Octave 中运行。
-
-### P3 有向仿射分区与四方完成状态
-
-P3 早期控制器预检发现 auto_LiRPA 原始仿射偏置有单个 binary64 ULP 的 `L>U`；独立有向区间 residual 虽消除注入逆序，但其宽度使第 6 步收缩失败。较紧的整盒有向仿射 residual 到第 48 步性质未决、第 56 步首拒；同一控制器输入盒按各轴二分的 split2 到第 75/84 步才出现相应问题。各轴四分的 split4 使用 256 个闭子盒完整覆盖每个输入盒，对**同一**全局 `T` 的子盒 residual 取区间并集、再与整盒包络相交；它完成 20 期、100 步、22,500 个盒步，独立读回的全部有效 tube 位于安全盒内，最小裕量 +0.093919848。原始尝试、控制器局部包含论证与 74.274085 s 外层时间见[专项审计](ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md)。此时间含逐盒 tube/endpoint JSONL 写盘，不能作为干净速度样本；P3 七变量 plant、倒数、三角、余项和端点的端到端浮点保证仍未审计，因此四方只达到**完整数值时域覆盖**，并无稳定时间排名或独立严格证书。
-
-四方保存结果均覆盖 225 盒 × 100 小步。[逐维绝对上下界、全时 tube union 与每盒 endpoint 宽度均值/最大值](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/SUMMARY.md)由各自保存文件直接读出；下表仅摘录 `T=1` 的 endpoint union **宽度**，单位是对应物理态的原单位。四方数值路线、资源与观察开销不同，宽度不是可信度或稳定性能排名。
-
-| 方法 | θ₁ | θ₂ | θ̇₁ | θ̇₂ |
-| --- | ---: | ---: | ---: | ---: |
-| Flow* native | 0.484000345 | 0.566515975 | 0.796034104 | 1.016584896 |
-| Huan | 0.486030651 | 0.568683375 | 0.852979372 | 1.109787875 |
-| Xiangru | 0.486030651 | 0.568683375 | 0.852979372 | 1.109787875 |
-| 我方 P3 split4 | 0.498589879 | 0.568883381 | 0.671442586 | 0.799090015 |
-
-![DP less 四方：225 盒全时 tube union 的四个物理态 box 投影](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/fourway_tube_union.png)
-
-图的每一时刻是该方法 225 个保存 tube 盒的逐坐标 union；Huan/Xiangru 的曲线重合。[原值 CSV 与 PDF/MATLAB 图](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/SUMMARY.md)保留全部 100 步，并标明初集和安全带。MATLAB `.m` 尚未实跑；原生范围文件缺接受位，原生 `VERIFIED` 来自独立作者日志。Huan/Xiangru 的保存 endpoint 有约 `5.55e-15` 的个别越出对应 tube，四方安全带扫描使用有效保存 tube；这些数据仍不能替代端到端浮点 NNCS 证明。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 3 and 4；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The old native run timed out; timeout is not a complete runtime.
-
-## 8. Double Pendulum — more-robust (`double-pendulum-more-robust`)
-
-**本轮新证据（不写入下方旧冻结模板表）：** 原生止于 64/80 小步并报 `UNKNOWN`；Huan/Xiangru 在 72/80 小步后 checker `Unsafe.` 早停。P3 的一期门检覆盖完整 225 初盒的首个 0.02 s 控制期，四个 0.005 s 小步、900/900 盒步数值接受，作者驱动打印 `Step 0`、`Unknown.`。独立重扫保存 JSONL：四步分别有 225、225、181、120 个安全盒，第 3 步首次有 44 盒的 `θ̇₁` 上界越过 1.5，第 4 步有 105 盒；首例 lane 6 的第 3 步区间为 `[0.9912745512752368,1.5106057605641459]`。这只是区间性质未决，非实际轨迹反例。随后另立的 P3 全合同请求在第 9/80 小步首次数值拒绝，前 8 步仅到 `t=0.04`；四方均无完整 `T=0.4` 时间或宽度，见[P3 全合同原始收据与扫描](evidence/results/archcomp26_20261001/dp_more_p3_full20_interval_20261002_001/SUMMARY.md)。见[原生摘要](evidence/results/archcomp26_20261001/native_dp_more_full20_001/SUMMARY.md)、[两方摘要](evidence/results/archcomp26_20261001/author_dp_more_v1/SUMMARY.md)和[P3 原始首周期记录](evidence/results/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001/SUMMARY.md)。
-
-先前固定官方 more-robust ONNX 的[名义角点 `(1.3)^4` 数值重放](evidence/results/archcomp26_20261001/dp_more_point_candidate_20261002/SUMMARY.md)显示越界，但 binary64 `1.3` 比精确初盒上界 `13/10` 大约 `4.44e-17`；这条记录单独不能充当精确初盒内的反例候选。随后只对严格内点 `(1.299)^4` 作了一次[独立数值重放](evidence/results/archcomp26_20261001/dp_more_interior_point_candidate_20261002/SUMMARY.md)：每 0.02 s 以 NumPy float32 逐算子求固定 ONNX 控制并持值，DOP853 估计 `θ̇₁=-1.5` 的下穿时间 `t=0.3248652630`，在 0.005 s 网格上首次出带为 `t=0.325`、`θ̇₁=-1.5004299419`。`t=0.36` 点值 `-1.6071729076` 位于 Huan lane 224 保存 endpoint `[-1.6351055823,-1.5172577882]` 内；两档 RK4 与 DOP853 的保存期末值差不超过 `1.05e-14`。这是合同内初点的**数值反例候选**，一致性不是严格误差界，也未端到端约束控制器浮点语义，不能称为严格反例或证书；两条独立点诊断均不属于 64 个四方法单元。
-
-### 模型、控制器、初始集合与性质
-
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 3 and 4。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 3 and 4；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The legacy more-robust config uses the official less-robust controller SHA and the singleton corner {1.3}^4 instead of the official more-robust controller and full [1,1.3]^4 initial set; its time, widths, and verdict are not promotable.
-
-## 9. NAV — standard (`nav-standard`)
-
-**本轮新增、独立于下方旧冻结模板：** [作者执行合同审计](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)确定固定官方 point ONNX 的可执行输入 `[x,y,speed,heading]`。历史 `ours`/Huan/Xiangru 全程同合同证据已核实；原生与[当前工作 P3](evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/SUMMARY.md)分别有新 640×600 完整数值作业和独立保存范围扫描。新 Huan 只有首盒首周期。完整合同是 640 初盒 × 30 周期 × 20 小步；旧历史记录不并入新 attempt。论文文字的状态顺序和 `64/64` 层宽与固定官方可执行材料冲突。[NAV 同轴图及来源说明](evidence/results/archcomp26_20261001/nav_fourway_historical_vs_new_20261002/README.md)明确标明代际；新 P3/原生仅各一次进程计时，没有独立端到端浮点 NNCS 证明。
-
-### 模型、控制器、初始集合与性质
-
-- 下方旧模板的执行合同：**未冻结**；新结果仅按上文明确命名的作者可执行 profile 和独立索引解释。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 1 and 2。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The old native run timed out; small-denominator width ratios require absolute widths.
-- 未决：The report orders the physical state as [x,y,theta,nu], while the pinned repository dynamics evaluates x3*cos(x4) and x3*sin(x4), implying [x,y,nu,theta] and swapped control-output semantics. Resolve the controller input/output order before execution.
-
-## 10. NAV — robust (`nav-robust`)
-
-**本轮新增、独立于下方旧冻结模板：** 同一[作者执行合同审计](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)确定固定官方 set ONNX 与原序状态接口。历史 `ours`/Huan/Xiangru 与原生均有 25×600 完整数值记录，原生[全量范围复查](evidence/results/archcomp26_20261001/nav_robust_native_historical_20260923/INDEPENDENT_SAVED_RANGE_SCAN.json)及[四方法历史图](evidence/results/archcomp26_20261001/nav_fourway_historical_vs_new_20261002/README.md)已保存；这些旧运行没有增记为新 attempt。新 Huan 首盒首周期 [RESULT](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/RESULT.json) 为 20/20 小步接受、保存 tube 避开障碍，但不检查 `t=6` 终点。完整合同是 25 初盒 × 30 周期 × 20 小步；新[当前 working P3 全程](evidence/results/archcomp26_20261001/nav_author_robust_working_p3_full30_001/SUMMARY.md)另独立完成 25×600，并通过保存范围扫描，其原始范围和 1,200 行 x/y CSV 已保留。robust 指集合训练控制器，固定官方 plant 没有外加扰动。
-
-### 模型、控制器、初始集合与性质
-
-- 下方旧模板的执行合同：**未冻结**；新结果仅按上文明确命名的作者可执行 profile 和独立索引解释。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 1 and 2。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：Legacy acceleration results are regression references only, not latest-version reruns.
-- 未决：The report orders the physical state as [x,y,theta,nu], while the pinned repository dynamics evaluates x3*cos(x4) and x3*sin(x4), implying [x,y,nu,theta] and swapped control-output semantics. Resolve the controller input/output order before execution.
-
-## 11. QUAD — reach (`quad-reach`)
-
-**本轮新证据（不写入下方旧冻结模板表）：** P3、Huan、Xiangru、Flow* native 在选定 2026 论文方程上各完整运行一次 1024×1000。P3 1,024,000/1,024,000 盒步接受、wall 1357.555 s，`T=5` 的 `x3` endpoint union 为 `[0.9584732146312492,1.0256989633476477]`，驱动打印 `VERIFIED`，但 `end_to_end_strict_certificate=false`；见[P3 摘要](evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md)。Huan/Xiangru `T=5` 的 `x3` endpoint union 同为 `[0.967434441417146,1.015176258384569]`，作者 checker 报 `VERIFIED`，单次进程 wall 为 94.583 s / 108.018 s；见[Huan 摘要](evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/SUMMARY.md)与[Xiangru 摘要](evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/SUMMARY.md)。原生原作业自然结束，进程 wall 47058.886571 s、无超时；原始 1,024,000 条范围独立重扫完整有序，`T=5` 的 `x3` endpoint union `[0.965771839016746,1.0167484756616678]`，作者日志也打印 `VERIFIED`；见[原生原始收据与扫描](evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SUMMARY.md)。四方均为单次完整数值时域，尚无独立端到端浮点 NNCS 证书或稳定速度排名。
-
-### 模型、控制器、初始集合与性质
-
-- 本轮四方主合同选择 2026 论文方程，不沿用旧作者 QUAD 动力学；`x2'`、`x4'`、`x5'` 三处表达式差异及控制器映射见[合同决策](ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md)。初盒是 `[-0.4,0.4]^6×{0}^6`，分为 1024 盒；`x3∈[0.94,1.06]` 是 **`T=5` 的终点目标**，不能画成全时 Safe 带。
-- 下方自动生成的旧矩阵表格仍显示 `not_started`，未接纳本轮无哈希运行；旧 Huan 约 75–80 s、旧 P3 与旧 native 超时属于另一动力学合同。
-
-### 本轮新论文方程 Huan P2 parity 全程运行
-
-新运行目录为远端 `.../runs/archcomp26_20261001/quad_paper_huan_full50_001/`，本地小证据包与[摘要](evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/SUMMARY.md)分开保存。所选官方 Torch ONNX、论文方程新 YAML、已有 Huan sparse/box/same-slope/parity 引擎、order 2、`h=0.005`、GPU 2、CPU 10–13、三个预载 CUDA 扩展与禁止 JIT 的配置均有原始记录；本轮未计算摘要或重核二进制身份。
-
-一次全程进程从 2026-10-01 09:43:24 UTC 运行至 09:44:58 UTC，supervisor wall **94.583 s**，driver elapsed **90.471 s**，退出码 0，无超时。50 个控制期各有 1024 活跃盒，共 1000 个 ODE 小步，`broken=0`。`T=5` 的 `x3` endpoint union 为 `[0.967434441417146,1.015176258384569]`，位于终点目标 `[0.94,1.06]`；原 driver 输出 `VERIFIED`。这是一条 parity 模式的单次运行；Xiangru、P3 和 native 随后也完成同合同单次全程，见[各自摘要](evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/SUMMARY.md)、[P3 摘要](evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md)与[原生摘要](evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SUMMARY.md)；仍无四方重复 steady 计时。作者的终点 verdict 与区间包含关系不等于独立浮点控制器证明。
-
-最新 P3 全程严格数值路线完成 1024×1000 且全部盒步接受，单次外层 wall **1357.555 s**；`T=5` 的 `x3` endpoint union 为 `[0.9584732146312492,1.0256989633476477]`，宽 0.06722574871639841，位于终点目标内。它比两方 P2 parity 单次区间宽 0.04774181696742297 更宽；`end_to_end_strict_certificate=false`，所以驱动 `VERIFIED` 只按作者 checker 输出记录，不称端到端严格证书或四方速度结论。四方每个物理坐标 `x1..x12` 的终点 union 绝对下/上界与宽度见[48 行无哈希 CSV](evidence/archcomp26_quad_paper_endpoint_4methods_20261002.csv)；Huan 与 Xiangru 的 12 个区间逐值相同。原生逐盒宽度均值/最大值由原始 `ranges.bin` 重扫，其它三方 CSV 栏位留空；不能据 union 代替逐盒宽度。
-
-原生 `START`、`RESULT`、50 次 RPC、原生日志和隔离构建源码均随[本地小证据包](evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SUMMARY.md)保存；417,792,000 字节原始范围仍在服务器原目录。独立读取确认 1,024,000 条盒步精确覆盖 `1024×1000`，每条 `h=0.005`，非有限、区间逆序、endpoint 越出同小步 tube 与缺步计数均为零；范围文件本身没有 solver accepted 字段。终点 `x3` endpoint `[0.965771839016746,1.0167484756616678]` 宽 0.0509766366449218；最后一步 tube 宽 0.05097738677735586，全时 `x3` tube 则跨 `[-0.40817151558335585,1.452252535346294]`，不得误作终点宽。保存 tube 从 step 775 到 1000 连续落于目标带，对应名义 `t∈[3.87,5]`；源码 checker 调用每盒 `fp_end_of_time.isInTarget`，只核终点。该连续保存带是观察诊断，不能代替论文 reach-and-remain 的独立时间语义或端到端证明。
-
-![论文方程 QUAD 的 P3 与原生全时保存 x3 tube，以及四方 T=5 终点区间](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/quad_paper_fourway_t_x3_pooled_tube.png)
-
-[四方 QUAD 图、PDF、MATLAB 与几何数据](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/SUMMARY.md)以原生/P3 的逐小步 1024 盒并集画全时 tube；Huan/Xiangru 只保存终点 metrics，因此图中仅给 T=5 终点，不连接成不存在的中间流管。`[0.94,1.06]` 只标作 T=5 终点目标；图中轴对齐区间不能恢复原生 Flow* octagon 相关性。MATLAB `.m` 为导出脚本，尚无 MATLAB/Octave 实跑证据。
-
-短程单盒、一个控制期 smoke 曾在 `T=0.1` 输出 `FALSIFIED`，那是把原终点检查提前到短时域的入口诊断，**不是** `T=5` 目标失败。旧作者合同的 Huan 40 步 parity/strict 诊断同样不得混入这一论文方程结果。新论文方程的时间—状态图须注明每方真实保存粒度；不能把旧 native root1 B2 的图改名作为本图。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：state 3 over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The 2026 report equations and the saved CROWN-Reach quad.cpp differ in x2 signs, x4 multiplication versus subtraction, and the x5 formula.
-- 未决：The original native 1024-lane job ended by six-hour timeout after 600 complete steps; it has no T=5 time or width.
-
-## 12. Single Pendulum — reach (`single-pendulum-reach`)
-
-**本轮新证据（不写入下方旧冻结模板表）：** 在明确的“两物理态 + 辅助时钟”合同下，原生、Huan、Xiangru 均完成 1×100 小步；`[0.5,1]` 的 `x1` 保存 tube 在 `[0,1]` 内。见[合同与 GPU 摘要](evidence/results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md)及[原生摘要](evidence/results/archcomp26_20261001/native_sp_two_state_full20_001/SUMMARY.md)。
-
-### 模型、控制器、初始集合与性质
-
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：state 1 over time。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：state 1 over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The report and specification define two physical states, but the repository dynamics also returns dx(3)=1 without defining that clock state's initial value or controller/property role.
-
-## 13. TORA — remain (`tora-remain`)
-
-**本轮新证据（不写入下方旧冻结模板表）：** 新原生 12×200 全程运行的 checker 报 `VERIFIED`，保存 tube 全程在 `[-2,2]^4`；Huan/Xiangru full 尝试虽然各观察到 200 小步，但只接受 2357/2400 盒步，首次保存 tube 出带为步185、首次拒绝为步190，checker 均 `Unknown.`。两方共同合格前缀仅至 `t=18.4`，其约 8 s 失败进程不能用于完整时域速度排名。见[共享合同](ARCHCOMP26_TORA_REMAIN_CONTRACT_20261001.md)、[原生摘要](evidence/results/archcomp26_20261001/native_tora_remain_full20_001/SUMMARY.md)与[两方摘要](evidence/results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md)。
-
-### 模型、控制器、初始集合与性质
-
-- 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 1 and 2; states 3 and 4。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 2; states 3 and 4；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The report places u=f(x)-10 at the controller boundary, while the repository dynamics subtracts 10 inside dx4. Freeze whether the plant function receives raw or post-processed controller output so the offset is applied exactly once.
-
-## 14. TORA — reach-sigmoid (`tora-reach-sigmoid`)
-
-**新主合同与结果：** [reach 执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)已逐元素核对官方 `.txt` 与 `.mat` 参数，也确认旧 ONNX 的对应关系。sigmoid 仍有论文三层 sigmoid 加 tanh 输出、官方四层 sigmoid、旧四层 sigmoid 三种控制合同；旧 `22(f−0.5)` 与官方 `11f` 对同一初点产生不同输入。用户已选官方 2026 模型与 `u=11f`；T=5 保存终点入目标可作到达的充分条件，未入目标时仍需权威时间量词 checker。旧不同缩放的 500 步不可代作新结果。
-
-旧[官方文件 `u=11f` Huan 一期诊断](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag/SUMMARY.md)保存 50/50 小步，只作为入口回归；另立的[全程 Huan](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_002/SUMMARY.md)、[Xiangru](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_full500_001/SUMMARY.md)、[P3](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_p3_full500_001/SUMMARY.md)与[原生](evidence/results/archcomp26_20261001/native_tora_reach_sigmoid_u11_full10_001/SUMMARY.md)新运行均完成 500/500 小步，保存 `T=5` endpoint 入目标。前三方性质 checker 未执行，原生仅有终点 checker `VERIFIED`；四方均无独立端到端浮点 NNCS 证明。下方表格仍是恢复前旧冻结模板。
-
-四方法 `T=5` 保存物理 endpoint 的绝对宽度来自[逐维原值及来源 CSV](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_terminal_fourway.csv)：
-
-| 方法 | `x1` | `x2` | `x3` | `x4` |
-| --- | ---: | ---: | ---: | ---: |
-| Huan | 0.025818 | 0.025520 | 0.101033 | 0.026648 |
-| Xiangru | 0.025818 | 0.025520 | 0.101033 | 0.026648 |
-| P3 | 0.026079 | 0.025925 | 0.101098 | 0.026655 |
-| Flow* native | 0.026067 | 0.025779 | 0.101039 | 0.026650 |
-
-此表是已保存数值包络的描述；Huan/Xiangru 共用作者驱动，P3 工作阶数与作者方法不同，不将微小宽差解释成证明质量或稳定排名。
-
-### 模型、控制器、初始集合与性质
-
-- 新主表执行合同：**官方 2026 四层 sigmoid 模型与 `u=11f`**；下方旧模板字段仍是恢复前快照。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 1 and 2。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The report's grouped activation prose conflicts with the pinned sigmoid MAT metadata, and 'within 5 s' does not by itself freeze the reach-property checker semantics.
-
-## 15. TORA — reach-tanh (`tora-reach-tanh`)
-
-**新主合同与历史复用：** 本轮新 Huan 仅有一期门检；[reach 执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)已逐元素核对官方 `.txt` 与 `.mat` 参数，也确认旧 ONNX 的对应关系。tanh 实例在论文字面“三层 sigmoid 加 tanh 输出”和官方/旧可执行“三层 ReLU 加 tanh 输出”之间仍有控制器差异；二者都用 `11f`。用户已选官方 2026 模型与 `u=11f`；旧四方同合同 500 步可按原始资格单列复用，新 Huan 一期只作一致性门检。T=5 终点入目标可作到达的充分条件，未入目标时仍需权威时间量词 checker。下方表格仍是旧冻结模板。
-
-### 模型、控制器、初始集合与性质
-
-- 新主表执行合同：**官方 2026 三层 ReLU 加 tanh 模型与 `u=11f`**；下方旧模板字段仍是恢复前快照。
-- 待解决字段配置：`full_execution_contract_v1`。
-- 计划可视化：states 1 and 2。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：Confirm whether the saved legacy 'relu_tanh' controller is the 2026 reach-tanh controller.
-- 未决：The report's grouped activation prose conflicts with the pinned ReLU/tanh MAT metadata, and 'within 5 s' does not by itself freeze the reach-property checker semantics.
-
-## 16. Unicycle — reach (`unicycle-reach`)
-
-**本轮来源冲突与用户选择：** [新执行门](ARCHCOMP26_UNICYCLE_EXECUTION_GATE_20261002.md)逐式列出 2026 论文仅在速度导数加 `w`、官方 MATLAB 无 `w`、旧四方在朝向和速度两导数均加同一常值 `w`。用户已选择论文式 (3)，`w∈[-10⁻⁴,10⁻⁴]` 沿单条轨迹保持常值，仅进入速度导数；`T=10` 终点入目标只作“10 秒内到达”的充分证据。下方表格仍是恢复前旧合同的冻结模板；新结果由原始 run ID 和工作矩阵单列。
-
-**新合同 Huan/Xiangru 结果：** 两方法分别通过全初盒首周期 10/10 小步门检，再各自完成 50 期、500/500 小步到 `T=10`。外层 wall 分别为 9.594389 s、9.895126 s。两份保存终点物理盒相同：`x1=[0.4365198254,0.5277617930]`、`x2=[-0.1859375613,-0.0507807157]`、`x3=[-0.1035952958,0.0189019927]`、`x4=[-0.3227584415,-0.2088621331]`。独立重读各 500 条八态 tube/endpoint，确认有限有序、首段覆盖初盒且端点均在同小步 tube；`x3/x4` 终点未整体包含于目标，原 driver 为 `UNKNOWN`。这不证明任意轨迹未在 10 秒内到达目标。见[原始及独立扫描证据](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/SUMMARY.md)。
-
-**新合同 P3 结果：** 全初盒一期 10/10 后，另立的全程运行完成 500/500 小步；外层 wall 17.819782 s。独立扫描所有八态保存范围通过初盒、时序、有限有序、端点含于 tube 检查。`T=10` 的四态 endpoint 盒分别为 `[0.4739261690,0.5016094329]`、`[-0.1466305306,-0.1126475361]`、`[-0.0361685980,-0.0162814701]`、`[-0.2664441173,-0.2458427495]`，完全包含于目标，是“10 秒内到达”的数值充分条件观察。P3 使用工作阶数 3 / 验证阶数 4，Huan/Xiangru 使用阶数 2；单次结果不可直接解释为方法优劣或速度排名。原始方法元数据误标“首周期”，已保留并附[更正审计](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/SCOPE_ERRATUM.json)，全程依据独立的 500 条区间及 START/RESULT 判定。见[原始全程摘要](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/SUMMARY.md)。这些保存范围仍不是端到端浮点 NNCS 证书。
-
-**新合同 Flow* native 结果：** 独立的一期门检先从实际 post-repair 仿射系数有理数重构，确认完整请求初盒 8/8 态覆盖，仅修复旧原生 x2 欠包；随后全程新 run 接受 50/50 周期、500/500 小段，50 次 RPC，外层 wall 10.397308 s。独立扫描全 500 条 tube/endpoint 有限有序且逐段包含；`T=10` 的四态 endpoint 盒为 `[0.4671955351,0.5065349954]`、`[-0.1561695394,-0.0975828450]`、`[-0.0488326517,-0.0095684339]`、`[-0.2751257016,-0.2413843313]`，全盒在目标内，原生 checker 打印 `VERIFIED`。见[初盒/一期审计](evidence/results/archcomp26_20261001/native_unicycle_paper_speed_smoke1_001/SUMMARY.md)和[全程原始证据](evidence/results/archcomp26_20261001/native_unicycle_paper_speed_full50_001/SUMMARY.md)。完整数值终点包含仍不等于独立端到端浮点 NNCS 证书；四方法单次耗时不用于排名。
-
-四方法 `T=10` 保存物理 endpoint 的绝对宽度（同一盒、同一论文 RHS；P3 阶数不同）由[逐维原值与来源 CSV](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/terminal_fourway.csv)给出：
-
-| 方法 | `x1` | `x2` | `x3` | `x4` |
-| --- | ---: | ---: | ---: | ---: |
-| Huan | 0.091242 | 0.135157 | 0.122497 | 0.113896 |
-| Xiangru | 0.091242 | 0.135157 | 0.122497 | 0.113896 |
-| P3 | 0.027683 | 0.033983 | 0.019887 | 0.020601 |
-| Flow* native | 0.039339 | 0.058587 | 0.039264 | 0.033741 |
-
-这些是各自保存的数值包络宽度，不以窄度推断谁的数学保证更强；尤其 Huan/Xiangru 与 P3 的积分阶数不同。
-
-### 模型、控制器、初始集合与性质
-
-- 新主表执行合同：**论文方程、速度导数常值扰动**；旧模板中的 `full_execution_contract_v1` 字段仍是恢复前快照，不能代替新原始 run 收据。
-- 计划可视化：states 1 and 2。
-
-### 完整配置、状态与复现入口
-
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-
-### 完整性、性质与结果资格
-
-| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
-|---|---|---|---:|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | — | 无结果记录 |
-
-### 派生的四方可比性（非 cell 自报）
-
-- 时间可比：`false`。
-- 宽度可比：`false`；四方共同前缀：`—`。
-- 四方排名资格：`false`。
-- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
-
-### 时间
-
-| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
-|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
-
-#### 全部原始 attempt（失败不删除、不外推）
-
-| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
-|---|---|---|---|---:|---|---:|---|---|---|
-| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
-
-### 绝对宽度与共同前缀
-
-- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
-
-| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
-
-### Flowpipe 图、失败与未决项
-
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
-- 当前无哈希绑定的图或轨迹记录。
-- 未决：The latest GPU diagnostic stopped at extension loading before plant advance; frozen shared objects load directly, while Ninja is absent. Restore/qualify the loader without rewriting the failed record.
-- 未决：The report includes w in [-1e-4,1e-4] in velocity_dot, while the repository dynamics omits w and its comment gives a malformed range. Disturbance temporal semantics and the shared reach checker remain unresolved.
+- **合同与性质：** 用户指定论文方程：常值 w∈[-10⁻⁴,10⁻⁴] 只加速度导数，完整四态初盒、0.2 秒×50 到 T=10；目标 [-0.6,0.6]×[-0.2,0.2]×[-0.06,0.06]×[-0.3,0.3]。[执行门](ARCHCOMP26_UNICYCLE_EXECUTION_GATE_20261002.md)说明论文未给 w 的时间量词，旧两导数加扰动和官方 MATLAB 无扰动均单列；终点入目标仅作十秒内到达的充分证据。
+- **四方状态：** P3、Huan、Xiangru、原生各有 500/500 小步。P3/原生保存 T=10 全盒终点入目标，原生作者终点 checker 打印 VERIFIED；Huan/Xiangru 的 x3/x4 终点盒未全入目标，程序 UNKNOWN，不能推成整个窗口未到达。[四方摘要](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/SUMMARY.md)与[原生](evidence/results/archcomp26_20261001/native_unicycle_paper_speed_full50_001/SUMMARY.md)保留来源。
+- **时间、宽度、图和复现：** 单次外层 wall 按 P3/Huan/Xiangru/原生为 17.819782/9.594389/9.895126/10.397308 秒；[四态 T=10 终点绝对界](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/terminal_fourway.csv)来自保存范围，各方法阶数不同。尚无本合同四方逐步状态 1/2 图；旧合同图不能改名填本节。
+- **未决：** 终点充分条件与整个十秒 reach 命题须分口径；单次时间和不同阶数不能形成稳定排名，保存范围与作者 checker 也不是独立端到端证明。
 
 ## Huan QUAD 原因分析与 strict/parity 边界
 
@@ -1323,11 +344,13 @@ P3 早期控制器预检发现 auto_LiRPA 原始仿射偏置有单个 binary64 U
 
 ## 绘图功能与 MATLAB 示例
 
-图层、tube/endpoint 语义与 MATLAB/替代渲染边界见[原绘图说明](flowpipe_plotting.md)和[保存数据验证](FLOWPIPE_PLOT_VALIDATION_20261001.md)。本轮新增[无哈希 native/geometry 绘图入口](flowpipe_plot_nohash.md)，从保存的 `ranges.bin` 输出 box 投影、初盒、按时间定义的 Safe/Target 区域、几何 JSON、MATLAB `.m`、PNG/PDF 和不含新摘要的路径/大小回执。新 DP less 三组图已嵌在第 7 节；其 `t,θ₁` tube 是 100 步全展示，`θ₁,θ₂` endpoint 仅抽样显示六步但扫描全部数值记录。旧 QUAD 根一 B2 图只作解析回归，旧 `x3` 带是 `t=5` Target。所有图均为轴对齐盒，不是 Flow* octagon；脚本生成及静态检查不代表已在 MATLAB/Octave 实跑。
+图层、tube/endpoint 语义与 MATLAB/替代渲染边界见[原绘图说明](flowpipe_plotting.md)和[保存数据验证](FLOWPIPE_PLOT_VALIDATION_20261001.md)。本轮新增[无哈希 native/geometry 绘图入口](flowpipe_plot_nohash.md)，从保存的 `ranges.bin` 输出 box 投影、初盒、按时间定义的 Safe/Target 区域、几何 JSON、MATLAB `.m`、PNG/PDF 和不含新摘要的路径/大小回执。新 DP less 三组图已嵌在第 7 节；其 `t,θ₁` tube 是 100 步全展示，`θ₁,θ₂` endpoint 仅抽样显示六步但扫描全部数值记录。旧 QUAD 根一 B2 图只作解析回归，旧 `x3` 带是 `t=5` Target。这些 benchmark 归档图均为轴对齐盒，不是 Flow* octagon；脚本生成及静态检查不代表已在 MATLAB/Octave 实跑。
 
 本轮还从新保存记录直接生成了[ACC 四方 t–安全距离裕量](evidence/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_four_method_t_safe_distance_margin_tube.png)、[论文方程 QUAD P3 单方 t–x3 合并 tube](evidence/results/archcomp26_20261001/plots/nohash_saved_20261001/quad_paper_p3_1024x1000_t_x3_pooled_tube.png)，并在原生全程完成后生成上节[QUAD 四方终点及两方逐步 tube 图](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/quad_paper_fourway_t_x3_pooled_tube.png)。ACC 使用每期六态保存 tube 的保守盒像并画零阈值；QUAD 逐步层使用每小步 1,024 盒 union，不能恢复逐盒几何或八方向相关性，`[0.94,1.06]` 只标于 T=5 终点。Huan/Xiangru 未保存逐步 QUAD 范围，四方图只在终点展示其区间；图附 MATLAB `.m`、PDF 与几何数据，脚本未在 MATLAB 中执行。
 
 [修正危险集的 Attitude 原生 t–x4 tube 图](evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/plots/attitude_native_t_x4_tube.png)显示 60 段保存盒与危险盒投影 `x4∈[-0.7,-0.6]` 分离；正式六维判交仍由保存盒扫描给出，不能仅靠二维图或图上的“record-complete”标签宣布性质/接受。图同时提供 PDF、MATLAB `.m`、几何 JSON 与渲染收据。
+
+新增的[CPU Taylor 模型接受步流式方向界短例](evidence/results/archcomp26_20261001/tm_octagon_stream_harmonic_smoke_20261002_001/SUMMARY.md)在每个已验证段保存 `x,y,x+y,x−y` 的 tube 和传播终点界，三步与无观察器对照方向界逐项相同，并从 JSONL 重画 MATLAB、PNG、PDF。它只测试 plant-only CPU 路径；上述 benchmark 图仍是轴盒投影，native/P3 需要各自保留相关性的接受步观察器，不能由归档坐标盒追算 octagon。
 
 ## 统一数据包与发布
 
@@ -1337,6 +360,6 @@ P3 早期控制器预检发现 auto_LiRPA 原始仿射偏置有单个 binary64 U
 
 当前[16×4 无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **187 条新尝试**重算：64 格中 **37 格完整数值时域、3 格仅短前缀、10 格早停、4 格失败、10 格未尝试、0 格运行中**。ACC participant-order、具名两物理态 Single Pendulum、修正危险集 Attitude、Docking、DP less、论文方程 QUAD、论文方程 Unicycle，以及官方 `u=11f` TORA reach-sigmoid 各有四方完整数值运行；NAV standard 当前 P3/原生和 NAV robust 当前 P3 也有完整新作业。TORA reach-sigmoid Huan/Xiangru/P3 的性质 checker 未执行，原生仅记录终点 checker 的 `VERIFIED`；tanh 的旧四方同合同全程证据单列，本轮新 Huan 仅做一期一致性门检。完整数值时域不自动取得性质证明或跨方法速度排名。另有 9 个本轮索引显示“未尝试/仅短前缀”的方法格具备同合同历史全程原始证据：NAV 的 Huan standard/robust、Xiangru standard/robust、原生 robust，以及 TORA reach-tanh 四方；这些沿原资格单列复用，未重复启动，也不冒充新进程成绩。
 
-当前未解实例有明确边界。Docking 四方的非线性性质均 `UNKNOWN`；Single Pendulum 缺官方三态 MATLAB 执行材料；DP less P3 split4 缺端到端严格证书；DP more 四方无完整 `T=0.4`，P3 全合同首次第 9 小步拒绝。Airplane continuous 四方完整初盒均无可用全时流管，已有入口、数值首拒和 observer 诊断保留原始记录；Airplane discrete 缺参与者权威离散转移和控制更新顺序。Balancing 固定仓库 raw4 四方法均在早期停止：P3 第 87 小步、Huan/Xiangru 第 99 小步、原生第 84 小步 `UNCOMPLETED_SAFE`；性质窗未进入，论文五特征控制器仍缺。Unicycle 论文速度扰动主合同已有四方完整数值时域：Huan/Xiangru 终点判据 `UNKNOWN`，P3/原生终点盒入目标；TORA reach-sigmoid 官方 `u=11f` 也有四方完整数值时域，tanh 四方全程为同合同历史复用。两项 reach 的终点包含均只作所选时间窗到达语义的充分证据，未执行 checker 的方法不可补写作者 `VERIFIED`。QUAD 原生与 P3 保存区间给出数值持续入目标带后缀，Huan/Xiangru 尚无逐步数据；这些都不代替参与者 temporal checker 或独立浮点 NNCS 证明。
+当前未解实例有明确边界。Docking 四方的非线性性质均 `UNKNOWN`；Single Pendulum 缺官方三态 MATLAB 执行材料；DP less P3 split4 缺端到端严格证书；DP more 四方无完整 `T=0.4`，P3 全合同首次第 9 小步拒绝。Airplane continuous 四方完整初盒均无可用全时流管，已有入口、数值首拒和 observer 诊断保留原始记录；Airplane discrete 缺参与者权威离散转移和控制更新顺序。Balancing 固定仓库 raw4 四方法均在早期停止：P3 第 87 小步、Huan/Xiangru 第 99 小步、原生第 84 小步 `UNCOMPLETED_SAFE`；性质窗未进入，论文五特征控制器仍缺。TORA remain 原 `h=0.1` 两作者格不全，但单列 `h=0.05` 两方已完整接受并保存安全 tube，不改变原格。Unicycle 论文速度扰动主合同已有四方完整数值时域：Huan/Xiangru 终点判据 `UNKNOWN`，P3/原生终点盒入目标；TORA reach-sigmoid 官方 `u=11f` 也有四方完整数值时域，tanh 四方全程为同合同历史复用。两项 reach 的终点包含均只作所选时间窗到达语义的充分证据，未执行 checker 的方法不可补写作者 `VERIFIED`。QUAD 原生与 P3 保存区间给出数值持续入目标带后缀，Huan/Xiangru 尚无逐步数据；这些都不代替参与者 temporal checker 或独立浮点 NNCS 证明。
 
 ACC、具名两物理态 Single Pendulum 与修正危险集 Attitude 已各做四方每法 5 次后续独立进程计时；其它多数格仍只有单次或失败前缀，算法与资源路径也有差别，所以报告不列稳定四方速度排名。MATLAB 脚本尚无实际 MATLAB 执行记录，native octagon 相关性投影未补齐。本稿继续作为可审阅执行记录，待共同合同、性质和交付门满足后再制作正式文档。

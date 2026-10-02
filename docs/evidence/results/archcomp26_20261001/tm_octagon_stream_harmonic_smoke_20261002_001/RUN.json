@@ -1,0 +1,28 @@
+{
+  "schema": "torch-tm-flowpipe-octagon-stream-smoke-nohash-v1",
+  "status": "validated",
+  "accepted_steps": 3,
+  "numerical_horizon": 0.15000000000000002,
+  "h": 0.05,
+  "order": 4,
+  "mode": "dependency_preserving",
+  "initial_box": [
+    [
+      1.0,
+      1.2
+    ],
+    [
+      0.0,
+      0.0
+    ]
+  ],
+  "ode": [
+    "x1'=x2",
+    "x2'=-x1"
+  ],
+  "sampled_exact_solution_cases": 108,
+  "stream_supports_equal_accepted_tm": true,
+  "solver_plus_observer_wall_seconds": 0.15613605733960867,
+  "qualification": "CPU plant-only three-step stream smoke; no NNCS or full benchmark proof",
+  "content_digest_policy": "none computed"
+}

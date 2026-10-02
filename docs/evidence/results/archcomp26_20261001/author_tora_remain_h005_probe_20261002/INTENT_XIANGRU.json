@@ -1,0 +1,11 @@
+{
+  "schema": "archcomp26-tora-remain-h005-first-reject-intent-v1",
+  "run_id": "author_tora_remain_h005_probe_20261002/xiangru_full20_firstreject_001",
+  "reason_for_one_followup": "The isolated Huan h=0.05 probe accepted all 4800/4800 lane-substeps through T=20 with saved tubes inside the safe box; the original Xiangru h=0.1 arm had the same first rejection at substep 190. This one followup checks the separate Xiangru plant engine under the same h=0.05 profile.",
+  "contract_reference": "INTENT.json: fixed mathematical contract and other method settings, except backend=xiangru",
+  "only_changed_setting_from_original_xiangru": {"ode_step_s": {"prior": 0.1, "probe": 0.05}},
+  "expected_probe_substeps": 400,
+  "stop_rule": "Preserve the first rejected substep and status codes, then stop immediately; outer timeout 120 s.",
+  "classification": "isolated numerical profile; not fixed h=0.1 main table and not a speed-ranking sample",
+  "content_digest_computed": false
+}
