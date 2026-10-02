@@ -1,0 +1,36 @@
+{
+  "schema": "quad-old-author-p3-weighted128-samewrapper-full1000-preflight-v1",
+  "status": "passed",
+  "run_id_unused": true,
+  "source_only_expected_256_to_128_changes": true,
+  "same_old_author_yaml_direct_equal": true,
+  "archived_reference_steps": 1000,
+  "archived_reference_observer_files": 1000,
+  "prior_256_steps": 1000,
+  "prior_256_observer_arrays": 3000,
+  "prior_256_direct_old_reference_comparison": "all_1000_saved_steps_direct_equal",
+  "precompiled_extensions_present": 8,
+  "adapter_cpu_check": {
+    "status": "passed_CPU_padding_only",
+    "row_counts": [
+      1,
+      2,
+      10,
+      127,
+      128
+    ],
+    "target_bytes_preserved": true,
+    "last_row_padding_bytes_equal": true,
+    "owned_clones_survive_replay": true,
+    "invalid_counts_rejected": [
+      0,
+      129
+    ],
+    "actual_weighted_map_run": false,
+    "actual_refinement_run": false,
+    "CUDA_run": false
+  },
+  "gpu3_used_mib": 0,
+  "related_processes": [],
+  "qualification": "input and resource gate only; no 128-row GPU result yet"
+}
