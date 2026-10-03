@@ -1,6 +1,14 @@
 # ARCH-COMP26 阶段报告交付说明
 
-## 当前 225 条尝试截点
+## 当前 287 条尝试截点
+
+[287 条截点可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_287_20261003.py)从[持续更新的 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。PDF 为 **23 页 A4、14 幅图、11 个表格**；已用 PDFium 渲染并逐页查看中文、图表、页眉页脚和页边界，没有缺字、裁切或空白页。文档技能的 `render_docx.py` 也已运行；交付版面以 Word 导出 PDF 为准。当前[尝试索引](../../../archcomp26_nohash_attempts_20261001.json)为 287 条，64 格覆盖仍为 **38 格本轮完整数值时域、8 格同合同历史全程、14 格无完整时域、4 格 Airplane discrete 合同阻塞**。
+
+本截点新增的[Airplane continuous 六维二分数值门](../native_airplane_binary6_numeric_cover_20261003_001/README.md)只对先前未运行的 62 个子盒各执行一个 `0.01 s` 小步；原先两端角子盒未重跑。[独立保存文件审计](../native_airplane_binary6_numeric_cover_20261003_001/INDEPENDENT_AUDIT.json)核对了新 62/62 与合并旧记录后的 64/64 个数值接受小步，首步性质标签为 8 SAFE、56 Unknown。它没有覆盖第一个 `0.1 s` 控制周期的余步或 `T=2 s` 全时域，也不构成完整初盒安全、独立 NN/CROWN 或浮点 NNCS 证明。62 条记录均为短前缀，不增加主表完整方法格。
+
+[原生 QUAD 全 1,024 盒隔离控制构造门](../native_quad_allbox_correlated_remainder_gate_20261003_001/README.md)虽写出 1,024 行 native trace，[精确有理检查器](../native_quad_allbox_correlated_remainder_gate_20261003_001/RESULT.json)在第 2 个盒的第 1 个控制输出首次拒绝：相同符号条件性下界裕量为 `−1.1884702397389976×10⁻¹⁵`。前一盒三输出通过；其余盒没有通过这个检查。因此先前只在首盒通过的固定 `2⁻⁵⁰` 余项外扩不是全盒修复。此门检没有 CROWN/真实网络或 ODE 调用，不是网络反例；[原生八方向生产门](../../../../ARCHCOMP26_NATIVE_OCTAGON_PRODUCTION_GATE_20261002.md)继续关闭。文稿仍是可审阅阶段稿，不能据完整数值时域或这些短程门检宣称性质证明、稳定速度排名或生产级正确性。
+
+## 225 条尝试阶段快照
 
 [16 节可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_225_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_225_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_225_20261003.py)从[225 条截点 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。64 格仍为 38 格本轮完整数值时域、8 格经同合同审计可复用的历史全程、14 格无完整时域及 4 格 Airplane discrete 合同阻塞；数值全程不等于性质证明或独立端到端 NNCS 证书。
 
