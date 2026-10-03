@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "taskset",
+    "-c",
+    "10-13",
+    "/bin/bash",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/tools/run_archcomp26_tora_reach_sigmoid_native_pair.sh"
+  ],
+  "contract_label": "tora-reach-official2026-mat-u11f-campaign",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_reach_sigmoid_u11_build_001/archcomp/TORA",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "tora-reach-sigmoid",
+  "method": "native",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "CUDA_VISIBLE_DEVICES": "2",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TORA_REACH_BINARY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_reach_sigmoid_u11_build_001/archcomp/TORA/tora_sigmoid_u11_full10",
+    "TORA_REACH_CPUSET": "10-13",
+    "TORA_REACH_MODEL": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_reach_sigmoid_u11_build_001/archcomp/TORA/controller_plant_u.onnx",
+    "TORA_REACH_OVERLAY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_rpc_overlay_preflight_001/rpc_overlay",
+    "TORA_REACH_RUN_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_001/first00_native",
+    "TORA_REACH_SERVER_PYTHON": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "TORA_REACH_WORKDIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_reach_sigmoid_u11_build_001/archcomp/TORA"
+  },
+  "started_utc": "2026-10-02T23:36:00.431939+00:00",
+  "timeout_s": 120.0
+}

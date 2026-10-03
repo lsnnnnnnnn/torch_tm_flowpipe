@@ -1,6 +1,6 @@
 # Huan QUAD speed and mode audit
 
-Status: **evidence-backed draft; 40-step mode, Huan phase, P3 observer, and early-weighted diagnostics completed**
+Status: **evidence-backed draft; Huan mode and phase audits, P3 observer diagnostics, and matched-wrapper 128/256-row full-horizon runs completed**
 Date: 2026-10-03
 
 ## Plain-language answer

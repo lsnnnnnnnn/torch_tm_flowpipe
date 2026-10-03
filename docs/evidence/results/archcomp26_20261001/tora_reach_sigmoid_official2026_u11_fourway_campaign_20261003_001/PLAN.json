@@ -1,0 +1,74 @@
+{
+  "started_utc": "2026-10-02T23:35:58.346737+00:00",
+  "rounds": [
+    {
+      "round": 0,
+      "phase": "first",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later",
+      "order": [
+        "xiangru",
+        "ours_p3",
+        "native",
+        "huan"
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later",
+      "order": [
+        "ours_p3",
+        "native",
+        "huan",
+        "xiangru"
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    }
+  ],
+  "contract": "2026 official four-sigmoid, u=11f; 1 box, 10 controls, 500 steps",
+  "resource": "GPU 2; CPU 10-13; sequential fresh processes; RPC 5111",
+  "initial_gpu2_memory_mib_util_percent": [
+    0,
+    0
+  ],
+  "timing": "outer supervisor Popen to reap; first process separate from five later",
+  "timeout_s_per_run": 120,
+  "content_digest_performed": false
+}

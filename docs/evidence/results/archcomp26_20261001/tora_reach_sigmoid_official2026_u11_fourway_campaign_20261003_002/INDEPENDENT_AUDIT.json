@@ -1,0 +1,545 @@
+{
+  "status": "24_original_slots_checked",
+  "source": "local mirror of original server receipts",
+  "runs_checked": 24,
+  "saved_range_records_checked": 12000,
+  "native_rpc_requests_checked": 60,
+  "all_terminal_target_coordinates_contained": true,
+  "timing": {
+    "native": {
+      "first_wall_s": 8.942677329294384,
+      "later_count": 5,
+      "later_median_wall_s": 8.9427486397326,
+      "later_min_wall_s": 8.942435700446367,
+      "later_max_wall_s": 8.992990521714091
+    },
+    "huan": {
+      "first_wall_s": 13.607438022270799,
+      "later_count": 5,
+      "later_median_wall_s": 13.65278125461191,
+      "later_min_wall_s": 13.507116556167603,
+      "later_max_wall_s": 13.757670102640986
+    },
+    "xiangru": {
+      "first_wall_s": 13.807799049653113,
+      "later_count": 5,
+      "later_median_wall_s": 13.60711801610887,
+      "later_min_wall_s": 13.506840080022812,
+      "later_max_wall_s": 13.707004851661623
+    },
+    "ours_p3": {
+      "first_wall_s": 13.853790302760899,
+      "later_count": 5,
+      "later_median_wall_s": 13.904651428572834,
+      "later_min_wall_s": 13.75731492228806,
+      "later_max_wall_s": 14.05453756544739
+    }
+  },
+  "rows": [
+    {
+      "round": 0,
+      "phase": "first",
+      "method": "native",
+      "sample": "first00_native",
+      "wall_s": 8.942677329294384,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 10,
+      "author_property_verdict": "VERIFIED at T=5 endpoint",
+      "max_h_deviation": 1.0003022715698862e-12,
+      "terminal_x1": [
+        0.1345319317307225,
+        0.16059887233324702
+      ],
+      "terminal_x2": [
+        -0.8763648122763305,
+        -0.8505857060659042
+      ]
+    },
+    {
+      "round": 0,
+      "phase": "first",
+      "method": "huan",
+      "sample": "first00_huan",
+      "wall_s": 13.607438022270799,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 0,
+      "phase": "first",
+      "method": "xiangru",
+      "sample": "first00_xiangru",
+      "wall_s": 13.807799049653113,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 0,
+      "phase": "first",
+      "method": "ours_p3",
+      "sample": "first00_ours_p3",
+      "wall_s": 13.853790302760899,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13452581591208781,
+        0.16060475161859264
+      ],
+      "terminal_x2": [
+        -0.8764374242552789,
+        -0.8505126711494655
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later",
+      "method": "huan",
+      "sample": "later01_huan",
+      "wall_s": 13.757670102640986,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later",
+      "method": "xiangru",
+      "sample": "later01_xiangru",
+      "wall_s": 13.60711801610887,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later",
+      "method": "ours_p3",
+      "sample": "later01_ours_p3",
+      "wall_s": 13.757928024046123,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13452581591208781,
+        0.16060475161859264
+      ],
+      "terminal_x2": [
+        -0.8764374242552789,
+        -0.8505126711494655
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later",
+      "method": "native",
+      "sample": "later01_native",
+      "wall_s": 8.992990521714091,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 10,
+      "author_property_verdict": "VERIFIED at T=5 endpoint",
+      "max_h_deviation": 1.0003022715698862e-12,
+      "terminal_x1": [
+        0.1345319317307225,
+        0.16059887233324702
+      ],
+      "terminal_x2": [
+        -0.8763648122763305,
+        -0.8505857060659042
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later",
+      "method": "xiangru",
+      "sample": "later02_xiangru",
+      "wall_s": 13.506840080022812,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later",
+      "method": "ours_p3",
+      "sample": "later02_ours_p3",
+      "wall_s": 14.05453756544739,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13452581591208781,
+        0.16060475161859264
+      ],
+      "terminal_x2": [
+        -0.8764374242552789,
+        -0.8505126711494655
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later",
+      "method": "native",
+      "sample": "later02_native",
+      "wall_s": 8.990379511378706,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 10,
+      "author_property_verdict": "VERIFIED at T=5 endpoint",
+      "max_h_deviation": 1.0003022715698862e-12,
+      "terminal_x1": [
+        0.1345319317307225,
+        0.16059887233324702
+      ],
+      "terminal_x2": [
+        -0.8763648122763305,
+        -0.8505857060659042
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later",
+      "method": "huan",
+      "sample": "later02_huan",
+      "wall_s": 13.657372208312154,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later",
+      "method": "ours_p3",
+      "sample": "later03_ours_p3",
+      "wall_s": 13.904651428572834,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13452581591208781,
+        0.16060475161859264
+      ],
+      "terminal_x2": [
+        -0.8764374242552789,
+        -0.8505126711494655
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later",
+      "method": "native",
+      "sample": "later03_native",
+      "wall_s": 8.942435700446367,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 10,
+      "author_property_verdict": "VERIFIED at T=5 endpoint",
+      "max_h_deviation": 1.0003022715698862e-12,
+      "terminal_x1": [
+        0.1345319317307225,
+        0.16059887233324702
+      ],
+      "terminal_x2": [
+        -0.8763648122763305,
+        -0.8505857060659042
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later",
+      "method": "huan",
+      "sample": "later03_huan",
+      "wall_s": 13.507116556167603,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later",
+      "method": "xiangru",
+      "sample": "later03_xiangru",
+      "wall_s": 13.603631504811347,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later",
+      "method": "native",
+      "sample": "later04_native",
+      "wall_s": 8.942616671323776,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 10,
+      "author_property_verdict": "VERIFIED at T=5 endpoint",
+      "max_h_deviation": 1.0003022715698862e-12,
+      "terminal_x1": [
+        0.1345319317307225,
+        0.16059887233324702
+      ],
+      "terminal_x2": [
+        -0.8763648122763305,
+        -0.8505857060659042
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later",
+      "method": "huan",
+      "sample": "later04_huan",
+      "wall_s": 13.557559984736145,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later",
+      "method": "xiangru",
+      "sample": "later04_xiangru",
+      "wall_s": 13.657954952679574,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later",
+      "method": "ours_p3",
+      "sample": "later04_ours_p3",
+      "wall_s": 13.75731492228806,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13452581591208781,
+        0.16060475161859264
+      ],
+      "terminal_x2": [
+        -0.8764374242552789,
+        -0.8505126711494655
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later",
+      "method": "huan",
+      "sample": "later05_huan",
+      "wall_s": 13.65278125461191,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later",
+      "method": "xiangru",
+      "sample": "later05_xiangru",
+      "wall_s": 13.707004851661623,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13465642242366743,
+        0.16047432673915857
+      ],
+      "terminal_x2": [
+        -0.8762353072866234,
+        -0.8507148906441829
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later",
+      "method": "ours_p3",
+      "sample": "later05_ours_p3",
+      "wall_s": 13.95858941692859,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 0,
+      "author_property_verdict": "NOT_EVALUATED",
+      "max_h_deviation": 0.0,
+      "terminal_x1": [
+        0.13452581591208781,
+        0.16060475161859264
+      ],
+      "terminal_x2": [
+        -0.8764374242552789,
+        -0.8505126711494655
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later",
+      "method": "native",
+      "sample": "later05_native",
+      "wall_s": 8.9427486397326,
+      "control_periods": 10,
+      "accepted_substeps": 500,
+      "range_records": 500,
+      "rpc_requests": 10,
+      "author_property_verdict": "VERIFIED at T=5 endpoint",
+      "max_h_deviation": 1.0003022715698862e-12,
+      "terminal_x1": [
+        0.1345319317307225,
+        0.16059887233324702
+      ],
+      "terminal_x2": [
+        -0.8763648122763305,
+        -0.8505857060659042
+      ]
+    }
+  ],
+  "qualification": "Descriptive fresh-process timing only; no independent floating-point NNCS certificate or stable speed ranking; first aborted campaign excluded; no content digest."
+}

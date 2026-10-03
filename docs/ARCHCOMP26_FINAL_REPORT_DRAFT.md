@@ -1,10 +1,10 @@
 # ARCH-COMP26 非 VCAS 四方实验报告：可审阅草稿（不可作为最终成绩）
 
-> 2026-10-03 接续修订。本稿按[200 条本轮尝试](evidence/archcomp26_nohash_attempts_20261001.json)和八格经审计历史全程重建 16 个实例小节，仍是可审阅阶段稿，不是最终四方成绩。当前覆盖与各项原始运行目录见[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)、[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)及[执行进度](GOAL_EXECUTION_PROGRESS_20261001.md)。
+> 2026-10-03 接续修订。本稿按[225 条本轮尝试](evidence/archcomp26_nohash_attempts_20261001.json)和八格经审计历史全程重建 16 个实例小节，仍是可审阅阶段稿，不是最终四方成绩。第 201 条是 TORA reach-sigmoid 原生完整进程的 campaign 审计器误拒，排除正式计时；另立新 ID 的 24 个有效进程均已逐条入账。当前覆盖与各项原始运行目录见[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)、[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)及[执行进度](GOAL_EXECUTION_PROGRESS_20261001.md)。
 
 > 本轮按用户要求没有计算或校验内容摘要。历史结果只按已有收据和合同审计引用；新作业保留路径、配置、日志和保存范围，旧与新运行的模型、数值配置和计时资格分别标明。
 
-> 下方 16 个逐实例小节按当前 200-attempt 截点重排，数值全程、性质、计时、图与缺件分别注明。恢复前旧基线矩阵只用于历史边界，不决定本轮状态。
+> 下方 16 个逐实例小节按当前 225-attempt 截点重排，数值全程、性质、计时、图与缺件分别注明。恢复前旧基线矩阵只用于历史边界，不决定本轮状态。
 
 ## 摘要与边界
 
@@ -13,9 +13,9 @@
 - 报告状态：**可审阅、不可发布为完整四方成绩**。
 - 执行状态：2026-10-01 已恢复；新工作索引中 DP less 四方、论文方程 QUAD 四方、Single Pendulum 两物理态四方、TORA remain P3/原生、ACC participant-order 四方、修正 unsafe 后 Attitude 四方、Docking 四方、Unicycle 论文方程四方、TORA reach-sigmoid 官方 `u=11f` 四方、新 TORA reach-tanh working P3，以及 NAV standard 当前 P3/原生、NAV robust 当前 P3，共 **38 个方法单元**有完整数值时域记录。Docking 四方性质均为 `Unknown`，Unicycle Huan/Xiangru 的终点包含判据未过；Airplane 连续版完整初盒的 P3/Huan/Xiangru/Flow* native 新入口均失败且未得可接受全时流管；DP more 四方均未完成 T=0.4，P3 最新 affine-split4 尝试在 72/80 小步后由作者 checker 输出 `Unsafe.` 而早停，旧区间控制余项尝试在第 9 小步数值拒绝；TORA remain Huan/Xiangru 全程尝试有拒绝盒与 `Unknown.`。本轮未尝试的 9 格包括缺权威离散语义的 Airplane 四格，以及已有同合同历史全程的 NAV/TORA reach-tanh 五格；另外三个短前缀格也有同合同历史全程证据。
 - 覆盖：16 个实例 × 4 个方法 = 64 个 cell。
-- 当前可写的实测结论：新原生 DP less 225×100、修正危险集的 Attitude 四方 1×60、论文方程 QUAD 四方 1024×1000、Single Pendulum 两物理态四方 1×100、TORA remain P3/原生 12×200、ACC participant-order 四方 1×50、Docking 四方 1×400 均有完整数值运行；DP less P3 分区仿射版本与 Huan/Xiangru 225×100 也完整；P3 仍无端到端严格证书。Docking 四方的非线性安全性质未决；原生外层 `failed/exit 2` 因 checker `UNKNOWN`，原始状态未改写。ACC、具名两物理态 Single Pendulum 与修正危险盒后的 Attitude 各有四方每法 5 次后续独立进程计时；这些完成时间不能仅凭当前数据做稳定速度排名或声称独立端到端浮点 NNCS 证明。失败前缀时间不外推为完成时间。
+- 当前可写的实测结论：新原生 DP less 225×100、修正危险集的 Attitude 四方 1×60、论文方程 QUAD 四方 1024×1000、Single Pendulum 两物理态四方 1×100、TORA remain P3/原生 12×200、ACC participant-order 四方 1×50、Docking 四方 1×400 均有完整数值运行；DP less P3 分区仿射版本与 Huan/Xiangru 225×100 也完整；P3 仍无端到端严格证书。Docking 四方的非线性安全性质未决；原生外层 `failed/exit 2` 因 checker `UNKNOWN`，原始状态未改写。ACC、具名两物理态 Single Pendulum、修正危险盒后的 Attitude 与官方 `u=11f` TORA reach-sigmoid 各有四方每法 5 次后续独立进程计时；这些完成时间不能仅凭当前数据做稳定速度排名或声称独立端到端浮点 NNCS 证明。失败前缀时间不外推为完成时间。
 
-[16×4 新旧覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)单独核对了八格同合同历史完整时域：NAV standard/robust 共五格及 TORA reach-tanh 的 Huan/Xiangru/原生三格；TORA tanh P3 已由新 working P3 全程覆盖。故 64 格按证据来源分为 **38 格本轮新全程、8 格同合同旧全程、14 格无全程、4 格 Airplane discrete 合同阻塞**。旧结果不增记为 200 条新尝试；“全程”只指保存的数值时域，并不提升模型身份、性质或计时资格。[200 条截点完整阶段 DOCX/PDF](evidence/results/archcomp26_20261001/stage_report/README.md)与当前 Markdown 对应；187 条两页进度稿和 189 条完整阶段稿均保留为旧截点，不倒填后续证据。
+[16×4 新旧覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)单独核对了八格同合同历史完整时域：NAV standard/robust 共五格及 TORA reach-tanh 的 Huan/Xiangru/原生三格；TORA tanh P3 已由新 working P3 全程覆盖。故 64 格按证据来源分为 **38 格本轮新全程、8 格同合同旧全程、14 格无全程、4 格 Airplane discrete 合同阻塞**。旧结果不增记为 225 条新尝试；“全程”只指保存的数值时域，并不提升模型身份、性质或计时资格。[200 条截点完整阶段 DOCX/PDF](evidence/results/archcomp26_20261001/stage_report/README.md)保留为前一快照；当前 Markdown 与 225 条索引对应，187/189 截点文件也不倒填后续证据。
 
 TORA remain 作者两方的[只读数值拒绝审计](ARCHCOMP26_TORA_REMAIN_NUMERIC_STOP_AUDIT_20261002.md)确认：各记录 200/200 步但只接受 2357/2400 盒步；第 185 步首次保存 tube 出安全带，第 190 步首次发生数值盒拒绝，末步各仅 6/12 盒接受。`safe_unknown` 不停积分，最终 `Unknown.` 不是盒拒绝原因；关闭性质检查不能补齐原有流管。拒绝的具体数值状态子类未记录，不作猜测。
 
@@ -23,7 +23,7 @@ TORA remain 作者两方的[只读数值拒绝审计](ARCHCOMP26_TORA_REMAIN_NUM
 
 **原生 Flow* 有独立数值有效性门禁失败。** [隔离 QUAD SR 首盒首小步审计](ARCHCOMP26_NATIVE_OCTAGON_PRODUCTION_GATE_20261002.md)保留冻结论文方程和控制器注入，只跑一盒、一次控制、一个 `h=0.005` 小步；原库虽返回 `COMPLETED_SAFE`，其 `x7/x8` 末态轴界却漏包 CROWN 仿射余项放松控制集内的数值样本，最大超界 `1.98259×10⁻⁶`，DOP853/Radau 参考差最多 `2.054×10⁻¹⁵`。这足以阻止将原生 accepted/`VERIFIED` 提升为独立正确性证明或接入真八方向生产图，但所选常值控制未证明是真实 NN 输出，亦不能据一个短步断言原长作业每条保存界错误。38 格本轮数值时域覆盖仍按原始完成记录统计，性质资格保持分列。
 
-另立的[两处 VAR 截断尾项复制库短门禁](evidence/results/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/README.md)保留原余项细化循环，普通谐振子两种三步路径各通过 1,512 项有限解析样本检查；论文 QUAD 首盒首步 observer 开/关一致，513 条放松控制参考轨迹的 20,520 项检查没有越界。修补版 x7/x8 首步终点宽度比简单跳过细化的复制库约窄 139 倍，但明显宽于原库漏包界。它是隔离修复候选；最初独立门只覆盖旧窄 RPC 输入域，遗漏源码初盒下缘 1 ULP。下文的双侧重心化及全 1024 盒首步门补上了这处初盒边界，但仍不是 50 期 NNCS 证明。原生生产八方向门禁保持关闭；方法诊断均不计入 200 条实例尝试。
+另立的[两处 VAR 截断尾项复制库短门禁](evidence/results/archcomp26_20261001/native_quad_var_tail_repair_gate_20261002_007/README.md)保留原余项细化循环，普通谐振子两种三步路径各通过 1,512 项有限解析样本检查；论文 QUAD 首盒首步 observer 开/关一致，513 条放松控制参考轨迹的 20,520 项检查没有越界。修补版 x7/x8 首步终点宽度比简单跳过细化的复制库约窄 139 倍，但明显宽于原库漏包界。它是隔离修复候选；最初独立门只覆盖旧窄 RPC 输入域，遗漏源码初盒下缘 1 ULP。下文的双侧重心化及全 1024 盒首步门补上了这处初盒边界，但仍不是 50 期 NNCS 证明。原生生产八方向门禁保持关闭；方法诊断不计入 16×4 实例尝试。
 
 进一步的保存 RPC 域整步独立区间审计曾记录修补复制库 27/32、原库 23/32；后来[全盒方法守卫](evidence/results/archcomp26_20261001/native_quad_allbox_independent_plant_firststep_20261003_004/README.md)发现原 Decimal 脚本的一元负号与绝对值会按默认 28 位向内舍入，旧记录本身不能充当有向包含证明。[另立修正后重审](evidence/results/archcomp26_20261001/native_quad_legacy_narrow_rpc_decimal_reaudit_20261003_006/README.md)以精确变号/绝对值、1000 子步严格 Picard 和原保存 RPC/范围重新得到原库 23/32、修补复制库 27/32；同域[精确代数检查](evidence/results/archcomp26_20261001/native_quad_algebraic_gate_20261003_001/README.md)补足修补版三项合成物理态比较，达到 20/20，另两项 pre 列只作数值比较。[重心化审计](evidence/results/archcomp26_20261001/native_quad_initial_recenter_gate_20261003_001/README.md)发现该 RPC 域不含源码首盒 x1–x3 最下缘 1 ULP，不能据此宣称完整初盒资格。
 
@@ -216,7 +216,7 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 
 ## 当前 16×4 非 VCAS 覆盖与历史复用
 
-[本轮工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)登记 200 条新尝试；[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)另核对八格同合同旧全程。64 格互斥分为本轮完整数值时域 38、历史同合同全程 8、无完整数值时域 14、Airplane 离散合同阻塞 4。“全程”只表示请求的数值时间段已保存；性质、浮点保证和计时资格分别读各节。旧结果未计入 200 条新尝试。
+[本轮工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)登记 225 条新尝试；[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)另核对八格同合同旧全程。64 格互斥分为本轮完整数值时域 38、历史同合同全程 8、无完整数值时域 14、Airplane 离散合同阻塞 4。“全程”只表示请求的数值时间段已保存；性质、浮点保证和计时资格分别读各节。旧结果未计入 225 条新尝试。
 
 | 2026 实例 | 我方 GPU | Huan | Xiangru | Flow* native |
 | --- | --- | --- | --- | --- |
@@ -321,6 +321,7 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 - **独立区间短门：** 历史保存 RPC 检查的 Decimal 一元运算后来发现可能向内舍入，旧计算单独不具严格资格；[修正后的同原始 RPC/范围重审](evidence/results/archcomp26_20261001/native_quad_legacy_narrow_rpc_decimal_reaudit_20261003_006/README.md)以 1000 子步严格 Picard 重新得到原库 23/32、VAR-tail 修补复制库 27/32。[精确代数五项](evidence/results/archcomp26_20261001/native_quad_algebraic_gate_20261003_001/README.md)补足修补版合成物理态的三个未决项，在**该 RPC 域**得到 20/20 个合成物理态数值包含；另外两个 pre 列只是物理态界落入所存数值列，不是 pre 集合证明。[初盒重心化核对](evidence/results/archcomp26_20261001/native_quad_initial_recenter_gate_20261003_001/README.md)发现 RPC 前三维下界比 C++ 首盒原下界高 1 个 binary64 ULP，因此该旧候选的 20/20 **不覆盖源码定义的整个首盒**。新[双侧半径复制库门](evidence/results/archcomp26_20261001/native_quad_initial_recenter_repair_gate_20261003_002/README.md)补齐首盒 RPC 边界；[修正 Decimal 的同域重审](evidence/results/archcomp26_20261001/native_quad_allbox_independent_plant_firststep_fixed_decimal_20261003_005/README.md)在新 RPC 上恢复首盒首步 20/20 比较。其后[全 1024 源盒首步的独立 plant 门](evidence/results/archcomp26_20261001/native_quad_allbox_independent_plant_adaptive_bootstrap_20261003_006/README.md)在逐盒精确控制界与自适应首离开条件下，各盒完成 1000 次严格 Picard，**20,480/20,480** 个合成物理态界包含于复制库保存范围；[只读账本复核](evidence/results/archcomp26_20261001/native_quad_allbox_firststep_ledger_audit_20261003_007/README.md)确认 0–1023 盒各一次且无缺行。这只在保存的 CROWN 控制外包络有效这一前提下覆盖首个 `0.005 s` plant 小步；CROWN/NN、首期余下 19 小步、后续控制、Flow* 内部浮点及全时性质未获独立证明，生产门保持关闭。
 - **第二小步与控制包络缺口：** [源盒 lane 0 的新隔离门](evidence/results/archcomp26_20261001/native_quad_lane0_secondstep_replay_20261003_008/README.md)只用保存首控 RPC 回放，同一 `u'=0` 控制下一次 `reach(...,0.010,...)` 接受 2/2 小步；首步与旧收据逐值相同，独立 `H=0.010` plant 检查对第二步 tube、endpoint、终态轴共 20/20 项包含。其余 1023 盒的第二步、lane 0 的后 18 步、后续控制和全时性质仍未闭合。[保存 NN 包络合同审计](evidence/results/archcomp26_20261001/native_quad_saved_crown_nn_contract_audit_20261003_001/README.md)指出原 RPC 未存上界斜率，直接分离区间法对首盒第一输出过宽约 50.5 倍；[新录制的同批 1024 盒控制器回放](evidence/results/archcomp26_20261001/native_quad_crown_same_slope_batch_20261003_001/README.md)与旧 RPC 三组系数的 43,008 项逐值相同，并录得 `uA=lA` 的 36,864 项。它补齐相同数值回放的斜率记录，不认证 CROWN 的浮点不等式。[精确有理数 float32 传输审计](evidence/results/archcomp26_20261001/native_quad_crown_f32_transport_gate_20261003_001/README.md)发现把理想实数仿射界直接转入原生 `.asFloat()` 后，三输出的下界充分传递条件分别在 573/615/533 个初盒不成立；结合新斜率记录，上下任一侧分别为 833/828/795 个。该条件失败并非真实网络输出越界。[逐盒条件性修正账本](evidence/results/archcomp26_20261001/native_quad_crown_transport_correction_20261003_001/README.md)计算了在**假定原实数 CROWN 界有效**时，最邻近向外 binary32 残差端点：3072 个输出行中 2456 行、1024 个初盒中 1014 盒至少一端需调整。[隔离 C++ 构造门](evidence/results/archcomp26_20261001/native_quad_corrected_control_construct_20261003_001/README.md)只检查到首盒第一输出便因整盒区间参考的强包含条件失败而停，原始端点自身含校正残差，未调用 CROWN/ODE；这项比较过宽且 CSV 精度不足，结论 `UNDECIDED`，其余 3071 行未检。 [首盒相关仿射门](evidence/results/archcomp26_20261001/native_quad_lane0_nn_affine_certificate_20261003_009/README.md)也未判定，第一输出区间宽 0.09847，未落入宽 0.06710 的保存 residual 带。原生八方向生产门关闭。
 - **相关符号控制构造门：** 新[首盒原生 TM 构造与精确有理数审计](evidence/results/archcomp26_20261001/native_quad_lane0_correlated_control_gate_20261003_001/README.md)保留 `.asFloat()`、double 重心化及 TM 注入顺序，以相同归一化符号检查条件性修正控制界。构造进程成功；首拒检查在输出 1 下侧给出 `−3.330452308×10⁻¹⁶` 的余量，原始结果只检查了这一行。随后对同一保存全精度 TM trace 的只读分析发现三输出下侧余量分别为 `−3.330452308×10⁻¹⁶`、`−5.159067004×10⁻¹⁹`、`−5.310919262×10⁻²⁰`，上侧均通过。若固定当前 TM 多项式和输入 TM，最终余项下界分别需向外移动 48、1、1 个 binary64 ULP 才满足这项充分条件；修改 bias 会重新构造 TM，不能直接视作已验证修补。该门未运行 NN/CROWN 或 ODE，未证实真实网络越界；原生生产门仍关闭。
+- **固定最终余项外扩的单盒门：** 另立[隔离原生 lane 0 后构造门](evidence/results/archcomp26_20261001/native_quad_lane0_correlated_remainder_gate_20261003_001/README.md)只将三输出的最终 TM remainder 下端各向外扩精确 `2⁻⁵⁰`，不改输入 TM、斜率、校正 bias、重心化或输出多项式；build/native trace/精确有理数检查均 exit 0。同符号条件性包含的三路下界裕量变为 `+5.551331889×10⁻¹⁶`、`+8.876625130×10⁻¹⁶`、`+8.881253105×10⁻¹⁶`，上侧也通过。该固定量只针对已见首盒缺口，不是全部 1024 盒的舍入预算或生产补丁；此门未独立证明 NN/CROWN、没有调用 plant ODE，也未检查后续控制和全时性质，生产门仍关闭。
 - **未决：** 缺参与者 reach-and-remain 全时间窗 checker 源码或等价权威执行记录；后缀扫描不代替该语义。原生 SR 路径需修复并重建流管包含资格；四方均缺独立端到端浮点证书。
 
 ## 12. Single Pendulum — reach
@@ -345,7 +346,19 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 - **合同与性质：** 用户选定官方 2026 四层 sigmoid 模型及 u=11f；四态完整初盒、0.5 秒×10 到 T=5，目标 x1∈[-0.1,0.2]、x2∈[-0.9,-0.6]。[执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)区分旧 u=22(f−0.5)；终点包含仅是“五秒内到达”的充分条件。
 - **四方状态：** P3、Huan、Xiangru、原生均有本轮 500/500 小步，保存 T=5 目标坐标全盒入目标。P3/Huan/Xiangru 未执行性质 checker，只有原生作者终点 checker 打印 VERIFIED；Huan/Xiangru 共用驱动。[四方终点来源](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_terminal_fourway.csv)和执行门链接源 run。
 - **时间、宽度、图和复现：** P3/原生单次 wall 为 13.741791/8.991666 秒，Huan/Xiangru 时间见各[Huan](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_full500_huan_002/SUMMARY.md)和[Xiangru](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_xiangru_full500_001/SUMMARY.md)摘要；四态终点绝对界见 CSV。[四方 x1/x2 全时域保存 tube 图](evidence/results/archcomp26_20261001/tora_reach_sigmoid_u11_fourway_saved_figure_20261002/SUMMARY.md)逐条读取各方 500 个整步轴盒，右列放大 T=5 终点上下界相对 Huan 的差异；Huan/Xiangru 保存曲线重合。图不含相关方向支持或独立证明，MATLAB 脚本尚未执行。
-- **未决：** 论文合并激活文字与官方模型不同，选择已明示；除原生终点 checker 外无作者性质判定，四方均缺独立端到端证书和可排名重复计时。
+- **计时 campaign 的首槽误拒：** [第一次新 ID 的原始收据及直接重扫](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_001/README.md)显示仅 `first00_native` 启动，原生进程实际 exit 0、保存 500/500 小步与 10 次 RPC，作者终点 checker `VERIFIED`，outer wall 8.989590 秒。旧 campaign 审计器规定 `|h−0.01|≤10⁻¹²`，第 50 步保存差值 `1.00030227157×10⁻¹²`，因此误标 `valid=false` 后按首拒规则停止；其余 23 槽未启动。这是审计阈值问题，不是数值拒绝。该进程另记第 201 条 attempt，排除 16×4 主格选择及下表正式计时。
+- **独立 24 次轮换 campaign：** [新 ID 的逐次原始收据及独立审计](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/SUMMARY.md)确认四方法各有首个新进程与五个后续新进程，24/24 外层正常退出并完整接受 10 期、500/500 小步。直接重扫 12,000 条四态 tube/endpoint 有限、有序且逐段包含；全部保存 `T=5` 目标坐标入目标。六个原生进程合计 60 次 RPC、作者终点 checker 均 `VERIFIED`；其余 18 个 GPU 进程未执行性质 checker。按固定物理 GPU 2、CPU 10–13 顺序轮换；wall 是子进程启动前至回收后的外层时间，首轮不是重启后的冷机。下表后五次中位数排除首轮和第一次误拒 ID，仅作当前共享主机的描述性进程时间。
+
+### TORA reach-sigmoid 四方新进程时间
+
+| 方法 | 首个新进程 wall (s) | 后五次 median (s) | 后五次 min–max (s) |
+| --- | ---: | ---: | ---: |
+| P3 | 13.853790 | 13.904651 | 13.757315–14.054538 |
+| Huan | 13.607438 | 13.652781 | 13.507117–13.757670 |
+| Xiangru | 13.807799 | 13.607118 | 13.506840–13.707005 |
+| Flow* native | 8.942677 | 8.942749 | 8.942436–8.992991 |
+
+- **未决：** 论文合并激活文字与官方模型不同，选择已明示；除原生终点 checker 外无作者性质判定。四方虽有完整重复进程时间，但引擎与观察器路径不同，主机非独占，且缺独立端到端证书，因此不取得稳定四方速度排名。
 
 ## 15. TORA — reach-tanh
 
@@ -373,7 +386,7 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 
 [加权图分块 128→256 的独立 40 步候选](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_v1/README.md)保留两轮细化、普通验证 128 行和旧作者其余合同，40,960/40,960 盒步接受；加权图调用从 640 降至 320，40 条观察与既有短程参考逐字节相同，所存终态逐盒 tube/endpoint/status 亦直接一致。[新独立全 1000 步作业](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_full1000_v1/README.md)也通过旧合同/资源自动预检后完成 1,000/1,000 步、1,024,000/1,024,000 盒步接受和 50 次控制。[全程逐步保存值对照](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk256_full1000_v1/FULL_SAVED_COMPARISON.json)显示全部 1,000 步的逐盒 `1024×12×4` bounds、接受掩码、状态和 pooled 观察与旧 P3/trig 完整参考直接逐字节相同；未比较不存在的旧 post-driver final NPY 或全部内部 TM/SR。新单次 outer/watchdog wall 为 1093.267/1093.193 秒，旧参考 watchdog 单次 1533.752 秒；异日且无交错计时控制，不把差值写成稳定或因果加速。它不进入 2026 论文 QUAD 主表，也不构成独立浮点 NNCS 证明。
 
-[同包装 128 行全程对照](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk128_samewrapper_full1000_v1/README.md)也完成 1,000/1,000 步、1,024,000/1,024,000 盒步接受与 50 次控制；加权图调用 16,000 次，对应 256 行版本的 8,000 次，两者均无填充。其[全 1,000 步直接保存值比较](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk128_samewrapper_full1000_v1/FULL_SAVED_COMPARISON.json)对逐盒 bounds、接受掩码、状态和 pooled 观察均与同一旧 P3/trig 参考相同；[三份终态 NPY 直接文件字节比较](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk128_samewrapper_full1000_v1/FINAL_ARRAYS_DIRECT_COMPARISON.json)也与 256 行运行相同，但旧 P3/trig 参考没有这组三数组可比；隐藏 TM/SR 未逐项比对。128 行 outer/watchdog/driver wall 为 1350.901/1350.820/1343.874 秒；同包装 256 行 outer 为 1093.267 秒，单次相差 257.634 秒，按 128 行 outer 计算约 19.07%。两次顺序运行，未交错或重复，故只是描述性差值，不能证明稳定或因果速度收益；这项旧作者合同诊断不计入 200 条 2026 benchmark 新尝试。
+[同包装 128 行全程对照](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk128_samewrapper_full1000_v1/README.md)也完成 1,000/1,000 步、1,024,000/1,024,000 盒步接受与 50 次控制；加权图调用 16,000 次，对应 256 行版本的 8,000 次，两者均无填充。其[全 1,000 步直接保存值比较](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk128_samewrapper_full1000_v1/FULL_SAVED_COMPARISON.json)对逐盒 bounds、接受掩码、状态和 pooled 观察均与同一旧 P3/trig 参考相同；[三份终态 NPY 直接文件字节比较](evidence/results/huan_quad_stage_a_40_20261001/weighted_chunk128_samewrapper_full1000_v1/FINAL_ARRAYS_DIRECT_COMPARISON.json)也与 256 行运行相同，但旧 P3/trig 参考没有这组三数组可比；隐藏 TM/SR 未逐项比对。128 行 outer/watchdog/driver wall 为 1350.901/1350.820/1343.874 秒；同包装 256 行 outer 为 1093.267 秒，单次相差 257.634 秒，按 128 行 outer 计算约 19.07%。两次顺序运行，未交错或重复，故只是描述性差值，不能证明稳定或因果速度收益；这项旧作者合同诊断不计入新版 ARCH benchmark 实例尝试。
 
 ## 绘图功能与 MATLAB 示例
 
@@ -395,8 +408,8 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 
 ## 最终发布门
 
-当前[16×4 无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **200 条新尝试**重算：64 格中 **38 格完整数值时域、3 格仅短前缀、10 格早停、4 格失败、9 格未尝试、0 格运行中**。ACC participant-order、具名两物理态 Single Pendulum、修正危险集 Attitude、Docking、DP less、论文方程 QUAD、论文方程 Unicycle，以及官方 `u=11f` TORA reach-sigmoid 各有四方完整数值运行；TORA reach-tanh 新 working P3、NAV standard 当前 P3/原生和 NAV robust 当前 P3 也有完整新作业。TORA reach 两变体的新 P3 与 sigmoid 作者 GPU 的性质 checker 未执行；sigmoid 原生及 tanh 历史原生仅记录作者终点 checker 的 `VERIFIED`。完整数值时域不自动取得性质证明或跨方法速度排名。另有 8 个本轮索引显示“未尝试/仅短前缀”的方法格具备同合同历史全程原始证据：NAV 的 Huan standard/robust、Xiangru standard/robust、原生 robust，以及 TORA reach-tanh 的 Huan/Xiangru/原生；这些沿原资格单列复用，未重复启动，也不冒充新进程成绩。旧 tanh P3 全程仍保留为不同代引擎对照。
+当前[16×4 无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **225 条新尝试**重算：64 格中 **38 格完整数值时域、3 格仅短前缀、10 格早停、4 格失败、9 格未尝试、0 格运行中**。第 201 条原生 TORA sigmoid 完整数值进程因第一版 campaign 审计器容差误拒而排除主格和正式计时；其后另立新 ID 的 24 条完整进程全部单独入账。ACC participant-order、具名两物理态 Single Pendulum、修正危险集 Attitude、Docking、DP less、论文方程 QUAD、论文方程 Unicycle，以及官方 `u=11f` TORA reach-sigmoid 各有四方完整数值运行；TORA reach-tanh 新 working P3、NAV standard 当前 P3/原生和 NAV robust 当前 P3 也有完整新作业。TORA reach 两变体的新 P3 与 sigmoid 作者 GPU 的性质 checker 未执行；sigmoid 原生及 tanh 历史原生仅记录作者终点 checker 的 `VERIFIED`。完整数值时域不自动取得性质证明或跨方法速度排名。另有 8 个本轮索引显示“未尝试/仅短前缀”的方法格具备同合同历史全程原始证据：NAV 的 Huan standard/robust、Xiangru standard/robust、原生 robust，以及 TORA reach-tanh 的 Huan/Xiangru/原生；这些沿原资格单列复用，未重复启动，也不冒充新进程成绩。旧 tanh P3 全程仍保留为不同代引擎对照。
 
 当前未解实例有明确边界。Docking 四方的非线性性质均 `UNKNOWN`；Single Pendulum 缺官方三态 MATLAB 执行材料；DP less P3 split4 缺端到端严格证书；DP more 四方无完整 `T=0.4`；P3 新 affine-split4 完整请求接受至 72/80 小步后由作者 checker 输出 `Unsafe.`，旧区间控制余项在第 9 小步数值拒绝。Airplane continuous 四方完整初盒均无可用全时流管，已有入口、数值首拒和 observer 诊断保留原始记录；Airplane discrete 缺参与者权威离散转移和控制更新顺序。Balancing 固定仓库 raw4 四方法均在早期停止：P3 第 87 小步、Huan/Xiangru 第 99 小步、原生第 84 小步 `UNCOMPLETED_SAFE`；性质窗未进入，论文五特征控制器仍缺。TORA remain 原 `h=0.1` 两作者格不全，但单列 `h=0.05` 两方已完整接受并保存安全 tube，不改变原格。Unicycle 论文速度扰动主合同已有四方完整数值时域：Huan/Xiangru 终点判据 `UNKNOWN`，P3/原生终点盒入目标；TORA reach-sigmoid 官方 `u=11f` 有四方新完整数值时域，tanh 则为新 working P3 加三方同合同历史全程。两项 reach 的终点包含均只作所选时间窗到达语义的充分证据，未执行 checker 的方法不可补写作者 `VERIFIED`。QUAD 原生与 P3 保存区间给出数值持续入目标带后缀，Huan/Xiangru 尚无逐步数据；这些都不代替参与者 temporal checker 或独立浮点 NNCS 证明。
 
-ACC、具名两物理态 Single Pendulum 与修正危险集 Attitude 已各做四方每法 5 次后续独立进程计时；其它多数格仍只有单次或失败前缀，算法与资源路径也有差别，所以报告不列稳定四方速度排名。MATLAB 脚本尚无实际 MATLAB 执行记录，native octagon 相关性投影未补齐。本稿继续作为可审阅执行记录，待共同合同、性质和交付门满足后再制作正式文档。
+ACC、具名两物理态 Single Pendulum、修正危险集 Attitude 与官方 `u=11f` TORA reach-sigmoid 已各做四方每法 5 次后续独立进程计时；其它多数格仍只有单次或失败前缀，算法与资源路径也有差别，所以报告不列稳定四方速度排名。MATLAB 脚本尚无实际 MATLAB 执行记录，native octagon 相关性投影未补齐。本稿继续作为可审阅执行记录，待共同合同、性质和交付门满足后再制作正式文档。

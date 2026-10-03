@@ -1,6 +1,16 @@
 # ARCH-COMP26 阶段报告交付说明
 
-## 当前 200 条尝试截点
+## 当前 225 条尝试截点
+
+[16 节可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_225_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_225_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_225_20261003.py)从[225 条截点 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。64 格仍为 38 格本轮完整数值时域、8 格经同合同审计可复用的历史全程、14 格无完整时域及 4 格 Airplane discrete 合同阻塞；数值全程不等于性质证明或独立端到端 NNCS 证书。
+
+这版纳入 [TORA reach-sigmoid 第一次 campaign 的原生首槽审计误拒](../tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_001/README.md)与[另立 ID 的四方 24 次有效计时及逐次审计](../tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/SUMMARY.md)。第一次 ID 只启动了一个完整 500 步原生进程，却因审计器步长容差过严停掉后续 23 槽；该进程是第 201 条新尝试，不进入正式计时样本。第二次 ID 四方各有首轮一次和后续五次，每次完成 500 步；共享主机、不同引擎路径下的描述性 wall 统计不能推出稳定速度排名。
+
+另收入[原生 QUAD 首盒后构造余项隔离门](../native_quad_lane0_correlated_remainder_gate_20261003_001/README.md)：只外扩三路最终控制 TM remainder 下端，在假设原实数 CROWN 仿射界有效的前提下通过同符号条件性检查。它不是 1024 盒统一修复、真实网络控制的独立验证或完整闭环性质证明；[八方向生产门](../../../../ARCHCOMP26_NATIVE_OCTAGON_PRODUCTION_GATE_20261002.md)继续关闭。旧作者 QUAD 128/256 行加权图全程候选仍按其旧动力学合同单列，不进入 2026 论文主表。
+
+PDF 于 2026-10-03 经 Microsoft Word 从本版 DOCX 导出，为 **23 页 A4**；DOCX 包含 **14 幅保存数据图和 11 个表格**。PDFium 逐页渲染后已目视检查 23/23 页中文、图表、页眉页脚及边界，未见裁切或空白缺页。此前 200/189/187 条截点 DOCX/PDF 均保留为各自当时的阶段快照；本版仍是可审阅阶段稿。
+
+## 200 条尝试阶段快照
 
 [16 节可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_200_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_200_20261003.py)从[200 条截点 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。64 格按证据来源为 38 格本轮新完整数值时域、8 格同合同历史完整时域、14 格无完整时域、4 格 Airplane discrete 合同阻塞。新增的 DP more P3 20 期请求因作者 checker `Unsafe.` 停于 72/80 小步，不计完整时域。
 

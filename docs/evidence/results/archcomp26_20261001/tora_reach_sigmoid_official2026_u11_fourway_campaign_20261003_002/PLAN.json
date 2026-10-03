@@ -1,0 +1,144 @@
+{
+  "started_utc": "2026-10-02T23:42:42.331592+00:00",
+  "rounds": [
+    {
+      "round": 0,
+      "phase": "first",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "later",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "later",
+      "order": [
+        "xiangru",
+        "ours_p3",
+        "native",
+        "huan"
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "later",
+      "order": [
+        "ours_p3",
+        "native",
+        "huan",
+        "xiangru"
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "later",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "later",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    }
+  ],
+  "contract": "2026 official four-sigmoid, u=11f; 1 box, 10 controls, 500 steps",
+  "resource": "GPU 2; CPU 10-13; sequential fresh processes; RPC 5111",
+  "initial_gpu2_memory_mib_util_percent": [
+    0,
+    0
+  ],
+  "read_only_old_full_range_scans": {
+    "native": {
+      "records": 500,
+      "h_min": 0.009999999998999698,
+      "h_max": 0.01,
+      "h_max_abs_deviation_from_0p01": 1.0003022715698862e-12,
+      "terminal_x1_x2": [
+        [
+          0.1345319317307225,
+          0.16059887233324702
+        ],
+        [
+          -0.8763648122763305,
+          -0.8505857060659042
+        ]
+      ],
+      "target_contained": true
+    },
+    "huan": {
+      "records": 500,
+      "h_min": 0.01,
+      "h_max": 0.01,
+      "h_max_abs_deviation_from_0p01": 0.0,
+      "terminal_x1_x2": [
+        [
+          0.13465642242366743,
+          0.16047432673915857
+        ],
+        [
+          -0.8762353072866234,
+          -0.8507148906441829
+        ]
+      ],
+      "target_contained": true
+    },
+    "xiangru": {
+      "records": 500,
+      "h_min": 0.01,
+      "h_max": 0.01,
+      "h_max_abs_deviation_from_0p01": 0.0,
+      "terminal_x1_x2": [
+        [
+          0.13465642242366743,
+          0.16047432673915857
+        ],
+        [
+          -0.8762353072866234,
+          -0.8507148906441829
+        ]
+      ],
+      "target_contained": true
+    },
+    "ours_p3": {
+      "records": 500,
+      "h_min": 0.01,
+      "h_max": 0.01,
+      "h_max_abs_deviation_from_0p01": 0.0,
+      "terminal_x1_x2": [
+        [
+          0.13452581591208781,
+          0.16060475161859264
+        ],
+        [
+          -0.8764374242552789,
+          -0.8505126711494655
+        ]
+      ],
+      "target_contained": true
+    }
+  },
+  "timing": "outer supervisor Popen to reap; first process separate from five later",
+  "timeout_s_per_run": 120,
+  "content_digest_performed": false
+}
