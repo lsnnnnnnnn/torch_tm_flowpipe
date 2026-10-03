@@ -1,8 +1,8 @@
 # ARCH-COMP26 阶段报告交付说明
 
-## 当前 287 条尝试截点
+## 287 条尝试阶段快照
 
-[287 条截点可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_287_20261003.py)从[持续更新的 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。PDF 为 **23 页 A4、14 幅图、11 个表格**；已用 PDFium 渲染并逐页查看中文、图表、页眉页脚和页边界，没有缺字、裁切或空白页。文档技能的 `render_docx.py` 也已运行；交付版面以 Word 导出 PDF 为准。当前[尝试索引](../../../archcomp26_nohash_attempts_20261001.json)为 287 条，64 格覆盖仍为 **38 格本轮完整数值时域、8 格同合同历史全程、14 格无完整时域、4 格 Airplane discrete 合同阻塞**。
+[287 条截点可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_287_20261003.py)从[持续更新的 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。PDF 为 **23 页 A4、14 幅图、11 个表格**；已用 PDFium 渲染并逐页查看中文、图表、页眉页脚和页边界，没有缺字、裁切或空白页。文档技能的 `render_docx.py` 也已运行；交付版面以 Word 导出 PDF 为准。此版生成时[尝试索引](../../../archcomp26_nohash_attempts_20261001.json)为 287 条，64 格覆盖为 **38 格本轮完整数值时域、8 格同合同历史全程、14 格无完整时域、4 格 Airplane discrete 合同阻塞**；现行索引与 Markdown 报告已续至 288 条，DOCX/PDF 保留 287 条截点。
 
 本截点新增的[Airplane continuous 六维二分数值门](../native_airplane_binary6_numeric_cover_20261003_001/README.md)只对先前未运行的 62 个子盒各执行一个 `0.01 s` 小步；原先两端角子盒未重跑。[独立保存文件审计](../native_airplane_binary6_numeric_cover_20261003_001/INDEPENDENT_AUDIT.json)核对了新 62/62 与合并旧记录后的 64/64 个数值接受小步，首步性质标签为 8 SAFE、56 Unknown。它没有覆盖第一个 `0.1 s` 控制周期的余步或 `T=2 s` 全时域，也不构成完整初盒安全、独立 NN/CROWN 或浮点 NNCS 证明。62 条记录均为短前缀，不增加主表完整方法格。
 
