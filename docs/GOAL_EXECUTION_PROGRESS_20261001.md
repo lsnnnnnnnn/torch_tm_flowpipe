@@ -360,4 +360,10 @@ Airplane 连续版六个不确定初态各二分，64 个闭盒拼合覆盖完�
 
 原生 QUAD [固定余项外扩量全盒隔离门](evidence/results/archcomp26_20261001/native_quad_allbox_correlated_remainder_gate_20261003_001/README.md)写出 1024 源盒首批控制 TM trace，12,288 个构造输入界与保存 RPC 一致；在先前 lane 0 三输出通过后，精确有理数同符号充分条件于 **lane 1/output 1** 首拒，下界裕量 `−1.188470239739×10⁻¹⁵`、上界为正。因此实际只核查 1 个完整盒和下一盒 1 个输出行，不把 trace 的 1024 行误写成全盒通过。固定 `2⁻⁵⁰` 外扩量没有通过此门；该负裕量不证明真实 NN 输出越界。未调用 NN/CROWN 或 ODE，也没有修补后 plant、后续控制和全时性质的证明；原生八方向生产门仍关闭，此隔离诊断不计入四方 benchmark 尝试。
 
-[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)在此截点为 **287 条本轮尝试**（原 225 条＋Airplane 新 62 子盒），[工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)的 64 格仍为 38 完成、3 仅短前缀、10 早停、4 失败、9 未尝试、0 运行中；[历史覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)仍分为 **38 新完整＋8 同合同历史完整＋14 无完整时域＋4 Airplane discrete 合同阻塞**。Airplane 原生主格仍选完整初盒失败入口，新子盒不构成 `T=2` 完整结果；QUAD 构造诊断不改变方法格。此前 225 条截点 DOCX/PDF 保留为独立快照，当前 Markdown 总报告对应 287 条。
+[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)在此截点为 **287 条本轮尝试**（原 225 条＋Airplane 新 62 子盒），[工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)的 64 格仍为 38 完成、3 仅短前缀、10 早停、4 失败、9 未尝试、0 运行中；[历史覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)仍分为 **38 新完整＋8 同合同历史完整＋14 无完整时域＋4 Airplane discrete 合同阻塞**。Airplane 原生主格仍选完整初盒失败入口，新子盒不构成 `T=2` 完整结果；QUAD 构造诊断不改变方法格。此前 225 条截点 DOCX/PDF 保留为独立快照；当时 Markdown 总报告对应 287 条。
+
+## 10 月 3 日：Airplane 高角盒首控制期数值首拒与 288 条截点
+
+在独立新 ID 的[全高角 `111111` 子盒首个常值控制期诊断](evidence/results/archcomp26_20261001/native_airplane_binary6_period_numeric_20261003_001/README.md)中，保持先前二分初盒、官方 12→6 ONNX、ODE、order 3、`h=0.01 s` 和余项初猜，只将一次求解请求延长至 `0.1 s` 的 10 个小步，并在数值调用内关闭性质早停。新旧初盒、首次控制 RPC 及首个 408-byte 保存范围逐值相同。独立离线审计确认 **4/10 小步保存至 `t=0.04 s`**，第 5 步的 `x/y` Picard 提议超出 `[-0.01,0.01]` 初猜；原生 status 4、外层 failed/exit 2。四个保存 tube 的 `cos(theta)` 下界均为正，最小 `0.5350594255572875`；保存前缀对安全盒的性质为 **Unknown**，没有实际不安全轨迹结论。此次是单个高角子盒的数值首拒，不覆盖完整首控制期、其余 63 盒后续步或 `T=2 s`，也不是独立 NN/CROWN 或浮点 Flow* 证明；旧首步任务未重启。
+
+该作业作为[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)第 **288** 条补充早停尝试登记，`matrix_eligible=false`；[工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)仍为 38 完成、3 仅短前缀、10 早停、4 失败、9 未尝试、0 运行中，[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)仍为 **38 新完整＋8 同合同历史完整＋14 无完整时域＋4 Airplane discrete 合同阻塞**。原生 Airplane 连续主格仍由完整初盒入口决定。287 条截点的 DOCX/PDF 保留为独立快照，当前 Markdown 总报告按 288 条索引更新。
