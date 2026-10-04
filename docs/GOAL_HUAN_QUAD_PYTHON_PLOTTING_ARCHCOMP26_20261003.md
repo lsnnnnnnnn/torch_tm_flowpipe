@@ -1,6 +1,6 @@
 # 持续目标：Huan QUAD、Python 可达域绘图与 ARCH-COMP26 非 VCAS 对照
 
-更新：2026-10-04。本文接续本地 `/Users/shengenli/Downloads/GOAL_HUAN_QUAD_PLOTTING_ARCHCOMP_20260930.md`，以用户在本聊天中的较新指令为准。原文件要求 MATLAB 绘图和内容摘要校验；**当前绘图交付改为 Python，且禁止任何哈希校验及 SHA256**。原文件其余科学目标保留，但其中过时的状态、旧 SSH socket 和“从头启动”的步骤不再作为执行依据。用户随后明确要求恢复实验并完成目标，2026-10-04 回复已连接；**当前 goal 正在执行**。此前暂停的定时续跑未自动恢复。
+更新：2026-10-04。本文接续本地 `/Users/shengenli/Downloads/GOAL_HUAN_QUAD_PLOTTING_ARCHCOMP_20260930.md`，以用户在本聊天中的较新指令为准。原文件要求 MATLAB 绘图和内容摘要校验；**当前绘图交付改为 Python，且禁止任何哈希校验及 SHA256**。原文件其余科学目标保留，但其中过时的状态、旧 SSH socket 和“从头启动”的步骤不再作为执行依据。用户随后明确要求恢复实验并完成目标，2026-10-04 回复已连接；**本轮四项交付已完成并发布，科学未决项按附件边界保留**。此前暂停的定时续跑未自动恢复。
 
 **2026-10-04 最新明确授权：** 用户已在本聊天明确授权向自己的 GitHub（`https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git`）发布，并授权使用 `shengenli@chicago.huan-zhang.com:62252` 做实验；禁止向 Huan 或 Xiangru 的 GitHub 写入。此前两项目的地授权阻断已解除，不再重复询问。新任务仍须独立目录、首次数值拒绝即停、不重跑旧实验、不做哈希校验；发布成功和实验结论只按后续原始执行收据记录。
 
@@ -11,7 +11,7 @@
 3. 按 ARCH-COMP26 AINNCS 非 VCAS 的 16 个已识别实例/变体，对 P3、Huan、Xiangru、原生 Flow* 四方保留匹配合同的数值时域、性质、绝对宽度、过程时间和图。源缺失或数值失败要以原始收据说明，不捏造完整结果或排名。
 4. 维护中文可审阅报告、可编辑 DOCX、PDF、原始数据索引及 Python 出图脚本，并推送到现有执行分支。完整数值时域、作者 checker 标签和独立端到端浮点 NNCS 证明必须分开。
 
-此目标仍在进行中。只有速度/模式解释和移植验证、Python 绘图、16×4 的实际尝试或具体阻断，以及报告/证据发布都达到可审阅状态，才可称完成；不能以短前缀或阶段稿替代。
+本轮四项交付已达到可审阅状态，报告与原始证据已发布并逐文件直接读回；见[交付核对](ARCHCOMP26_DELIVERY_CHECKLIST_20261004.md)和[发布收据](evidence/archcomp26_publication_receipt_20261004.json)。这不把短前缀升级为完整时域，不把合同缺件改写为官方复现，也不宣称独立 NNCS 证明。
 
 ## 接续入口与不可更改约束
 
@@ -36,9 +36,9 @@
 - box 图不冒充 octagon；只有从相关 Taylor 模型直接计算并通过包含门禁的八方向支持界才可标 octagon。现有原生门禁失败不能用绘图程序遮盖。
 - 用 Python 读取保存数据重建 PNG/PDF 与 JSON/CSV，检查初盒、区域、时间、数据点数和图层；正式出图入口不再自动生成 `.m`。**MATLAB/Octave 是否安装、`.m` 是否运行均不影响本目标验收**。
 
-## 当前具体阻断与下一步
+## 保留的科学边界与后续研究条件
 
 - Airplane discrete 缺参与者权威的离散转移及控制更新顺序；此前已向用户提出具名 Euler 补充合同选择，未获答复前不猜主合同。Single Pendulum 官方第三态初值/重置/MATLAB 闭环入口、Balancing 论文五特征控制器或权威映射、QUAD 全时 reach-and-remain checker 均缺，必须保留各自身份与空格。
-- 本地分支已存在 2026-10-03 10:44:16+08 的提交《Document paused ARCH-COMP26 handoff and 289th TORA trace》，原交接中“289 条未提交、部分暂存”的描述已过时；当前远端发布尚未验证。本次已读取全部 289 条远端原始 RESULT，并直接比对 223 份有显式本地 RESULT 路径的收据一致；其余 66 条不能据缺该字段推断文件丢失。2026-10-04 检查未见匹配研究进程。本地源码清理、保存图补齐、64 格交付索引和新版 36 页报告已完成验收，[交付核对](ARCHCOMP26_DELIVERY_CHECKLIST_20261004.md)逐项列证；用户已明确授权本人 GitHub；本轮交付已本地提交，正通过官方 API 向现有分支发布，最终状态须读取实际收据；已完成的 QUAD、TORA sigmoid、Unicycle、Airplane 首步与已拒绝诊断不重跑。对仍无解的格提供首拒证据与所需外部材料，而非改短时域、缩小初盒或隐藏失败。
+- 本地分支已存在 2026-10-03 10:44:16+08 的提交《Document paused ARCH-COMP26 handoff and 289th TORA trace》，原交接中“289 条未提交、部分暂存”的描述已过时；本轮远端内容已由官方 API 发布并逐文件直接读回。本次已读取全部 289 条远端原始 RESULT，并直接比对 223 份有显式本地 RESULT 路径的收据一致；其余 66 条不能据缺该字段推断文件丢失。2026-10-04 检查未见匹配研究进程。本地源码清理、保存图补齐、64 格交付索引和新版 36 页报告已完成验收，[交付核对](ARCHCOMP26_DELIVERY_CHECKLIST_20261004.md)逐项列证；用户已明确授权本人 GitHub；174 个交付文件已通过官方 API 发布到现有分支并逐文件直接读回，原始收据见[发布记录](evidence/archcomp26_publication_receipt_20261004.json)；已完成的 QUAD、TORA sigmoid、Unicycle、Airplane 首步与已拒绝诊断不重跑。对仍无解的格提供首拒证据与所需外部材料，而非改短时域、缩小初盒或隐藏失败。
 - [全盒余项离线计划](evidence/results/archcomp26_20261001/native_quad_allbox_adaptive_remainder_plan_20261004_001/README.md)已对 1,024 盒、3,072 输出行完成 196,608 个精确有理数顶点检查，仍以原始实数仿射 CROWN 不等式为前提，生产门关闭。用户明确授权后，[新目录原生回放](evidence/results/archcomp26_20261001/native_quad_allbox_adaptive_remainder_replay_20261004_001/README.md)仅运行一次：1,024 盒、3,072 行、196,608 顶点全部通过，build/run/check/wrapper 均 exit 0，原始收据和数据已取回并直接字节比对。该结论仅针对保存首批的条件性控制构造，不扩张为 NN/CROWN、plant 或全时证明，不增加 benchmark 计数。
 - 将来若恢复定时续跑，只在有实质进展、失败或需要用户操作时通知；状态不变时保持安静。

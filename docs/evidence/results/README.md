@@ -118,3 +118,6 @@ The [TORA remain `h=0.1` first-refusal trace](archcomp26_20261001/author_tora_re
 
 
 The authorized [adaptive native remainder construction replay](archcomp26_20261001/native_quad_allbox_adaptive_remainder_replay_20261004_001/README.md) completed in a new isolated directory: 1,024 saved first-control boxes, 3,072 output rows and 196,608 exact-rational vertex checks, with all four stage/wrapper exit codes zero. Its source, original receipts, trace and row ledger retain the conditional real-affine CROWN assumption. It made no NN/CROWN/ODE call and does not open the native production gate or change the 289-attempt/64-cell benchmark coverage.
+
+
+The [primary publication receipt](../archcomp26_publication_receipt_20261004.json) confirms 174 files were published to the user-owned execution branch through the official GitHub API and read back byte for byte. Existing remote history was preserved with a non-force update; local commits remain separately preserved. This publication does not upgrade numerical results or conditional native construction to independent NNCS proof.

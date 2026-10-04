@@ -1,12 +1,12 @@
 # Huan QUAD / Python 绘图 / ARCH-COMP26 交接
 
-**当前更新：2026-10-04。用户已明确恢复实验并要求完成 goal，随后回复“已连接”；goal 正在执行，旧定时续跑未自动恢复。** 2026-10-03 的暂停交接及历史结果在下文保留为时间截点；当前以[修订 goal](docs/GOAL_HUAN_QUAD_PYTHON_PLOTTING_ARCHCOMP26_20261003.md)和[进度末节](docs/GOAL_EXECUTION_PROGRESS_20261001.md)为准。
+**当前更新：2026-10-04。用户已明确恢复实验并要求完成 goal，随后回复“已连接”；本轮四项交付已完成并发布，旧定时续跑未恢复。** 2026-10-03 的暂停交接及历史结果在下文保留为时间截点；当前以[修订 goal](docs/GOAL_HUAN_QUAD_PYTHON_PLOTTING_ARCHCOMP26_20261003.md)和[进度末节](docs/GOAL_EXECUTION_PROGRESS_20261001.md)为准。
 
-**恢复前本地与原始证据核对：** 本地执行分支已有 2026-10-03 10:44:16+08 提交《Document paused ARCH-COMP26 handoff and 289th TORA trace》，暂存区为空；恢复前仅本文件及修订 goal 各有一处陈旧状态补充，另有五个不属于交付的 Word 锁文件。原“289 条尚未提交/部分暂存”已过时；GitHub 发布状态仍未验证。全部 289 条远端原始 RESULT 已读取；223 份有显式本地路径的 RESULT 直接字节一致，另 66 条缺显式本地路径字段，不据此推断证据丢失。旧加权 128/256 行完整结果、native 六小时超时和第 289 条 TORA 首拒均已核对，未重跑。2026-10-04 05:47 UTC 进程快照未见匹配实验进程。
+**恢复前本地与原始证据核对：** 本地执行分支已有 2026-10-03 10:44:16+08 提交《Document paused ARCH-COMP26 handoff and 289th TORA trace》，暂存区为空；恢复前仅本文件及修订 goal 各有一处陈旧状态补充，另有五个不属于交付的 Word 锁文件。原“289 条尚未提交/部分暂存”已过时；当时 GitHub 发布状态尚未验证；本轮发布结果见下文。全部 289 条远端原始 RESULT 已读取；223 份有显式本地路径的 RESULT 直接字节一致，另 66 条缺显式本地路径字段，不据此推断证据丢失。旧加权 128/256 行完整结果、native 六小时超时和第 289 条 TORA 首拒均已核对，未重跑。2026-10-04 05:47 UTC 进程快照未见匹配实验进程。
 
 **当前交付：** 三个绘图 CLI 已取消自动 `.m`；[保存数据验收](docs/evidence/results/python_plot_cli_cleanup_20261004_001/README.md)、[64 格交付索引](docs/evidence/archcomp26_delivery_index_20261004.md)、补齐图表和新版 36 页 DOCX/PDF 均已通过检查。报告包含 16 小节、20 图、11 表，205 条本地链接有效。[新原生应用回放](docs/evidence/results/archcomp26_20261001/native_quad_allbox_adaptive_remainder_replay_20261004_001/README.md)在授权后仅运行一次，1,024 盒、3,072 行、196,608 顶点检查全部通过，四类退出码均 0；8 输入及 15 原始输出已与服务器直接字节比对一致。条件仍是原始实数仿射 CROWN 不等式有效；无 NN/CROWN/ODE 调用，生产门仍关闭。
 
-**本轮发布状态：** 用户已明确授权本人 GitHub。常规 push 因网络故障及本地部分克隆缺旧对象失败，未补取或校验这些对象。官方 API 已可直连，正在将第 289 条证据及本轮交付作为现有分支上的新内容提交发布；保留本地提交和远端已有历史，不强制覆盖。发布完成只以后续原始 API 收据和逐文件直接读回为准。
+**本轮发布状态：** 已发布到[用户自己的执行分支](https://github.com/lsnnnnnnnn/torch_tm_flowpipe/tree/codex/huan-plot-archcomp-execution-20260930)。官方 API 将第 289 条证据、本轮 Python 图件与 36 页报告、新原生条件构造证据共 174 文件作为新提交写入，全部逐文件直接读回与冻结交付相同；详见[发布收据](docs/evidence/archcomp26_publication_receipt_20261004.json)。常规 Git push 因网络及部分克隆缺旧对象失败，未补取对象；API 保留远端已有历史且未强制更新。本地提交链单独保留，后续 Git 操作先有意识地同步分支，禁止以本地旧链强推覆盖已发布内容。四项交付条件已达到；未解决合同与独立证明缺口继续按原科学边界保留。
 
 **2026-10-04 最新明确授权：** 用户已在本聊天明确授权向自己的 GitHub（`https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git`）发布，并授权使用 `shengenli@chicago.huan-zhang.com:62252` 做实验；禁止向 Huan 或 Xiangru 的 GitHub 写入。此前两项目的地授权阻断已解除，不再重复询问。新任务仍须独立目录、首次数值拒绝即停、不重跑旧实验、不做哈希校验；发布成功和实验结论只按后续原始执行收据记录。
 

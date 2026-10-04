@@ -2,7 +2,7 @@
 
 ## 2026-10-04 当前报告
 
-已获用户对其本人 GitHub 目的地的发布授权，发布以分支实际收据为准。本次报告修订只确认本地构建与验收，没有推送或上传。
+当前 DOCX/PDF 已随[用户自己的执行分支](https://github.com/lsnnnnnnnn/torch_tm_flowpipe/tree/codex/huan-plot-archcomp-execution-20260930)发布，逐文件直接读回与本地冻结交付一致；原始发布收据见[174 文件发布记录](../../../archcomp26_publication_receipt_20261004.json)。报告的数值、合同和证明边界保持下述资格。
 
 [可编辑 DOCX](ARCHCOMP26_REPORT_20261004.docx)与[同版 PDF](ARCHCOMP26_REPORT_20261004.pdf)覆盖 16 个非 VCAS 实例的四方实际尝试及具体阻断，固定为 **289 条本轮尝试、36 页 A4、20 幅图、11 个表格**。64 格仍为 **38 格本轮新全程、8 格同合同历史全程、14 格无全程、4 格 Airplane discrete 合同阻塞**；数值全程不自动取得性质证明或稳定速度排名。标题、页眉与文档属性统一使用《ARCH COMP26 非 VCAS 四方实验报告》。下方旧截点原件保留。
 
