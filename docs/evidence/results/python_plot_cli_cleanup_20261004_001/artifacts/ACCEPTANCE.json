@@ -1,0 +1,140 @@
+{
+  "scope": "saved-data Python renderer acceptance only; no new numerical experiment or NNCS certificate",
+  "python": "/opt/anaconda3/bin/python",
+  "hash_policy": "all hashlib constructors, new and file_digest blocked during rendering",
+  "solver_imported": false,
+  "cli_checks": [
+    {
+      "entry": "torch_tm_flowpipe.flowpipe_plot",
+      "argv": [
+        "--geometry",
+        "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_tora_remain_full20_001/plots/tora_native_x1_x2_endpoint.geometry.json",
+        "--output",
+        "docs/evidence/results/python_plot_cli_cleanup_20261004_001/artifacts/tora_saved_state_endpoint"
+      ],
+      "wall_s": 1.4159365000086837,
+      "png_bytes": 177203,
+      "pdf_bytes": 22531,
+      "matlab_output": false
+    },
+    {
+      "entry": "torch_tm_flowpipe.flowpipe_plot_nohash",
+      "argv": [
+        "--geometry",
+        "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_tube.geometry.json",
+        "--output",
+        "docs/evidence/results/python_plot_cli_cleanup_20261004_001/artifacts/dp_saved_time_tube"
+      ],
+      "wall_s": 0.7138627920066938,
+      "png_bytes": 170961,
+      "pdf_bytes": 23515,
+      "matlab_output": false
+    },
+    {
+      "entry": "torch_tm_flowpipe.tm_octagon_nohash",
+      "argv": [
+        "--geometry",
+        "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/tm_octagon_stream_harmonic_smoke_20261002_001/harmonic_stream.geometry.json",
+        "--view",
+        "endpoint",
+        "--output",
+        "docs/evidence/results/python_plot_cli_cleanup_20261004_001/artifacts/octagon_saved_endpoint"
+      ],
+      "wall_s": 0.12074662500526756,
+      "png_bytes": 115078,
+      "pdf_bytes": 15822,
+      "matlab_output": false
+    },
+    {
+      "entry": "torch_tm_flowpipe.tm_octagon_nohash",
+      "argv": [
+        "--stream",
+        "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/tm_octagon_stream_harmonic_smoke_20261002_001/harmonic_stream.jsonl",
+        "--output",
+        "docs/evidence/results/python_plot_cli_cleanup_20261004_001/artifacts/octagon_saved_stream_tube"
+      ],
+      "wall_s": 0.13047254196135327,
+      "png_bytes": 117590,
+      "pdf_bytes": 15867,
+      "matlab_output": false
+    },
+    {
+      "entry": "torch_tm_flowpipe.flowpipe_plot_nohash",
+      "argv": [
+        "--ranges",
+        "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/native_dp_less_full20_001/ranges.bin",
+        "--benchmark",
+        "Double Pendulum",
+        "--instance-id",
+        "double-pendulum-less-robust",
+        "--label",
+        "native DP less 225 lanes; record presence only",
+        "--coordinate-names",
+        "theta1,theta2,theta1_dot,theta2_dot",
+        "--projection",
+        "t,theta1",
+        "--view",
+        "tube",
+        "--step-size",
+        "0.01",
+        "--expected-steps",
+        "100",
+        "--expected-lanes",
+        "225",
+        "--spec",
+        "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/benchmarks/plot_specs/double_pendulum_less_robust_2026_nohash.json",
+        "--output",
+        "docs/evidence/results/python_plot_cli_cleanup_20261004_001/artifacts/dp_saved_native_reexport"
+      ],
+      "wall_s": 0.8199893329874612,
+      "png_bytes": 170961,
+      "pdf_bytes": 23515,
+      "matlab_output": false
+    }
+  ],
+  "data_checks": {
+    "dp_native_frames_equal": 100,
+    "dp_lanes_per_frame": 225,
+    "stream_directional_frames_equal": 3,
+    "quad_csv_rows_byte_equal": 2002
+  },
+  "sources_unchanged": [
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_tube.geometry.json",
+      "bytes": 96757,
+      "byte_equal_after": true
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_tora_remain_full20_001/plots/tora_native_x1_x2_endpoint.geometry.json",
+      "bytes": 25193,
+      "byte_equal_after": true
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/tm_octagon_stream_harmonic_smoke_20261002_001/harmonic_stream.geometry.json",
+      "bytes": 6974,
+      "byte_equal_after": true
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/tm_octagon_stream_harmonic_smoke_20261002_001/harmonic_stream.jsonl",
+      "bytes": 3824,
+      "byte_equal_after": true
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/quad_paper_fourway_t_x3_pooled_tube.geometry.json",
+      "bytes": 322144,
+      "byte_equal_after": true
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/quad_paper_fourway_t_x3_pooled_tube.geometry.csv",
+      "bytes": 300842,
+      "byte_equal_after": true
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/native_dp_less_full20_001/ranges.bin",
+      "bytes": 3420000,
+      "byte_equal_after": true
+    }
+  ],
+  "geometry_csv_caveat": "three CLIs use JSON; existing QUAD CSV regenerated by its saved-data helper",
+  "legacy_source_export": "not executed; pre-existing identity checks remain"
+}

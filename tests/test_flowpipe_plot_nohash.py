@@ -1,8 +1,10 @@
 """No-digest plotting checks; all native fixtures are saved data, never solver runs."""
 import hashlib
+from contextlib import ExitStack
 import json
 from pathlib import Path
 import struct
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -19,22 +21,38 @@ ARCHIVED_B2 = Path(
 
 
 def forbid_digest(*_args, **_kwargs):
-    raise AssertionError("SHA-256 must not be called by the no-hash entry")
+    raise AssertionError("content digests must not be computed by the no-hash path")
 
 
 class NoHashPlotTest(unittest.TestCase):
-    def _run_guarded(self, argv):
-        original_new = hashlib.new
+    def _run_guarded(self, argv, entry=main):
+        with ExitStack() as guard:
+            for name in (*hashlib.algorithms_guaranteed, "new", "file_digest"):
+                guard.enter_context(patch.object(hashlib, name, forbid_digest))
+            guard.enter_context(patch.object(plot, "_sha256", forbid_digest))
+            self.assertEqual(entry(argv), 0)
 
-        def guarded_new(name, *args, **kwargs):
-            if name.lower().replace("-", "") == "sha256":
-                return forbid_digest()
-            return original_new(name, *args, **kwargs)
+    def test_other_cli_saved_redraws_are_python_only(self):
+        from torch_tm_flowpipe import tm_octagon_nohash as octagon
 
-        with patch.object(hashlib, "sha256", forbid_digest), \
-                patch.object(hashlib, "new", guarded_new), \
-                patch.object(plot, "_sha256", forbid_digest):
-            self.assertEqual(main(argv), 0)
+        examples = [
+            (plot.main, ROOT / "docs/evidence/results/flowpipe_plot_nohash_overlay_20261003_001/overlay_t_x1_tube.geometry.json"),
+            (lambda _argv: octagon.main(), ROOT / "docs/evidence/results/archcomp26_20261001/tm_octagon_stream_harmonic_smoke_20261002_001/harmonic_stream.geometry.json"),
+        ]
+        with tempfile.TemporaryDirectory() as temp:
+            for index, (entry, source) in enumerate(examples):
+                before = source.read_bytes()
+                output = Path(temp) / f"redraw_{index}"
+                argv = ["--geometry", str(source), "--output", str(output)]
+                with patch.object(sys, "argv", ["redraw", *argv]):
+                    self._run_guarded(argv, entry)
+                self.assertEqual(source.read_bytes(), before)
+                self.assertFalse(output.with_suffix(".m").exists())
+                receipt = output.with_suffix(".render.json").read_text()
+                self.assertNotIn('"matlab"', receipt)
+                self.assertNotIn('"sha256"', receipt)
+                for suffix in (".png", ".pdf", ".render.json"):
+                    self.assertGreater(output.with_suffix(suffix).stat().st_size, 0)
 
     def test_dp_native_and_geometry_redraw_without_digest(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -83,12 +101,15 @@ class NoHashPlotTest(unittest.TestCase):
                              "completed")
             self.assertIn("unbound", geometry["series"][0]["solver_run_evidence"]["RESULT_binding"])
             self.assertNotIn("sha256", json.dumps(receipt).lower())
-            for suffix in (".geometry.json", ".m", ".png", ".pdf", ".render.json"):
+            self.assertFalse(output.with_suffix(".m").exists())
+            self.assertNotIn("matlab", receipt["artifacts"])
+            for suffix in (".geometry.json", ".png", ".pdf", ".render.json"):
                 self.assertTrue(output.with_suffix(suffix).is_file())
             self._run_guarded([
                 "--geometry", str(output.with_suffix(".geometry.json")),
                 "--output", str(work / "redraw"),
             ])
+            self.assertFalse((work / "redraw.m").exists())
 
     @unittest.skipUnless(ARCHIVED_B2.is_file(), "archived QUAD B2 ranges.bin is unavailable")
     def test_archived_quad_b2_full_render_without_digest(self):
@@ -111,7 +132,8 @@ class NoHashPlotTest(unittest.TestCase):
             self.assertEqual(geometry["spec"]["regions"][0]["time"],
                              {"kind": "endpoint", "at": 5.0})
             self.assertEqual(geometry["series"][0]["frames"][0]["accepted_lanes"], None)
-            for suffix in (".m", ".png", ".pdf", ".render.json"):
+            self.assertFalse(output.with_suffix(".m").exists())
+            for suffix in (".png", ".pdf", ".render.json"):
                 self.assertTrue(output.with_suffix(suffix).is_file())
 
 

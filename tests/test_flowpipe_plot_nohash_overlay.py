@@ -84,12 +84,10 @@ class NoHashOverlayTest(unittest.TestCase):
             self.assertEqual(receipt["mode"], "geometry-overlay")
             self.assertEqual(len(receipt["input_geometries"]), 2)
             self.assertTrue(all(value >= 0 for value in receipt["timings_seconds"].values()))
-            for suffix in (".geometry.json", ".m", ".png", ".pdf", ".render.json"):
+            self.assertFalse(overlay.with_suffix(".m").exists())
+            self.assertNotIn("matlab", receipt["artifacts"])
+            for suffix in (".geometry.json", ".png", ".pdf", ".render.json"):
                 self.assertTrue(overlay.with_suffix(suffix).is_file())
-            matlab = overlay.with_suffix(".m").read_text()
-            self.assertIn("A saved prefix", matlab)
-            self.assertIn("B saved horizon", matlab)
-            self.assertIn("projection-unobserved 1/2", matlab)
 
             duplicate = Path(temp) / "duplicate.geometry.json"
             duplicate.write_text(first.read_text(), encoding="utf-8")

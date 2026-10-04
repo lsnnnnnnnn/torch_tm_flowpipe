@@ -1,0 +1,241 @@
+{
+  "status": "rendered_from_saved_data",
+  "sources": [
+    {
+      "instance": "attitude",
+      "method": "Huan",
+      "source": "attitude_corrected_fourway_campaign_20261002_001/first00_huan/payload/ranges.bin",
+      "bytes": 12960,
+      "records": 60,
+      "states": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    },
+    {
+      "instance": "attitude",
+      "method": "Xiangru",
+      "source": "attitude_corrected_fourway_campaign_20261002_001/first00_xiangru/payload/ranges.bin",
+      "bytes": 12960,
+      "records": 60,
+      "states": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    },
+    {
+      "instance": "attitude",
+      "method": "ours/P3",
+      "source": "attitude_corrected_fourway_campaign_20261002_001/first00_ours_p3/payload/ranges.bin",
+      "bytes": 12960,
+      "records": 60,
+      "states": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    },
+    {
+      "instance": "attitude",
+      "method": "Flow* native",
+      "source": "attitude_corrected_fourway_campaign_20261002_001/first00_native/ranges.bin",
+      "bytes": 12960,
+      "records": 60,
+      "states": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    },
+    {
+      "instance": "docking",
+      "method": "Huan",
+      "source": "docking_huan_full40_001/detail/ranges.jsonl",
+      "bytes": 182361,
+      "records": 400,
+      "states": [
+        "sx",
+        "sy",
+        "vx",
+        "vy"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    },
+    {
+      "instance": "docking",
+      "method": "Xiangru",
+      "source": "docking_xiangru_full40_001/detail/ranges.jsonl",
+      "bytes": 182361,
+      "records": 400,
+      "states": [
+        "sx",
+        "sy",
+        "vx",
+        "vy"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    },
+    {
+      "instance": "docking",
+      "method": "ours/P3",
+      "source": "docking_p3_full40_001/detail/ranges.jsonl",
+      "bytes": 182492,
+      "records": 400,
+      "states": [
+        "sx",
+        "sy",
+        "vx",
+        "vy"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    },
+    {
+      "instance": "docking",
+      "method": "Flow* native",
+      "source": "native_docking_full40_001/ranges.bin",
+      "bytes": 60800,
+      "records": 400,
+      "states": [
+        "sx",
+        "sy",
+        "vx",
+        "vy"
+      ],
+      "record_presence_is_not_acceptance_certificate": true
+    }
+  ],
+  "geometry_rows": 7840,
+  "width_rows": 40,
+  "quad": {
+    "source_csv": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/terminal_12states_fourway.csv",
+    "records": [
+      {
+        "method": "Huan",
+        "state": "x1",
+        "time": 5.0,
+        "endpoint_lo": -3.374136364513221,
+        "endpoint_hi": 3.270714392196516,
+        "source_object": "driver_final_hull",
+        "source": "docs/evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/parity/metrics.json"
+      },
+      {
+        "method": "Huan",
+        "state": "x3",
+        "time": 5.0,
+        "endpoint_lo": 0.967434441417146,
+        "endpoint_hi": 1.015176258384569,
+        "source_object": "driver_final_hull",
+        "source": "docs/evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/parity/metrics.json"
+      },
+      {
+        "method": "Xiangru",
+        "state": "x1",
+        "time": 5.0,
+        "endpoint_lo": -3.374136364513221,
+        "endpoint_hi": 3.270714392196516,
+        "source_object": "driver_final_hull",
+        "source": "docs/evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/full50_001/data/metrics.json"
+      },
+      {
+        "method": "Xiangru",
+        "state": "x3",
+        "time": 5.0,
+        "endpoint_lo": 0.967434441417146,
+        "endpoint_hi": 1.015176258384569,
+        "source_object": "driver_final_hull",
+        "source": "docs/evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/full50_001/data/metrics.json"
+      },
+      {
+        "method": "ours/P3",
+        "state": "x1",
+        "time": 5.0,
+        "endpoint_lo": -3.4547230937866953,
+        "endpoint_hi": 3.350948475900749,
+        "source_object": "driver_final_hull",
+        "source": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/RESULT.json"
+      },
+      {
+        "method": "ours/P3",
+        "state": "x3",
+        "time": 5.0,
+        "endpoint_lo": 0.9584732146312492,
+        "endpoint_hi": 1.0256989633476477,
+        "source_object": "driver_final_hull",
+        "source": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/RESULT.json"
+      },
+      {
+        "method": "Flow* native",
+        "state": "x1",
+        "time": 5.0,
+        "endpoint_lo": -3.4206851328508088,
+        "endpoint_hi": 3.3150156578363665,
+        "source_object": "scanned_saved_endpoint_union",
+        "source": "docs/evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SCAN.json"
+      },
+      {
+        "method": "Flow* native",
+        "state": "x3",
+        "time": 5.0,
+        "endpoint_lo": 0.965771839016746,
+        "endpoint_hi": 1.0167484756616678,
+        "source_object": "scanned_saved_endpoint_union",
+        "source": "docs/evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SCAN.json"
+      }
+    ],
+    "geometry_class": "axis_aligned_endpoint_boxes",
+    "time": 5,
+    "initial_box": {
+      "x1": [
+        -0.4,
+        0.4
+      ],
+      "x3": [
+        -0.4,
+        0.4
+      ]
+    },
+    "target": {
+      "x3": [
+        0.94,
+        1.06
+      ],
+      "display_time": "T=5 endpoint only"
+    }
+  },
+  "initial_layers": {
+    "attitude_x4": [
+      -0.75,
+      -0.74
+    ],
+    "docking_sx": [
+      70,
+      106
+    ]
+  },
+  "interpolation": "none; each complete saved tube drawn as a constant step band",
+  "geometry_reduction_seconds": 0.06479133298853412,
+  "python_plot_seconds": 2.011795250000432,
+  "numerical_solver_seconds": 0,
+  "new_benchmark_attempts": 0,
+  "no_content_digest_computed": true,
+  "matlab_files_created": 0,
+  "independent_nncs_certificate": false
+}

@@ -253,10 +253,6 @@ def main(argv: list[str] | None = None) -> int:
             plot._json_dump(geometry_path, geometry)
             mode = "geometry-overlay"
     source_seconds = time.perf_counter() - source_started
-    matlab = args.output.with_suffix(".m")
-    matlab_started = time.perf_counter()
-    plot.write_matlab(geometry, matlab)
-    matlab_seconds = time.perf_counter() - matlab_started
     render_started = time.perf_counter()
     png, pdf = plot.render_matplotlib(geometry, args.output)
     render_seconds = time.perf_counter() - render_started
@@ -286,11 +282,10 @@ def main(argv: list[str] | None = None) -> int:
             "run_config_path": str(args.run_config.resolve()) if args.run_config else None,
         },
         "artifacts": {name: _artifact(path) for name, path in (
-            ("geometry", geometry_path), ("matlab", matlab), ("png", png), ("pdf", pdf)
+            ("geometry", geometry_path), ("png", png), ("pdf", pdf)
         )},
         "timings_seconds": {
             "source_read_and_projection_export_or_geometry_validation": source_seconds,
-            "matlab_script_generation": matlab_seconds,
             "matplotlib_png_pdf_render": render_seconds,
             "total_before_receipt_write": time.perf_counter() - total_started,
         },
@@ -300,7 +295,6 @@ def main(argv: list[str] | None = None) -> int:
             "ranges.bin has no accepted/status field; complete means record coverage only, "
             "not solver acceptance or certification"
         ),
-        "matlab_runtime_check": "not performed by generator",
     }
     plot._json_dump(args.output.with_suffix(".render.json"), receipt)
     return 0

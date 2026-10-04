@@ -1,8 +1,27 @@
-# ARCH-COMP26 阶段报告交付说明
+# ARCH COMP26 非 VCAS 四方实验报告交付说明
+
+## 2026-10-04 当前报告
+
+已获用户对其本人 GitHub 目的地的发布授权，发布以分支实际收据为准。本次报告修订只确认本地构建与验收，没有推送或上传。
+
+[可编辑 DOCX](ARCHCOMP26_REPORT_20261004.docx)与[同版 PDF](ARCHCOMP26_REPORT_20261004.pdf)覆盖 16 个非 VCAS 实例的四方实际尝试及具体阻断，固定为 **289 条本轮尝试、36 页 A4、20 幅图、11 个表格**。64 格仍为 **38 格本轮新全程、8 格同合同历史全程、14 格无全程、4 格 Airplane discrete 合同阻塞**；数值全程不自动取得性质证明或稳定速度排名。标题、页眉与文档属性统一使用《ARCH COMP26 非 VCAS 四方实验报告》。下方旧截点原件保留。
+
+[逐页验收摘要](QA_SUMMARY_20261004.md)和[结构检查记录](QA_CHECKS_20261004.json)记录 36/36 页中文、图表、页眉页脚与页边界核查，以及 16 个编号小节、64 个方法格、205 条本地证据链接的检查。最终 DOCX/PDF 从[现行 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成，新增保存数据图来自 Python；没有重跑实验，也没有计算或校验内容摘要。
+
+[新生成脚本](build_archcomp26_report_20261004.py)从尝试索引动态读取条数；图片按直接字节比较复用，内容摘要构造器在入口被拒绝保护。可从仓库根使用本机 bundled Python 重建 DOCX 并渲染到一个新的验收目录：
+
+```sh
+/Users/shengenli/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 \
+  docs/evidence/results/archcomp26_20261001/stage_report/build_archcomp26_report_20261004.py \
+  --render-dir docs/evidence/results/archcomp26_20261001/stage_report/qa_20261004/rebuild
+```
+
+`--render-dir` 调用 bundled `render_docx.py` 并生成逐页 PNG/PDF。脚本同时在该独立目录生成 Fontconfig 配置和缓存，显式引用本机 `/System/Library/Fonts`、其 `Supplemental` 子目录与 `/Library/Fonts`，解决默认 headless 环境漏掉中文字体的问题；不复制或发布系统字体。此命令面向当前 macOS bundled runtime，跨平台复现应将字体目录改为相应已安装 CJK 字体路径。需逐页检查新输出后才将 PDF 复制到正式交付文件；`qa_20261004/` 中的页 PNG、缓存和中间缺字版本不随分支发布。
+
 
 ## 287 条尝试阶段快照
 
-[287 条截点可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_287_20261003.py)从[持续更新的 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。PDF 为 **23 页 A4、14 幅图、11 个表格**；已用 PDFium 渲染并逐页查看中文、图表、页眉页脚和页边界，没有缺字、裁切或空白页。文档技能的 `render_docx.py` 也已运行；交付版面以 Word 导出 PDF 为准。此版生成时[尝试索引](../../../archcomp26_nohash_attempts_20261001.json)为 287 条，64 格覆盖为 **38 格本轮完整数值时域、8 格同合同历史全程、14 格无完整时域、4 格 Airplane discrete 合同阻塞**；现行索引与 Markdown 报告已续至 288 条，DOCX/PDF 保留 287 条截点。
+[287 条截点可编辑 DOCX](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.docx)与[同版 Word PDF](ARCHCOMP26_FULL_STAGE_DRAFT_287_20261003.pdf)由[本地生成脚本](build_archcomp26_full_draft_docx_287_20261003.py)从[持续更新的 Markdown 总报告](../../../../ARCHCOMP26_FINAL_REPORT_DRAFT.md)生成。PDF 为 **23 页 A4、14 幅图、11 个表格**；已用 PDFium 渲染并逐页查看中文、图表、页眉页脚和页边界，没有缺字、裁切或空白页。文档技能的 `render_docx.py` 也已运行；交付版面以 Word 导出 PDF 为准。此版生成时[尝试索引](../../../archcomp26_nohash_attempts_20261001.json)为 287 条，64 格覆盖为 **38 格本轮完整数值时域、8 格同合同历史全程、14 格无完整时域、4 格 Airplane discrete 合同阻塞**；现行索引与 Markdown 报告已续至 289 条，DOCX/PDF 保留 287 条截点。
 
 本截点新增的[Airplane continuous 六维二分数值门](../native_airplane_binary6_numeric_cover_20261003_001/README.md)只对先前未运行的 62 个子盒各执行一个 `0.01 s` 小步；原先两端角子盒未重跑。[独立保存文件审计](../native_airplane_binary6_numeric_cover_20261003_001/INDEPENDENT_AUDIT.json)核对了新 62/62 与合并旧记录后的 64/64 个数值接受小步，首步性质标签为 8 SAFE、56 Unknown。它没有覆盖第一个 `0.1 s` 控制周期的余步或 `T=2 s` 全时域，也不构成完整初盒安全、独立 NN/CROWN 或浮点 NNCS 证明。62 条记录均为短前缀，不增加主表完整方法格。
 

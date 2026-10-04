@@ -1,6 +1,6 @@
 # Huan QUAD / 绘图 / ARCH-COMP26 执行进度
 
-日期：2026-10-01。此页记录本次接续后的实际状态；完整目标仍在进行中。
+创建：2026-10-01；最新接续：2026-10-04。此页按时间保留历史记录，当前状态见末节；完整目标仍在执行中。
 
 ## 已核对的接续点
 
@@ -366,4 +366,62 @@ Airplane 连续版六个不确定初态各二分，64 个闭盒拼合覆盖完�
 
 在独立新 ID 的[全高角 `111111` 子盒首个常值控制期诊断](evidence/results/archcomp26_20261001/native_airplane_binary6_period_numeric_20261003_001/README.md)中，保持先前二分初盒、官方 12→6 ONNX、ODE、order 3、`h=0.01 s` 和余项初猜，只将一次求解请求延长至 `0.1 s` 的 10 个小步，并在数值调用内关闭性质早停。新旧初盒、首次控制 RPC 及首个 408-byte 保存范围逐值相同。独立离线审计确认 **4/10 小步保存至 `t=0.04 s`**，第 5 步的 `x/y` Picard 提议超出 `[-0.01,0.01]` 初猜；原生 status 4、外层 failed/exit 2。四个保存 tube 的 `cos(theta)` 下界均为正，最小 `0.5350594255572875`；保存前缀对安全盒的性质为 **Unknown**，没有实际不安全轨迹结论。此次是单个高角子盒的数值首拒，不覆盖完整首控制期、其余 63 盒后续步或 `T=2 s`，也不是独立 NN/CROWN 或浮点 Flow* 证明；旧首步任务未重启。
 
-该作业作为[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)第 **288** 条补充早停尝试登记，`matrix_eligible=false`；[工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)仍为 38 完成、3 仅短前缀、10 早停、4 失败、9 未尝试、0 运行中，[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)仍为 **38 新完整＋8 同合同历史完整＋14 无完整时域＋4 Airplane discrete 合同阻塞**。原生 Airplane 连续主格仍由完整初盒入口决定。287 条截点的 DOCX/PDF 保留为独立快照，当前 Markdown 总报告按 288 条索引更新。
+该作业作为[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)第 **288** 条补充早停尝试登记，`matrix_eligible=false`；[工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)仍为 38 完成、3 仅短前缀、10 早停、4 失败、9 未尝试、0 运行中，[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)仍为 **38 新完整＋8 同合同历史完整＋14 无完整时域＋4 Airplane discrete 合同阻塞**。原生 Airplane 连续主格仍由完整初盒入口决定。287 条截点的 DOCX/PDF 保留为独立快照；当时 Markdown 总报告按 288 条索引更新。
+
+## 10 月 3 日：TORA remain 补充变体第 192 步首拒与 289 条截点
+
+独立新 ID 对先前 Huan `h=0.1`、仅 `x2` 初猜扩大至 `[-0.02,0.02]` 的[补充变体作只读第 192 步追踪](evidence/results/archcomp26_20261001/author_tora_remain_h01_x2rem002_step192_trace_20261003_001/README.md)。[直接比较审计](evidence/results/archcomp26_20261001/author_tora_remain_h01_x2rem002_step192_trace_20261003_001/AUDIT.json)确认新旧生成 YAML、192 条观察与 2304 个 152-byte 保存范围逐字相同。第 192 步的 12 盒×6 维首轮 Picard 自映射仅初盒 2 的 `x2` 不包含：初猜 `[-0.02,0.02]`，提议 `[-0.03005730939678987,0.028837305588174926]`。原始外层 `failed/exit 1`、非超时；2303/2304 盒步接受，性质 checker 未返回，保存安全前缀仍止于第 184 步。此结果定位数值首拒，不是实际轨迹越带或 `T=20` 完整流管，也不证明再扩大初猜即可完成。
+
+只读冻结服务器源码确认 Huan/Xiangru 在该路径均只做一次 `rem_est→validpost→_refine_dispatch`，没有可启用的 `FLOWSTAR_SELF_MAP_RETRIES`；这个开关只见较新的独立源码快照，不能视作两方冻结引擎的现成修复。该新作业作为[无哈希索引](evidence/archcomp26_nohash_attempts_20261001.json)第 **289** 条独立补充早停尝试入账，`matrix_eligible=false`；固定主表 Huan `h=0.1` 仍选原统一余项全时尝试。[工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)的 64 格仍为 38 完成、3 仅短前缀、10 早停、4 失败、9 未尝试、0 运行中，[覆盖附表](evidence/archcomp26_coverage_overlay_20261002.md)仍为 **38 新完整＋8 同合同历史完整＋14 无完整时域＋4 Airplane discrete 合同阻塞**。287 截点 DOCX/PDF 继续作为历史快照，当前 Markdown 总报告对应 289 条。当前绘图交付采用 Python 生成的 PNG/PDF；已有 MATLAB 示例未实跑不列为交付阻断。
+
+
+## 2026-10-04：恢复核对、Python 交付清理与条件性余项计划
+
+用户已明确恢复实验并要求完成 goal，随后回复已连接。此次先核对本地已有提交、暂存区、原始 RESULT 和远端进程，没有重跑旧实验，也没有恢复之前暂停的定时续跑。本地已存在 2026-10-03 10:44:16+08 提交《Document paused ARCH-COMP26 handoff and 289th TORA trace》，原交接“289 条未提交/部分暂存”的补充文字已过时；远端发布状态尚未验证。核对前仅 handoff 与修订 goal 有两处陈旧状态补充，五个 Word 锁文件排除交付。
+
+全部 289 条尝试的远端原始 RESULT 已读取，正确层级包括 259 个顶层和 30 个嵌套目录；223 份显式本地 RESULT 的内容直接逐字节一致。另 66 条没有显式 local_result 字段，不能据此推断丢失。旧作者 QUAD 128/256 行全程 RESULT、旧 native 六小时 timeout、论文 native 完成收据和第 289 条 TORA failed/exit1 均已核对。2026-10-04 05:47 UTC 快照没有匹配实验进程，当前连接 socket 为 `/private/tmp/codex-huan-2252-20261003-resume.sock`。这些是当时只读观察，不替代将来的实时状态。
+
+[Python CLI 清理验收](evidence/results/python_plot_cli_cleanup_20261004_001/README.md)覆盖 ordinary saved-geometry、nohash native ranges 和方向几何入口，已取消自动 `.m`。四项针对测试和五条实际 CLI 保存数据路径通过；历史七份输入直接字节一致，六组 PNG/PDF 可读。运行时所有摘要构造器及 MATLAB 写出被拒绝保护，没有求解器调用。旧校验工具 `verify_flowpipe_plot_artifacts.py` 依赖旧摘要收据，不用于本次验收。
+
+从保存记录补齐了[QUAD 状态图、Attitude/Docking 四方时间图](evidence/results/archcomp26_20261001/report_saved_projections_20261004_001/README.md)、[NAV 当前 P3 四方图](evidence/results/archcomp26_20261001/nav_current_p3_saved_20261004_001/README.md)和[TORA tanh 当前 P3 四方图](evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/README.md)。旧 P3 只在代际附图标明；缺失步不插值，QUAD 作者两方只有保存终点，目标时间语义保留。64 格[交付索引](evidence/archcomp26_delivery_index_20261004.md)和新版可编辑报告正在汇总，新增图不增加 289 条 benchmark 尝试或 38+8+14+4 覆盖计数。
+
+[新的全盒余项离线计划](evidence/results/archcomp26_20261001/native_quad_allbox_adaptive_remainder_plan_20261004_001/README.md)只读已保存首控制批次，固定原输出多项式后，对 1,024 盒、3,072 行完成 196,608 个精确有理数顶点检查。第一输出上下端最多需 461/448 ULP 外扩，第二、三输出每端最多 1 ULP；所有输出行至少一端需要改变。它明确以原实数仿射 CROWN 不等式有效为前提，没有 NN/CROWN 或 ODE 调用。新目录原生应用回放脚本已准备，但 8 文件上传被自动审批两次拒绝，理由是特定目的地研究源码/计划传输的明确授权不足；具体授权问题已提交。当前没有新原生 START/RESULT，不能写为数值拒绝或原生通过。生产门保持关闭。
+
+
+### 同日：共同前缀图与 NAV 全状态统计补齐
+
+[Balancing raw4 四方图](evidence/results/archcomp26_20261001/balancing_raw4_fourway_saved_20261004_001/README.md)显示共同数值前缀 83 步至 t=0.415；各法真实保存 86/98/98/83 步。48 行绝对宽度分开共同前缀和各法最后时刻，32,000 个全请求时域 CSV 格在未观察时段留空，8<t≤10 的未来目标窗没有被画成当前安全带。[DP more 四方图](evidence/results/archcomp26_20261001/dp_more_fourway_saved_20261004_001/README.md)显示共同数值 64 步至 t=0.32，并区分共同保存 Safe 前缀 60 步至 t=0.30；64 行宽度与 1,280 个全请求 CSV 格保留缺值，没有 T=0.4 终点。11 份旧输入直接字节不变；两份 Python PNG/PDF 已检查。
+
+[NAV 四态表](evidence/results/archcomp26_20261001/nav_fourstate_saved_20261004_001/README.md)只读归约八份现有范围、1,596,000 条记录，补齐 19,200 行逐步 x/y/speed/heading 统计与 32 行绝对宽度，分别给 union 和真实每盒 mean/max。与原 x/y 表的 9,600 行相应字段在 2e-14 累加容差内一致；16 个当前 P3/native 终点区间与既有独立扫描逐值相等。服务器没有写新文件或运行求解器。
+
+[64 格交付索引](evidence/archcomp26_delivery_index_20261004.md)已纳入上述图表，仍为 38 新完整＋8 历史完整＋14 无完整＋4 合同阻塞。矩阵派生性质分类已与作者原始 checker 输出分开。报告 16 节、64 格唯一性和本地链接检查通过，新产物没有 `.m`；DOCX/PDF 正在修正渲染字体并逐页检查，未提前发布。
+
+
+### 同日：36 页报告本地验收完成
+
+新版 [DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_REPORT_20261004.docx) 与 [PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_REPORT_20261004.pdf)已生成并完成全 36 页目检，包含 16 个编号实例小节、20 图、11 表。204 个本地超链接无缺失；最终 PDF 与第三轮验收导出直接字节相同。首轮 LibreOffice 字体缺字通过独立 Fontconfig 和已有系统中文字体解决，没有下载字体；粗体解析、链接反引号和末页分页也已修正。构建器支持 --render-dir 复现导出，原 287 条历史文档未覆盖。[QA 摘要](evidence/results/archcomp26_20261001/stage_report/QA_SUMMARY_20261004.md)与[交付验收 JSON](evidence/archcomp26_delivery_acceptance_20261004.json)可读。
+
+本轮发布清单排除五个 Word 锁文件、逐页 QA PNG/cache 和仍待具体远端授权的原生应用回放目录。该回放不转为另一目的地的外传；没有新远端 START/RESULT。完整目标的逐项核对见[交付清单](ARCHCOMP26_DELIVERY_CHECKLIST_20261004.md)，推送尚待原始执行结果确认。
+
+
+### 2026-10-04 本地提交与发布审批
+
+本轮 124 个交付文件已在本地提交《Complete Python plot delivery and reconcile ARCH-COMP26 evidence》。向 `https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git` 的现有执行分支推送被自动审批拒绝，理由是报告、证据和代码向该具体仓库的传输授权不足；已提出明确仓库、分支和文件范围的授权问题。推送没有执行，不能称已发布。
+
+发布前逐项核对 124 条暂存路径与明确清单一致，排除 Word 锁文件、渲染 QA 临时文件及待授权原生回放目录；CSV 使用标准 CRLF，按 `cr-at-eol` 处理后暂存差异空白检查通过。原生回放的八文件上传授权与 GitHub 发布授权相互独立，两者都没有开始传输。目标保持未完成，不把授权阻断记为 benchmark 数值失败。
+
+
+### 2026-10-04 发布前只读终验与文案修正
+
+对照 Downloads 原始修订 goal 和 handoff 复核四项完成条件，未发现现存数据可补齐而遗漏的图、逐态宽度或合同归属。修正总报告两处旧 MATLAB 图件措辞及 NAV robust 主链接，使其指向当前 P3 四方图；已同步重建 DOCX/PDF。36 页中仅第 15、16 页变化，已重新目检，其余 34 页 PNG 与已验版逐字节相同；16 小节、20 图、11 表、204 个链接与 64 格覆盖仍通过。该次重导出与索引刷新不改变任何 benchmark 原始证据。
+
+待授权回放代码的只读静态审查发现并修正了一个诊断定位错误：每个新 lane 入口清空输出编号，避免输入阶段首拒错误沿用上一 lane 的第三输出编号。仅解析 Python 语法，未执行回放或检查器，待授权目录继续排除发布。GitHub 推送与服务器传输仍等待具体目的地授权；本条自动续跑不替代授权。
+
+
+### 2026-10-04 明确授权后的原生条件构造回放
+
+用户明确授权本人 GitHub 发布及使用 Huan 服务器实验，并禁止向 Huan/Xiangru 的 GitHub 写入。此前目的地授权阻断解除。[唯一新回放](evidence/results/archcomp26_20261001/native_quad_allbox_adaptive_remainder_replay_20261004_001/README.md)于 08:38:31 UTC 开始、08:39:16 UTC 完成，使用 CPU 12；build/run/check/wrapper 均 exit 0。原 RESULT 记录 1,024 盒、3,072 行、196,608 个精确有理顶点全部通过，checker 40.19774992499879 秒。8 输入与 15 原始输出已直接字节比对一致；没有重跑 checker 或旧实验。
+
+检查仍假定原实数仿射 CROWN 不等式有效，只闭合保存首批的 native 最终余项替换，未调用 NN/CROWN 或 ODE。生产门保持 CLOSED，289 条 benchmark 尝试及 64 格覆盖不变。报告同步到 render_05：36 页、16 节、20 图、11 表、205 条有效本地链接；只第 3 页发生变化并重新目检，其余 35 页与已验版直接字节相同。
+
+普通 Git push 的网络故障和本地部分克隆缺旧对象妨碍发布；未按对象标识补取或执行内容摘要校验。临时 SSH 转发已撤除，官方 API 直连与正常 Git 凭据助手可用，正在向本人现有执行分支发布内容提交；本地提交链保留，远端历史不强制覆盖。当前尚不把发布计划记为成功。

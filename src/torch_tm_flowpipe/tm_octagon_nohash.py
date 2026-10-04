@@ -10,8 +10,10 @@ import json
 import math
 import time
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from .tm_vector import TMVector
+if TYPE_CHECKING:
+    from .tm_vector import TMVector
 
 
 def directional_intervals(tm: TMVector, x: int, y: int) -> dict[str, list[float]]:
@@ -219,24 +221,19 @@ def render_geometry(geometry: dict, output: Path, *, view: str = "tube",
     if geometry.get("schema") != "torch-tm-flowpipe-octagon-nohash-v1":
         raise ValueError("unsupported directional geometry")
     output = Path(output)
-    if any(output.with_suffix(suffix).exists() for suffix in (".m", ".png", ".pdf", ".render.json")):
+    if any(output.with_suffix(suffix).exists() for suffix in (".png", ".pdf", ".render.json")):
         raise FileExistsError("plot output already exists")
     output.parent.mkdir(parents=True, exist_ok=True)
     timings = {}
-    started = time.perf_counter()
-    _write_matlab(geometry, output.with_suffix(".m"), view)
-    timings["matlab_script_generation"] = time.perf_counter() - started
     started = time.perf_counter()
     _render_matplotlib(geometry, output, view)
     timings["matplotlib_png_pdf_render"] = time.perf_counter() - started
     output.with_suffix(".render.json").write_text(json.dumps({
         "geometry": str(geometry_path) if geometry_path else "in-memory accepted segment TMs",
         "view": view,
-        "matlab": str(output.with_suffix(".m")),
         "png": str(output.with_suffix(".png")),
         "pdf": str(output.with_suffix(".pdf")),
         "timings_seconds": {**geometry.get("timings_seconds", {}), **timings},
-        "matlab_runtime_check": "not_performed",
         "content_digest_policy": "none computed",
     }, indent=2) + "\n")
 

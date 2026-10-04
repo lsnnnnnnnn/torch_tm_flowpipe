@@ -1,0 +1,65 @@
+{
+  "status": "saved_data_validation_passed",
+  "solver_executed": false,
+  "source_files": [
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/ranges.bin",
+      "bytes": 76000
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+      "bytes": 76000
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+      "bytes": 76000
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+      "bytes": 76000
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/old_p3_ranges.bin",
+      "bytes": 76000
+    }
+  ],
+  "current_receipt": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/RESULT.json",
+  "current_contract": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/START.json",
+  "historical_receipt_audit": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/AUDIT.json",
+  "main_range_records": 2000,
+  "supplementary_historical_p3_records": 500,
+  "csv_rows": 10000,
+  "raw_record_bytes": 152,
+  "validated": [
+    "each source has 500 unique ordered records",
+    "complete 0 to 5 s grid",
+    "finite ordered tube/endpoint",
+    "endpoint within same-step tube",
+    "no interpolation"
+  ],
+  "initial_layer": "t=0 only",
+  "target_layer": "T=5 only; sufficient numerical endpoint observation for within-5s reach",
+  "endpoint_in_target": {
+    "current_p3": true,
+    "huan": true,
+    "xiangru": true,
+    "native": true,
+    "old_p3": true
+  },
+  "huan_xiangru_direct_saved_values_equal": true,
+  "property_and_certificate": "Current P3 and historical GPU receipts have no author property verdict; historical native author endpoint checker is VERIFIED. No independent floating-point NNCS certificate.",
+  "validation_and_export_s": 0.15331225004047155,
+  "rendering_s": 1.6614349170122296,
+  "outputs": [
+    "AUDIT.json",
+    "README.md",
+    "absolute_widths.csv",
+    "geometry.json",
+    "saved_bounds.csv",
+    "tora_tanh_current_fourway.pdf",
+    "tora_tanh_current_fourway.png",
+    "tora_tanh_p3_generations.pdf",
+    "tora_tanh_p3_generations.png"
+  ],
+  "visual_qa": "main and difference/generation PNG inspected; Matplotlib PDF uses the same figure"
+}

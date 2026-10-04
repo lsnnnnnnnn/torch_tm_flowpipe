@@ -1,0 +1,48 @@
+{
+  "scope": "Saved first-control 1024 boxes x 3 outputs; offline plan only",
+  "condition": "Original real-affine CROWN inequalities hold on each saved RPC box.",
+  "native_production_gate": "CLOSED",
+  "native_plan_applied": false,
+  "no_crown_calls": true,
+  "no_ode_calls": true,
+  "no_network_calls": true,
+  "no_digest_verification": true,
+  "source_boxes_checked": 1024,
+  "output_rows_checked": 3072,
+  "exact_vertex_checks": 196608,
+  "status": "CONDITIONAL_OFFLINE_REMAINDER_PLAN_VERIFIED",
+  "boxes_with_any_endpoint_change": 1024,
+  "per_output": [
+    {
+      "output": 1,
+      "lower_changed": 562,
+      "upper_changed": 558,
+      "either_changed": 1024,
+      "max_lower_expansion": "461/144115188075855872",
+      "max_upper_expansion": "7/2251799813685248",
+      "max_lower_ulps": 461,
+      "max_upper_ulps": 448
+    },
+    {
+      "output": 2,
+      "lower_changed": 575,
+      "upper_changed": 557,
+      "either_changed": 1024,
+      "max_lower_expansion": "1/576460752303423488",
+      "max_upper_expansion": "1/576460752303423488",
+      "max_lower_ulps": 1,
+      "max_upper_ulps": 1
+    },
+    {
+      "output": 3,
+      "lower_changed": 532,
+      "upper_changed": 575,
+      "either_changed": 1024,
+      "max_lower_expansion": "1/576460752303423488",
+      "max_upper_expansion": "1/576460752303423488",
+      "max_lower_ulps": 1,
+      "max_upper_ulps": 1
+    }
+  ],
+  "elapsed_seconds": 29.4299745419994
+}

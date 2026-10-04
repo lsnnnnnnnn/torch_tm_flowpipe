@@ -1,16 +1,27 @@
-# No-hash native flowpipe plotting
+# Python rendering of saved native flowpipes
 
 `python -m torch_tm_flowpipe.flowpipe_plot_nohash` reads a saved native
 `ranges.bin` or one or more existing geometry JSON files. It writes
-`.geometry.json` for native input or a multi-geometry overlay, plus `.m`,
-`.png`, `.pdf`, and `.render.json`. This entry never runs a solver or computes
-a content digest. The receipt records file paths, byte sizes, plot
-configuration, and separate source/geometry, MATLAB-generation, and
-Matplotlib-render wall times. Solver time is not measured by this entry. An
+`.geometry.json` for native input or a multi-geometry overlay, plus Python
+Matplotlib-rendered `.png` and `.pdf` files and a `.render.json` receipt.
+The CLI produces no MATLAB `.m` file. This entry never runs a solver or
+computes a content digest. The receipt records file paths, byte sizes, plot
+configuration, and separate source/geometry and Python-render wall times.
+Solver time is not measured by this entry. An
 optional JSON run configuration and adjacent `RESULT.json` remain unbound
 declarations; the receipt performs no model or run identity check.
 When an adjacent `RESULT.json` exists, its saved status is shown in the figure
 footer as **unbound** adjacent evidence.
+
+The `flowpipe_plot` and `tm_octagon_nohash` CLIs likewise render Python PNG/PDF
+without automatic `.m` output. `flowpipe_plot --geometry` records artifact
+paths and byte sizes without computing digests; its legacy source-export
+identity checks remain unchanged and are outside this no-digest workflow.
+The octagon geometry/stream redraw paths do not import the numerical solver.
+The older `tools/verify_flowpipe_plot_artifacts.py` requires digest-bearing
+receipts and is not an acceptance tool for the new path/byte-size receipts.
+The [2026-10-04 saved-data acceptance](evidence/results/python_plot_cli_cleanup_20261004_001/README.md)
+checks all three CLI paths with digest computation and MATLAB export blocked.
 
 For the continuous ARCH-COMP 2026 Double Pendulum less-robust contract, use the
 full 100 local ODE steps (`20` control periods × `5` substeps), even when the
@@ -78,7 +89,7 @@ validate declared source digests from other plot-spec versions. The
 [small synthetic overlay fixture](evidence/results/flowpipe_plot_nohash_overlay_20261003_001/README.md)
 shows two visibly overlaid saved-range series, one with an unobserved second
 step, together with initial/Safe/endpoint Target layers and the generated
-MATLAB/PDF/PNG artifacts. The fixture is a renderer check, not a reachable-set
+Python PNG/PDF artifacts. The fixture is a renderer check, not a reachable-set
 or solver result.
 
 Archived QUAD root1 B2 data is a parser/render regression fixture only. Its
@@ -88,8 +99,8 @@ new Double Pendulum plots use the separate all-time Safe spec above.
 
 The 2026 TORA remain native full run supplies another real example: its
 [run summary](evidence/results/archcomp26_20261001/native_tora_remain_full20_001/SUMMARY.md)
-links a complete `t,x1` tube figure, an `x1,x2` endpoint figure, both MATLAB
-scripts, and the source `ranges.bin`. Use
+links a complete Python-rendered `t,x1` tube figure, an `x1,x2` endpoint
+figure, and the source `ranges.bin`. Use
 `benchmarks/plot_specs/tora_remain_2026_nohash.json`, `--coordinate-names
 x1,x2,x3,x4`, `--step-size 0.1`, `--expected-steps 200`, and
 `--expected-lanes 12`. The figures show the full official initial box and
@@ -104,8 +115,8 @@ for native Flow* and P3. Huan and Xiangru saved only terminal bounds, so their
 two methods appear as `T=5` endpoint intervals; no intermediate curve is
 interpolated. The `[0.94,1.06]` band applies to the terminal target only.
 The native whole-step bounds are axis-aligned box projections, not octagon
-support values. The included MATLAB script is generated but has not been run
-in MATLAB or Octave.
+support values. The PNG/PDF were rendered by Python Matplotlib. A legacy
+`.m` file was also written automatically but was not used.
 
 ## Actual Taylor-model eight-direction projection
 
@@ -144,9 +155,9 @@ PYTHONPATH=src python -m torch_tm_flowpipe.tm_octagon_nohash \
 For an actual application, call `export_segments(result.segments,
 initial_box, output, x=..., y=..., names=(..., ...))` at the accepted solver
 boundary. The second command redraws the saved geometry without any numerical
-step. The demonstration produced `.geometry.json`, MATLAB `.m`, PDF, and PNG
-on the saved research server. MATLAB/Octave was unavailable there and was not
-run. The existing 2026 QUAD/native/P3 saved ranges contain no correlated TM,
+step. The demonstration produced `.geometry.json` and Python-rendered PDF/PNG
+on the saved research server; the CLI also emitted an unused legacy `.m` file.
+The existing 2026 QUAD/native/P3 saved ranges contain no correlated TM,
 so their figures remain explicitly box projections until a new accepted-step
 directional observer is attached to those engines; the old long runs are not
 repeated just for plotting.

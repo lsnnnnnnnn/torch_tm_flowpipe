@@ -2990,7 +2990,6 @@ def _parse_series(values: list[str]) -> list[tuple[str, Path]]:
 def _artifact_receipt(path: Path) -> dict[str, Any]:
     return {
         "path": str(path.resolve()),
-        "sha256": _sha256(path),
         "bytes": path.stat().st_size,
     }
 
@@ -3124,10 +3123,6 @@ def main(argv: list[str] | None = None) -> int:
         _json_dump(geometry_artifact, geometry)
         mode = "source-export"
     source_seconds = time.perf_counter() - source_started
-    matlab_path = args.output.with_suffix(".m")
-    matlab_started = time.perf_counter()
-    write_matlab(geometry, matlab_path)
-    matlab_seconds = time.perf_counter() - matlab_started
     rendered: tuple[Path, Path] | None = None
     render_seconds = None
     if not args.no_render:
@@ -3136,7 +3131,6 @@ def main(argv: list[str] | None = None) -> int:
         render_seconds = time.perf_counter() - render_started
     artifacts = {
         "geometry": _artifact_receipt(geometry_artifact),
-        "matlab": _artifact_receipt(matlab_path),
         "png": None,
         "pdf": None,
     }
@@ -3149,16 +3143,12 @@ def main(argv: list[str] | None = None) -> int:
         "mode": mode,
         "timings_seconds": {
             "source_read_and_projection_export_or_geometry_validation": source_seconds,
-            "matlab_script_generation": matlab_seconds,
             "matplotlib_png_pdf_render": render_seconds,
             "total_before_receipt_write": time.perf_counter() - total_started,
         },
         "run_timing_evidence": _run_timing_receipts(geometry),
         "artifacts": artifacts,
-        "matlab_runtime_check": {
-            "status": "not_performed_by_generator",
-            "note": "script generation is not a MATLAB/Octave execution claim",
-        },
+        "artifact_digest_policy": "none computed for this render receipt",
     }
     if geometry.get("instance_id") is not None:
         receipt["instance_id"] = geometry["instance_id"]

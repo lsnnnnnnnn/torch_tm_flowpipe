@@ -1,0 +1,56 @@
+{
+  "status": "saved_data_validation_passed",
+  "solver_executed": false,
+  "source_files": [
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/nav_standard_fourway_saved_20261002/xy_saved_curves.csv",
+      "bytes": 1265787
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/nav_robust_fourway_saved_20261002/xy_saved_curves.csv",
+      "bytes": 1267178
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/xy_saved_curves.csv",
+      "bytes": 316587
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/nav_author_robust_working_p3_full30_001/xy_saved_curves.csv",
+      "bytes": 314893
+    }
+  ],
+  "source_rows": 12000,
+  "series_count": 20,
+  "steps_per_series": 600,
+  "validated": [
+    "finite ordered tube and endpoint",
+    "endpoint within same-step tube",
+    "complete 0 to 6 s grid",
+    "tube widths match bounds",
+    "no missing-step interpolation"
+  ],
+  "layers": {
+    "initial": "t=0 only",
+    "target": "T=6 only",
+    "unsafe": "all-time coordinate projection of joint [1,2]^2"
+  },
+  "validation_s": 0.08809412503615022,
+  "rendering_s": 3.896708416985348,
+  "outputs": [
+    "AUDIT.json",
+    "README.md",
+    "geometry.json",
+    "nav_each_method_width_difference_vs_native_with_working_p3.pdf",
+    "nav_each_method_width_difference_vs_native_with_working_p3.png",
+    "nav_robust_each_method_xy_tubes.pdf",
+    "nav_robust_each_method_xy_tubes.png",
+    "nav_saved_xy_tubes_with_working_p3.pdf",
+    "nav_saved_xy_tubes_with_working_p3.png",
+    "nav_saved_xy_union_width_with_working_p3.pdf",
+    "nav_saved_xy_union_width_with_working_p3.png",
+    "nav_standard_each_method_xy_tubes.pdf",
+    "nav_standard_each_method_xy_tubes.png",
+    "saved_bounds.csv"
+  ],
+  "visual_qa": "main and difference/generation PNG inspected; Matplotlib PDF uses the same figure"
+}

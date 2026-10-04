@@ -1390,7 +1390,7 @@ class FlowpipePlotTests(unittest.TestCase):
             self.assertEqual(main([
                 "--geometry", str(geometry_path), "--output", str(output), "--no-render"
             ]), 0)
-            self.assertTrue(output.with_suffix(".m").is_file())
+            self.assertFalse(output.with_suffix(".m").exists())
             png, pdf = render_matplotlib(geometry, root / "rendered")
             self.assertTrue(png.is_file())
             self.assertTrue(pdf.is_file())
@@ -1439,7 +1439,8 @@ class FlowpipePlotTests(unittest.TestCase):
             ]), 0)
             receipt = json.loads(output.with_suffix(".render.json").read_text(encoding="utf-8"))
             self.assertEqual(receipt["schema"], "torch-tm-flowpipe-render-receipt-v1")
-            self.assertIsNotNone(receipt["timings_seconds"]["matlab_script_generation"])
+            self.assertNotIn("matlab_script_generation", receipt["timings_seconds"])
+            self.assertNotIn("matlab", receipt["artifacts"])
             self.assertIsNone(receipt["timings_seconds"]["matplotlib_png_pdf_render"])
             geometry = json.loads(output.with_suffix(".geometry.json").read_text())
             self.assertNotIn("instance_id", geometry)

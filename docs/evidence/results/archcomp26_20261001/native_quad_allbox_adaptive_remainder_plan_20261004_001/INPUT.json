@@ -1,0 +1,16 @@
+{
+  "started_utc": "2026-10-04T05:53:10.165336+00:00",
+  "cap_seconds": 300,
+  "sources_relative_to_parent": {
+    "trace": "native_quad_allbox_correlated_remainder_gate_20261003_001/ALLBOX_TM_TRACE.jsonl",
+    "rpc": "native_quad_allbox_firststep_recenter_gate_20261003_003/run/rpc.json",
+    "source": "native_quad_corrected_control_construct_20261003_001/source_boxes.csv",
+    "bias": "native_quad_crown_transport_correction_20261003_001/CORRECTED_BIASES.json",
+    "replay": "native_quad_crown_same_slope_batch_20261003_001/RAW_COEFFICIENTS.json"
+  },
+  "condition": "Original real-affine CROWN inequalities hold on each saved RPC box.",
+  "reference": "transported f32 slopes and conditionally corrected f32 bias interval",
+  "baseline": "original_tm_remainder before the archived fixed 2^-50 pad",
+  "selection": "nearest outward binary64 endpoints preserving the original remainder",
+  "scope_exclusions": "NN/CROWN soundness, native application, ODE, later controls and full horizon"
+}

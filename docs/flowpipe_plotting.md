@@ -1,5 +1,11 @@
 # Flowpipe projection export and plotting
 
+Current delivery uses Python Matplotlib PNG/PDF and saved geometry. For the
+current no-digest workflow, start with [the Python saved-range plotting
+guide](flowpipe_plot_nohash.md). The entry below documents an older exporter
+which still emits a MATLAB `.m` file alongside its Python render; that file is
+not part of current plot acceptance.
+
 `python -m torch_tm_flowpipe.flowpipe_plot` reads saved `observer_<step>.pt`
 files, exports standalone projection geometry, and writes a MATLAB script plus
 PNG/PDF renderings. It never reruns the solver.

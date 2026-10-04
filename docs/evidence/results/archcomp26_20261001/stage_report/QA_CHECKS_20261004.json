@@ -1,0 +1,103 @@
+{
+  "report": "ARCH COMP26 非 VCAS 四方实验报告",
+  "date": "2026-10-04",
+  "attempt_cutoff": 289,
+  "pages": 36,
+  "numbered_sections": [
+    "1. ACC — safe-distance",
+    "2. Airplane — continuous",
+    "3. Airplane — discrete",
+    "4. Attitude Control — avoid",
+    "5. Balancing — reach",
+    "6. Docking — constraint",
+    "7. Double Pendulum — less-robust",
+    "8. Double Pendulum — more-robust",
+    "9. NAV — standard",
+    "10. NAV — robust",
+    "11. QUAD — reach",
+    "12. Single Pendulum — reach",
+    "13. TORA — remain",
+    "14. TORA — reach-sigmoid",
+    "15. TORA — reach-tanh",
+    "16. Unicycle — reach"
+  ],
+  "embedded_figures": 20,
+  "tables": 11,
+  "matrix_cells": 64,
+  "coverage_counts": {
+    "合同阻塞": 4,
+    "新全程": 38,
+    "无全程": 14,
+    "旧全程": 8
+  },
+  "local_hyperlinks_checked": 205,
+  "missing_local_hyperlinks": [],
+  "pdf_chinese_character_count": 22942,
+  "all_pdf_pages_A4": true,
+  "all_pdf_pages_nonempty": true,
+  "digest_policy": "No content digests computed or checked. Python hashlib constructors/new/file_digest were blocked. Image deduplication used direct bytes.",
+  "outputs": [
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_REPORT_20261004.docx",
+      "bytes": 3633266
+    },
+    {
+      "path": "docs/evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_REPORT_20261004.pdf",
+      "bytes": 5965915
+    }
+  ],
+  "render_directory": "qa_20261004/render_05",
+  "font_configuration": "Builder --render-dir writes a local Fontconfig file referencing installed macOS CJK fonts and a separate output cache.",
+  "visual_qa": {
+    "all_pages_reviewed": true,
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36
+    ],
+    "first_complete_review": "render_02: plotting/report agent pages 1–24; root pages 25–36",
+    "final_recheck": "render_05: plotting/report agent visually rechecked changed page 3 after incorporating the recorded conditional construction-only replay result and link. Remaining 35 page PNGs directly byte-equal to reviewed render_04.",
+    "findings": "No missing Chinese glyphs, clipping, overlapping text/figures, blank pages or detached final conclusion. Markdown delimiter artifacts fixed.",
+    "previous_recheck": "render_04: plotting/report agent visually rechecked pages 15 and 16 after two Python figure wording fixes. Remaining 34 page PNGs directly byte-equal to reviewed render_03. NAV robust main hyperlink target checked separately in DOCX relationships.",
+    "pages_changed_from_render_04": [
+      3
+    ]
+  },
+  "final_pdf_copy_direct_bytes_equal": true,
+  "pdf_text_note": "Text extraction checks cover body content and numeric evidence markers. Bold CJK headings may be returned in PDF drawing order; exact heading sequence was checked in DOCX XML and visually in rendered pages.",
+  "nav_robust_main_link_target": "../nav_current_p3_saved_20261004_001/README.md",
+  "publication_status_at_this_update": "User authorization received for the user-owned GitHub destination. This step only rebuilt and verified local files; publication status must follow the coordinating task actual branch receipts. No push, upload or experiment performed by this report step."
+}
