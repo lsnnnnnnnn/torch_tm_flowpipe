@@ -1,0 +1,36 @@
+{
+  "schema": "archcomp26-saved-widths-v1",
+  "instances": 16,
+  "method_cells": 64,
+  "long_rows": 168888,
+  "summary_rows": 364,
+  "definition": "absolute_width=hi-lo; pooled across saved accepted lanes at one step; max_tube_width=max of these per-step widths, never all-time union width",
+  "common_time": "latest endpoint time saved for all four methods and the full initial set, state by state",
+  "common_safe_fields": "Only the previously recorded DP-more step60 and TORA-remain step184 safe prefixes are transcribed; null elsewhere does not imply unsafe. No property checker was executed.",
+  "endpoint_choice": "P3 QUAD observer endpoint is primary; driver final_hull is retained separately; Huan/Xiangru QUAD use saved driver terminal only",
+  "supplemental_contracts": [
+    "Balancing raw4 is supplemental to the unresolved paper five-input contract",
+    "SP supplies only the fixed two-state submission; official third state is missing"
+  ],
+  "excluded_records": [
+    {
+      "source_id": "S043",
+      "rejected_or_frozen_records": 0,
+      "reason": "raw stored rejected/frozen lane values excluded; surviving accepted lanes remain explicitly partial"
+    },
+    {
+      "source_id": "S046",
+      "rejected_or_frozen_records": 43,
+      "reason": "raw stored rejected/frozen lane values excluded; surviving accepted lanes remain explicitly partial"
+    },
+    {
+      "source_id": "S049",
+      "rejected_or_frozen_records": 43,
+      "reason": "raw stored rejected/frozen lane values excluded; surviving accepted lanes remain explicitly partial"
+    }
+  ],
+  "new_numerical_runs": 0,
+  "old_checkers_executed": 0,
+  "digest_operations": 0,
+  "independent_end_to_end_floating_nncs_certificate": false
+}

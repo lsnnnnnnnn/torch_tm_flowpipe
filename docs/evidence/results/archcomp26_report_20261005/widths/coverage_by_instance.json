@@ -1,0 +1,1212 @@
+[
+  {
+    "instance_id": "acc-safe-distance",
+    "planned_steps": 50,
+    "step_s": 0.1,
+    "physical_states": [
+      "x_lead",
+      "v_lead",
+      "a_lead",
+      "x_ego",
+      "v_ego",
+      "a_ego"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_ACC_PARTICIPANT_CONTRACT_20261001.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x_lead": "full",
+          "v_lead": "full",
+          "a_lead": "full",
+          "x_ego": "full",
+          "v_ego": "full",
+          "a_ego": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x_lead": "full",
+          "v_lead": "full",
+          "a_lead": "full",
+          "x_ego": "full",
+          "v_ego": "full",
+          "a_ego": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "x_lead": "full",
+          "v_lead": "full",
+          "a_lead": "full",
+          "x_ego": "full",
+          "v_ego": "full",
+          "a_ego": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "x_lead": "full",
+          "v_lead": "full",
+          "a_lead": "full",
+          "x_ego": "full",
+          "v_ego": "full",
+          "a_ego": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "airplane-continuous",
+    "planned_steps": 200,
+    "step_s": 0.01,
+    "physical_states": [
+      "sx",
+      "sy",
+      "sz",
+      "vx",
+      "vy",
+      "vz",
+      "phi",
+      "theta",
+      "psi",
+      "r",
+      "p",
+      "q"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_AIRPLANE_2026_ENTRY_AUDIT.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u4e3b\u5408\u540c0\u6bb5\u6709\u6548\u63a5\u53d7\uff0c\u65e0\u5168\u65f6\u5bbd\u5ea6\u6216\u6d41\u7ba1\uff1b64\u76d2\u9996\u6b65\u8865\u5145\u4e0d\u80fd\u6df7\u5165\u4e3b\u56fe\u3002 | \u672a\u5b8c\u6574\u8fd0\u884c\u7684\u7ec8\u70b9\u548c\u5168\u7a0b\u65f6\u95f4\u7559\u7a7a\uff1b\u53ea\u4fdd\u7559\u771f\u5b9e\u505c\u6b62\u524d\u7f00/\u5931\u8d25\u8fdb\u7a0b\u65f6\u95f4\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "huan": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u4e3b\u5408\u540c0\u6bb5\u6709\u6548\u63a5\u53d7\uff0c\u65e0\u5168\u65f6\u5bbd\u5ea6\u6216\u6d41\u7ba1\uff1b64\u76d2\u9996\u6b65\u8865\u5145\u4e0d\u80fd\u6df7\u5165\u4e3b\u56fe\u3002 | \u672a\u5b8c\u6574\u8fd0\u884c\u7684\u7ec8\u70b9\u548c\u5168\u7a0b\u65f6\u95f4\u7559\u7a7a\uff1b\u53ea\u4fdd\u7559\u771f\u5b9e\u505c\u6b62\u524d\u7f00/\u5931\u8d25\u8fdb\u7a0b\u65f6\u95f4\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "xiangru": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u4e3b\u5408\u540c0\u6bb5\u6709\u6548\u63a5\u53d7\uff0c\u65e0\u5168\u65f6\u5bbd\u5ea6\u6216\u6d41\u7ba1\uff1b64\u76d2\u9996\u6b65\u8865\u5145\u4e0d\u80fd\u6df7\u5165\u4e3b\u56fe\u3002 | \u672a\u5b8c\u6574\u8fd0\u884c\u7684\u7ec8\u70b9\u548c\u5168\u7a0b\u65f6\u95f4\u7559\u7a7a\uff1b\u53ea\u4fdd\u7559\u771f\u5b9e\u505c\u6b62\u524d\u7f00/\u5931\u8d25\u8fdb\u7a0b\u65f6\u95f4\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "flowstar_native": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u4e3b\u5408\u540c0\u6bb5\u6709\u6548\u63a5\u53d7\uff0c\u65e0\u5168\u65f6\u5bbd\u5ea6\u6216\u6d41\u7ba1\uff1b64\u76d2\u9996\u6b65\u8865\u5145\u4e0d\u80fd\u6df7\u5165\u4e3b\u56fe\u3002 | \u672a\u5b8c\u6574\u8fd0\u884c\u7684\u7ec8\u70b9\u548c\u5168\u7a0b\u65f6\u95f4\u7559\u7a7a\uff1b\u53ea\u4fdd\u7559\u771f\u5b9e\u505c\u6b62\u524d\u7f00/\u5931\u8d25\u8fdb\u7a0b\u65f6\u95f4\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      }
+    }
+  },
+  {
+    "instance_id": "airplane-discrete",
+    "planned_steps": 20,
+    "step_s": 0.1,
+    "physical_states": [
+      "sx",
+      "sy",
+      "sz",
+      "vx",
+      "vy",
+      "vz",
+      "phi",
+      "theta",
+      "psi",
+      "r",
+      "p",
+      "q"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_AIRPLANE_DISCRETE_EXECUTION_GATE_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u5408\u540c\u963b\u585e\uff1a\u56db\u65b9\u6cd5\u6ca1\u6709\u6743\u5a01\u79bb\u6563\u65f6\u5e8f\uff0c\u65f6\u95f4/\u5bbd\u5ea6/\u56fe\u4e0d\u9002\u7528\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "huan": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u5408\u540c\u963b\u585e\uff1a\u56db\u65b9\u6cd5\u6ca1\u6709\u6743\u5a01\u79bb\u6563\u65f6\u5e8f\uff0c\u65f6\u95f4/\u5bbd\u5ea6/\u56fe\u4e0d\u9002\u7528\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "xiangru": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u5408\u540c\u963b\u585e\uff1a\u56db\u65b9\u6cd5\u6ca1\u6709\u6743\u5a01\u79bb\u6563\u65f6\u5e8f\uff0c\u65f6\u95f4/\u5bbd\u5ea6/\u56fe\u4e0d\u9002\u7528\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "flowstar_native": {
+        "states": {
+          "sx": "missing",
+          "sy": "missing",
+          "sz": "missing",
+          "vx": "missing",
+          "vy": "missing",
+          "vz": "missing",
+          "phi": "missing",
+          "theta": "missing",
+          "psi": "missing",
+          "r": "missing",
+          "p": "missing",
+          "q": "missing"
+        },
+        "common_times": [],
+        "missing_field_reasons": [
+          "\u5408\u540c\u963b\u585e\uff1a\u56db\u65b9\u6cd5\u6ca1\u6709\u6743\u5a01\u79bb\u6563\u65f6\u5e8f\uff0c\u65f6\u95f4/\u5bbd\u5ea6/\u56fe\u4e0d\u9002\u7528\u3002 | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      }
+    }
+  },
+  {
+    "instance_id": "attitude-control-avoid",
+    "planned_steps": 60,
+    "step_s": 0.05,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full",
+          "x5": "full",
+          "x6": "full"
+        },
+        "common_times": [
+          3.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full",
+          "x5": "full",
+          "x6": "full"
+        },
+        "common_times": [
+          3.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full",
+          "x5": "full",
+          "x6": "full"
+        },
+        "common_times": [
+          3.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full",
+          "x5": "full",
+          "x6": "full"
+        },
+        "common_times": [
+          3.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "balancing-reach",
+    "planned_steps": 2000,
+    "step_s": 0.005,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_BALANCING_EXECUTION_GATE_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "partial",
+          "x2": "partial",
+          "x3": "partial",
+          "x4": "partial"
+        },
+        "common_times": [
+          0.41500000000000004
+        ],
+        "missing_field_reasons": [
+          "Bounds are fixed-repository raw4 supplemental contract only; paper five-input controller mapping remains unresolved; no T=10 output. | No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      },
+      "huan": {
+        "states": {
+          "x1": "partial",
+          "x2": "partial",
+          "x3": "partial",
+          "x4": "partial"
+        },
+        "common_times": [
+          0.41500000000000004
+        ],
+        "missing_field_reasons": [
+          "Bounds are fixed-repository raw4 supplemental contract only; paper five-input controller mapping remains unresolved; no T=10 output. | No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      },
+      "xiangru": {
+        "states": {
+          "x1": "partial",
+          "x2": "partial",
+          "x3": "partial",
+          "x4": "partial"
+        },
+        "common_times": [
+          0.41500000000000004
+        ],
+        "missing_field_reasons": [
+          "Bounds are fixed-repository raw4 supplemental contract only; paper five-input controller mapping remains unresolved; no T=10 output. | No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "partial",
+          "x2": "partial",
+          "x3": "partial",
+          "x4": "partial"
+        },
+        "common_times": [
+          0.41500000000000004
+        ],
+        "missing_field_reasons": [
+          "Bounds are fixed-repository raw4 supplemental contract only; paper five-input controller mapping remains unresolved; no T=10 output. | No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      }
+    }
+  },
+  {
+    "instance_id": "docking-constraint",
+    "planned_steps": 400,
+    "step_s": 0.1,
+    "physical_states": [
+      "sx",
+      "sy",
+      "vx",
+      "vy"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_DOCKING_BALANCING_SOURCE_CONTRACT_20261001.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "sx": "full",
+          "sy": "full",
+          "vx": "full",
+          "vy": "full"
+        },
+        "common_times": [
+          40.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "sx": "full",
+          "sy": "full",
+          "vx": "full",
+          "vy": "full"
+        },
+        "common_times": [
+          40.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "sx": "full",
+          "sy": "full",
+          "vx": "full",
+          "vy": "full"
+        },
+        "common_times": [
+          40.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "sx": "full",
+          "sy": "full",
+          "vx": "full",
+          "vy": "full"
+        },
+        "common_times": [
+          40.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "double-pendulum-less-robust",
+    "planned_steps": 100,
+    "step_s": 0.01,
+    "physical_states": [
+      "theta1",
+      "theta2",
+      "theta1_dot",
+      "theta2_dot"
+    ],
+    "expected_lanes": 225,
+    "contract_sources": [
+      "docs/ARCHCOMP26_DOUBLE_PENDULUM_LESS_CONTRACT_20261001.md",
+      "docs/ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "theta1": "full",
+          "theta2": "full",
+          "theta1_dot": "full",
+          "theta2_dot": "full"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "theta1": "full",
+          "theta2": "full",
+          "theta1_dot": "full",
+          "theta2_dot": "full"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "theta1": "full",
+          "theta2": "full",
+          "theta1_dot": "full",
+          "theta2_dot": "full"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "theta1": "full",
+          "theta2": "full",
+          "theta1_dot": "full",
+          "theta2_dot": "full"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "double-pendulum-more-robust",
+    "planned_steps": 80,
+    "step_s": 0.005,
+    "physical_states": [
+      "theta1",
+      "theta2",
+      "theta1_dot",
+      "theta2_dot"
+    ],
+    "expected_lanes": 225,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NEXT_CONTRACT_SOURCE_AUDIT_20261001.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "theta1": "partial",
+          "theta2": "partial",
+          "theta1_dot": "partial",
+          "theta2_dot": "partial"
+        },
+        "common_times": [
+          0.32
+        ],
+        "missing_field_reasons": [
+          "No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      },
+      "huan": {
+        "states": {
+          "theta1": "partial",
+          "theta2": "partial",
+          "theta1_dot": "partial",
+          "theta2_dot": "partial"
+        },
+        "common_times": [
+          0.32
+        ],
+        "missing_field_reasons": [
+          "No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      },
+      "xiangru": {
+        "states": {
+          "theta1": "partial",
+          "theta2": "partial",
+          "theta1_dot": "partial",
+          "theta2_dot": "partial"
+        },
+        "common_times": [
+          0.32
+        ],
+        "missing_field_reasons": [
+          "No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      },
+      "flowstar_native": {
+        "states": {
+          "theta1": "partial",
+          "theta2": "partial",
+          "theta1_dot": "partial",
+          "theta2_dot": "partial"
+        },
+        "common_times": [
+          0.32
+        ],
+        "missing_field_reasons": [
+          "No complete-initial-set saved endpoint at the requested full horizon."
+        ]
+      }
+    }
+  },
+  {
+    "instance_id": "nav-standard",
+    "planned_steps": 600,
+    "step_s": 0.01,
+    "physical_states": [
+      "x",
+      "y",
+      "speed",
+      "heading"
+    ],
+    "expected_lanes": 640,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "nav-robust",
+    "planned_steps": 600,
+    "step_s": 0.01,
+    "physical_states": [
+      "x",
+      "y",
+      "speed",
+      "heading"
+    ],
+    "expected_lanes": 25,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "x": "full",
+          "y": "full",
+          "speed": "full",
+          "heading": "full"
+        },
+        "common_times": [
+          6.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "quad-reach",
+    "planned_steps": 1000,
+    "step_s": 0.005,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7",
+      "x8",
+      "x9",
+      "x10",
+      "x11",
+      "x12"
+    ],
+    "expected_lanes": 1024,
+    "contract_sources": [
+      "docs/ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full",
+          "x5": "full",
+          "x6": "full",
+          "x7": "full",
+          "x8": "full",
+          "x9": "full",
+          "x10": "full",
+          "x11": "full",
+          "x12": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x1": "terminal_only",
+          "x2": "terminal_only",
+          "x3": "terminal_only",
+          "x4": "terminal_only",
+          "x5": "terminal_only",
+          "x6": "terminal_only",
+          "x7": "terminal_only",
+          "x8": "terminal_only",
+          "x9": "terminal_only",
+          "x10": "terminal_only",
+          "x11": "terminal_only",
+          "x12": "terminal_only"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": [
+          "No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | Per-step tube coverage of the common window is incomplete; common maximum is left null."
+        ]
+      },
+      "xiangru": {
+        "states": {
+          "x1": "terminal_only",
+          "x2": "terminal_only",
+          "x3": "terminal_only",
+          "x4": "terminal_only",
+          "x5": "terminal_only",
+          "x6": "terminal_only",
+          "x7": "terminal_only",
+          "x8": "terminal_only",
+          "x9": "terminal_only",
+          "x10": "terminal_only",
+          "x11": "terminal_only",
+          "x12": "terminal_only"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": [
+          "No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | Per-step tube coverage of the common window is incomplete; common maximum is left null."
+        ]
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full",
+          "x5": "full",
+          "x6": "full",
+          "x7": "full",
+          "x8": "full",
+          "x9": "full",
+          "x10": "full",
+          "x11": "full",
+          "x12": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "single-pendulum-reach",
+    "planned_steps": 100,
+    "step_s": 0.01,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NEXT_CONTRACT_SOURCE_AUDIT_20261001.md",
+      "docs/ARCHCOMP26_SINGLE_PENDULUM_THIRD_STATE_SOURCE_FOLLOWUP_20261003.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "missing"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": [
+          "Official third physical state has no authoritative equation/model mapping or saved ranges; two-state submission cannot supply it. | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "huan": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "missing"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": [
+          "Official third physical state has no authoritative equation/model mapping or saved ranges; two-state submission cannot supply it. | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "xiangru": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "missing"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": [
+          "Official third physical state has no authoritative equation/model mapping or saved ranges; two-state submission cannot supply it. | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "missing"
+        },
+        "common_times": [
+          1.0
+        ],
+        "missing_field_reasons": [
+          "Official third physical state has no authoritative equation/model mapping or saved ranges; two-state submission cannot supply it. | No complete-initial-set saved endpoint at the requested full horizon. | No saved per-step tube for this physical state/object; endpoint or all-time union cannot replace it. | No common four-method complete-initial-set saved endpoint time for this state."
+        ]
+      }
+    }
+  },
+  {
+    "instance_id": "tora-remain",
+    "planned_steps": 200,
+    "step_s": 0.1,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 12,
+    "contract_sources": [
+      "docs/ARCHCOMP26_TORA_REMAIN_CONTRACT_20261001.md",
+      "docs/ARCHCOMP26_TORA_REMAIN_NUMERIC_STOP_AUDIT_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          18.900000000000002
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x1": "partial",
+          "x2": "partial",
+          "x3": "partial",
+          "x4": "partial"
+        },
+        "common_times": [
+          18.900000000000002
+        ],
+        "missing_field_reasons": [
+          "No complete-initial-set saved endpoint at the requested full horizon. | Own last saved endpoint pools surviving accepted lanes only; it does not cover the full initial set."
+        ]
+      },
+      "xiangru": {
+        "states": {
+          "x1": "partial",
+          "x2": "partial",
+          "x3": "partial",
+          "x4": "partial"
+        },
+        "common_times": [
+          18.900000000000002
+        ],
+        "missing_field_reasons": [
+          "No complete-initial-set saved endpoint at the requested full horizon. | Own last saved endpoint pools surviving accepted lanes only; it does not cover the full initial set."
+        ]
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          18.900000000000002
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "tora-reach-sigmoid",
+    "planned_steps": 500,
+    "step_s": 0.01,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "tora-reach-tanh",
+    "planned_steps": 500,
+    "step_s": 0.01,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          5.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  },
+  {
+    "instance_id": "unicycle-reach",
+    "planned_steps": 500,
+    "step_s": 0.02,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_UNICYCLE_EXECUTION_GATE_20261002.md"
+    ],
+    "methods": {
+      "pytorch_gpu": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          10.0
+        ],
+        "missing_field_reasons": []
+      },
+      "huan": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          10.0
+        ],
+        "missing_field_reasons": []
+      },
+      "xiangru": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          10.0
+        ],
+        "missing_field_reasons": []
+      },
+      "flowstar_native": {
+        "states": {
+          "x1": "full",
+          "x2": "full",
+          "x3": "full",
+          "x4": "full"
+        },
+        "common_times": [
+          10.0
+        ],
+        "missing_field_reasons": []
+      }
+    }
+  }
+]

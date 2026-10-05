@@ -1,0 +1,828 @@
+{
+  "status": "PASS",
+  "sample_count": 30,
+  "samples": [
+    {
+      "instance_id": "acc-safe-distance",
+      "method": "pytorch_gpu",
+      "state": "x_lead",
+      "state_index": 0,
+      "physical_state_order": [
+        "x_lead",
+        "v_lead",
+        "a_lead",
+        "x_ego",
+        "v_ego",
+        "a_ego"
+      ],
+      "step": 1,
+      "source": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/steady05_ours_p3/data/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          89.98931255496008,
+          113.22003466987522
+        ],
+        "endpoint": [
+          93.19931255496007,
+          113.21935082970856
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "acc-safe-distance",
+      "method": "huan",
+      "state": "a_ego",
+      "state_index": 5,
+      "physical_state_order": [
+        "x_lead",
+        "v_lead",
+        "a_lead",
+        "x_ego",
+        "v_ego",
+        "a_ego"
+      ],
+      "step": 50,
+      "source": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/steady05_huan/data/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          -1.1257722707274307,
+          0.06767800771146724
+        ],
+        "endpoint": [
+          -1.1246434575120607,
+          0.056462725460710336
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "attitude-control-avoid",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6"
+      ],
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/first00_ours_p3/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          -0.4505846663326725,
+          -0.40638390054538565
+        ],
+        "endpoint": [
+          -0.41755296521639956,
+          -0.40638390054538565
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "attitude-control-avoid",
+      "method": "huan",
+      "state": "x6",
+      "state_index": 5,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6"
+      ],
+      "step": 60,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/first00_huan/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          -0.061529387642442264,
+          -0.04241263088012311
+        ],
+        "endpoint": [
+          -0.060913810691393414,
+          -0.04243444708146213
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "balancing-reach",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_p3_full500_001/payload/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          -0.10029665484234697,
+          0.10029694725602872
+        ],
+        "endpoint": [
+          -0.10029636242866523,
+          0.10029694725602872
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "balancing-reach",
+      "method": "huan",
+      "state": "x4",
+      "state_index": 3,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 98,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_huan/balancing_fixed_raw4_huan_full500_001/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          -13.437173386808116,
+          13.269823684759873
+        ],
+        "endpoint": [
+          -13.437173386808139,
+          13.2674913394203
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "docking-constraint",
+      "method": "pytorch_gpu",
+      "state": "sx",
+      "state_index": 0,
+      "physical_state_order": [
+        "sx",
+        "sy",
+        "vx",
+        "vy"
+      ],
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/detail/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          69.97112465719759,
+          106.0286598796906
+        ],
+        "endpoint": [
+          69.97112465719759,
+          106.02844441657767
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "docking-constraint",
+      "method": "huan",
+      "state": "vy",
+      "state_index": 3,
+      "physical_state_order": [
+        "sx",
+        "sy",
+        "vx",
+        "vy"
+      ],
+      "step": 400,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/docking_huan_full40_001/detail/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          -6.336195144904044,
+          5.538548956725411
+        ],
+        "endpoint": [
+          -6.3361951041994695,
+          5.538329874480357
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "double-pendulum-less-robust",
+      "method": "pytorch_gpu",
+      "state": "theta1",
+      "state_index": 0,
+      "physical_state_order": [
+        "theta1",
+        "theta2",
+        "theta1_dot",
+        "theta2_dot"
+      ],
+      "step": 1,
+      "source": "docs/evidence/results/archcomp26_20261001/dp_p3_affine_split4_v1/full225_smoke_001/attempt/data/observations.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          0.9994372207481337,
+          1.313209761121068
+        ],
+        "endpoint": [
+          1.0100750790860935,
+          1.313209761121068
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "double-pendulum-less-robust",
+      "method": "huan",
+      "state": "theta2_dot",
+      "state_index": 3,
+      "physical_state_order": [
+        "theta1",
+        "theta2",
+        "theta1_dot",
+        "theta2_dot"
+      ],
+      "step": 100,
+      "source": "docs/evidence/results/archcomp26_20261001/author_dp_less_v1/huan_full20_001/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          -1.667565096901283,
+          -0.5540900646679822
+        ],
+        "endpoint": [
+          -1.6639905719267576,
+          -0.5542026971342128
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "double-pendulum-more-robust",
+      "method": "pytorch_gpu",
+      "state": "theta1",
+      "state_index": 0,
+      "physical_state_order": [
+        "theta1",
+        "theta2",
+        "theta1_dot",
+        "theta2_dot"
+      ],
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/dp_more_p3_affine_split4_full20_20261003_001/attempt/data/observations.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          0.9996972733404507,
+          1.3065751034815758
+        ],
+        "endpoint": [
+          1.0049743853195958,
+          1.3065751034815758
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "double-pendulum-more-robust",
+      "method": "huan",
+      "state": "theta2_dot",
+      "state_index": 3,
+      "physical_state_order": [
+        "theta1",
+        "theta2",
+        "theta1_dot",
+        "theta2_dot"
+      ],
+      "step": 72,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/author_dp_more_v1/huan_full20_001/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          -1.4832433828455516,
+          -1.0579487292443728
+        ],
+        "endpoint": [
+          -1.4832316594876307,
+          -1.0641855767458992
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "nav-standard",
+      "method": "pytorch_gpu",
+      "state": "x",
+      "state_index": 0,
+      "physical_state_order": [
+        "x",
+        "y",
+        "speed",
+        "heading"
+      ],
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/nav_fourstate_saved_reduction_20261004.json",
+      "source_level": "saved independent reduction; raw binary remains remote",
+      "bounds": {
+        "tube": [
+          2.899949999999077,
+          3.1000000012454936
+        ],
+        "endpoint": [
+          2.899949999999077,
+          3.0999500012454937
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "nav-standard",
+      "method": "huan",
+      "state": "heading",
+      "state_index": 3,
+      "physical_state_order": [
+        "x",
+        "y",
+        "speed",
+        "heading"
+      ],
+      "step": 600,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/nav_fourstate_saved_reduction_20261004.json",
+      "source_level": "saved independent reduction; raw binary remains remote",
+      "bounds": {
+        "tube": [
+          -0.10309913108072502,
+          0.6097540960729882
+        ],
+        "endpoint": [
+          -0.09751396750605242,
+          0.6097540960729882
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "nav-robust",
+      "method": "pytorch_gpu",
+      "state": "x",
+      "state_index": 0,
+      "physical_state_order": [
+        "x",
+        "y",
+        "speed",
+        "heading"
+      ],
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/nav_fourstate_saved_reduction_20261004.json",
+      "source_level": "saved independent reduction; raw binary remains remote",
+      "bounds": {
+        "tube": [
+          2.899950469961029,
+          3.1000000012957347
+        ],
+        "endpoint": [
+          2.899950469961029,
+          3.0999504713394264
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "nav-robust",
+      "method": "huan",
+      "state": "heading",
+      "state_index": 3,
+      "physical_state_order": [
+        "x",
+        "y",
+        "speed",
+        "heading"
+      ],
+      "step": 600,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/nav_fourstate_saved_reduction_20261004.json",
+      "source_level": "saved independent reduction; raw binary remains remote",
+      "bounds": {
+        "tube": [
+          0.933405727478612,
+          1.228753911546822
+        ],
+        "endpoint": [
+          0.933405727478612,
+          1.2258197941019988
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6",
+        "x7",
+        "x8",
+        "x9",
+        "x10",
+        "x11",
+        "x12"
+      ],
+      "step": 1,
+      "source": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/observations.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          -0.40200000363748384,
+          0.4020000036208374
+        ],
+        "endpoint": [
+          -0.40200000363748384,
+          0.4020000036208374
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "huan",
+      "state": "x12",
+      "state_index": 11,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "x5",
+        "x6",
+        "x7",
+        "x8",
+        "x9",
+        "x10",
+        "x11",
+        "x12"
+      ],
+      "step": 1000,
+      "source": "docs/evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/parity/metrics.json",
+      "source_level": "saved driver final_hull",
+      "bounds": {
+        "endpoint": [
+          -0.0,
+          0.0
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "single-pendulum-reach",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3"
+      ],
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/single_pendulum_two_state_p3_full20_001/data/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          0.9987769712989326,
+          1.1770490580288147
+        ],
+        "endpoint": [
+          0.9997769712989324,
+          1.1768754134130457
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "single-pendulum-reach",
+      "method": "huan",
+      "state": "x2",
+      "state_index": 1,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3"
+      ],
+      "step": 100,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/single_pendulum_two_state_huan_full20_001/data/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          -0.5628985166643005,
+          -0.4158636511727304
+        ],
+        "endpoint": [
+          -0.5603385246415772,
+          -0.4159029786955551
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "tora-remain",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 1,
+      "source": "docs/evidence/results/archcomp26_20261001/p3_tora_remain_v1/full20_001/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          0.5266758108970476,
+          0.7018825055612457
+        ],
+        "endpoint": [
+          0.5267983107024709,
+          0.6365957983713513
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "tora-remain",
+      "method": "huan",
+      "state": "x4",
+      "state_index": 3,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 189,
+      "source": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/huan_full20_001/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          -1.7296657846448333,
+          2.4576389149728652
+        ],
+        "endpoint": [
+          -1.7296657846448333,
+          2.4192691668480992
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 1,
+      "source": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_ours_p3/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          -0.7745005672036371,
+          -0.7498588580182896
+        ],
+        "endpoint": [
+          -0.7744599919876797,
+          -0.7542588580182895
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x4",
+      "state_index": 3,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 500,
+      "source": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          16.43455185768016,
+          16.491872301402843
+        ],
+        "endpoint": [
+          16.465224024373573,
+          16.491872301402843
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 1,
+      "source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          -0.7745005674027294,
+          -0.7498588580215176
+        ],
+        "endpoint": [
+          -0.774459992186772,
+          -0.7542588580215176
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x4",
+      "state_index": 3,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 500,
+      "source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+      "source_level": "raw saved binary, pooled by named step",
+      "bounds": {
+        "tube": [
+          0.3600352465801877,
+          0.38436959664317766
+        ],
+        "endpoint": [
+          0.3600352465801877,
+          0.3816263574703213
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "unicycle-reach",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "state_index": 0,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 1,
+      "source": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/payload/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          9.483904221367291,
+          9.550198428710866
+        ],
+        "endpoint": [
+          9.483904221367291,
+          9.534300789751363
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "unicycle-reach",
+      "method": "huan",
+      "state": "x4",
+      "state_index": 3,
+      "physical_state_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "step": 500,
+      "source": "docs/evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/huan_full50_001/payload/ranges.jsonl",
+      "source_level": "raw saved JSONL",
+      "bounds": {
+        "tube": [
+          -0.324858213401882,
+          -0.20886213310873564
+        ],
+        "endpoint": [
+          -0.3227584415426446,
+          -0.20886213310873564
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "flowstar_native",
+      "state": "x1",
+      "step": 1,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SCAN.json",
+      "source_level": "saved SCAN per_step, not a rerun",
+      "bounds": {
+        "tube": [
+          -0.4025080057077963,
+          0.40250800634371126
+        ],
+        "endpoint": [
+          -0.4025080057077963,
+          0.40250800634371126
+        ]
+      },
+      "exact_numeric_match": true
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "flowstar_native",
+      "state": "x12",
+      "step": 1000,
+      "source": "/Users/shengenli/Documents/ChatGPT/verification/output/flowstar_latest_20260930/repo/docs/evidence/results/archcomp26_20261001/native_quad_paper_full50_001/SCAN.json",
+      "source_level": "saved SCAN per_step, not a rerun",
+      "bounds": {
+        "tube": [
+          -0.0,
+          0.0
+        ],
+        "endpoint": [
+          -0.0,
+          0.0
+        ]
+      },
+      "exact_numeric_match": true
+    }
+  ],
+  "unavailable_main_contract_samples": [
+    {
+      "instance_id": "airplane-continuous",
+      "method": "pytorch_gpu",
+      "reason": "No accepted main-contract source row exists; no diagnostic or supplementary row substituted."
+    },
+    {
+      "instance_id": "airplane-continuous",
+      "method": "huan",
+      "reason": "No accepted main-contract source row exists; no diagnostic or supplementary row substituted."
+    },
+    {
+      "instance_id": "airplane-discrete",
+      "method": "pytorch_gpu",
+      "reason": "No accepted main-contract source row exists; no diagnostic or supplementary row substituted."
+    },
+    {
+      "instance_id": "airplane-discrete",
+      "method": "huan",
+      "reason": "No accepted main-contract source row exists; no diagnostic or supplementary row substituted."
+    }
+  ],
+  "summary_maximum_correspondence_checks": 272,
+  "long_width_arithmetic_rows": 168888,
+  "state_order_corrections": [
+    "NAV metadata changed to executable x,y,speed,heading; state-labelled numbers were unchanged.",
+    "Airplane uses authoritative sx,sy,sz,vx,vy,vz labels; raw x,y,z,u,v,w aliases occupy the same positions. No accepted main-contract rows exist."
+  ],
+  "limitations": [
+    "Correspondence/format QA only; no historical property checker or solver was executed.",
+    "NAV raw binaries remain remote; checks reach the saved independent reduction JSON.",
+    "Native QUAD checks reach the original saved SCAN JSON, not a newly executed scan.",
+    "QUAD Huan/Xiangru terminal objects provide no per-step tubes.",
+    "Airplane auxiliary split diagnostics and rejected proposals are not main-contract accepted flowpipes."
+  ],
+  "new_numerical_runs": 0,
+  "old_checkers_executed": 0,
+  "digest_operations": 0
+}

@@ -93,36 +93,11 @@ The existing Python PNG/PDF and JSON/CSV plotting interfaces remain the output
 contract. New results must preserve the data needed by those interfaces.
 The native octagon production gate remains closed.
 
-## 全部实例的保存基线
+## 当前统一比较报告
 
-以下来自[现有总报告](../../docs/ARCHCOMP26_FINAL_REPORT_DRAFT.md)，不是本次新计时。
-时间顺序为 P3 / Huan / Xiangru / native，单位秒；“中位”是原 campaign
-后五次的描述性中位数，其他为单次。带 † 的数值是历史 `driver_wall_s`，
-不能与新外层进程时间混排。“较窄”仅指该行列明的保存投影。
+16 个 benchmark 的时间、全部状态宽度和不能完成的原因已统一重写至[当前中文报告](../../docs/ARCHCOMP26_FINAL_REPORT_DRAFT.md)，并提供[Word、PDF 与完整 CSV](../../docs/evidence/results/archcomp26_report_20261005/README.md)。这份研究说明保留优化机制和所有候选收据，宽度/时间主表以新报告为入口。
 
-| 实例 | 原保存时间 P3 / H / X / N | 原保存紧度和范围 |
-|---|---|---|
-| ACC | 8.741 / 8.237 / 7.988 / 7.736，中位 | P3 六个物理态终点均较窄；保存全时安全标签通过 |
-| Airplane continuous | 无四方完整时间 | 全初盒主合同无完整流管；子盒首步不能代表 T=2 |
-| Airplane discrete | 无 | 权威离散执行合同仍缺 |
-| Attitude | 12.952 / 6.835 / 6.885 / 6.181，中位 | P3 六态终点均较窄；保存管道与修正危险集分离 |
-| Balancing raw4 | 无四方完整时间 | 共同前缀 t=0.415 的 x1 宽度 P3 0.676173，H/X 0.675548；未进入性质窗 |
-| Docking | 17.412 / 12.699 / 12.668 / 9.139 | P3 位置比 H/X 宽，速度略窄；四方性质 UNKNOWN |
-| DP less | 74.274 / 9.539 / 8.388 / 1107.127 | P3 终点角度略宽、角速度较窄 |
-| DP more | 无四方完整时间 | 共同数值前缀 t=0.32，仅 P3 的第二角速度较窄，其余三态较宽 |
-| NAV standard | 29.000 / 14.719† / 14.506† / 1478.866 | P3 终点 x/y 比 native 窄、比 H/X 宽 |
-| NAV robust | 18.704 / 11.656† / 12.583† / 68.094，native 为历史 | 当前 P3 终点 x/y 略宽于其他三方 |
-| QUAD 论文合同 | 1357.555 / 94.583 / 108.018 / 47058.887 | 高度终点宽度 0.067226 / 0.047742 / 0.047742 / 0.050977；P3 更宽 |
-| Single Pendulum 两态 | 6.184 / 5.381 / 5.481 / 4.729，中位 | P3 两态终点略宽；不代表缺第三态来源的官方实例 |
-| TORA remain，h=0.1 | 10.411 / 无 / 无 / 8.339 | P3/native 全程，H/X 有拒绝盒；前缀宽度不能当终态优势 |
-| TORA sigmoid，u=11f | 13.905 / 13.653 / 13.607 / 8.943，中位 | P3 四态终点略宽；保存目标坐标入目标 |
-| TORA tanh，u=11f | 13.457 / 10.536† / 10.582† / 8.856，native 为历史 | P3 只有 x2 终点略窄于 H/X，另三态略宽 |
-| Unicycle 论文扰动 | 17.820 / 9.594 / 9.895 / 10.397 | P3 四态终点均较窄；P3/native 终点入目标，H/X 未通过终点包含判据 |
-
-因此，ACC、Attitude、Unicycle 有较明确的**保存终点紧度优势**；DP less、
-Docking、TORA tanh 只有部分坐标优势。QUAD 高度、两态 SP、TORA sigmoid
-和 NAV robust 没有对应终点优势。以上均不自动成为全时全状态优势，
-也不升级为独立端到端浮点 NNCS 证明。
+旧 NAV P3 的 28.999885 / 18.703898 是 payload wall，不是完整进程时间；历史 NAV / TORA tanh 的 driver call 也不与内部 elapsed 混列。新报告把这些边界拆开。ACC、Attitude、Unicycle 的优势仅限具体保存终点；QUAD、SP、sigmoid 与 NAV robust 不能据此宣称整体更紧。TORA remain 的全初集数值共同前缀是 18.9 秒，保存安全共同前缀是 18.4 秒。
 
 ## Verified results so far
 
