@@ -1,0 +1,37 @@
+{
+  "started_utc": "2026-10-05T14:05:48.823499+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_two_slope256_20261005_001/run_quad_candidate.py",
+    "--mode",
+    "batch2",
+    "--source-runner",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_two_slope256_20261005_001/archcomp26_quad_paper_p3_nohash.py",
+    "--crown-relax",
+    "two-slope",
+    "--weighted-chunk",
+    "256",
+    "--compare",
+    "width",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_two_slope256_20261005_001/run_001/candidate"
+  ],
+  "scope": "new implementation candidate; old experiment is read-only",
+  "mode": "batch2",
+  "gate": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+  "source_runner": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_two_slope256_20261005_001/archcomp26_quad_paper_p3_nohash.py",
+  "archived_adapters": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash",
+  "crown_relax": "two-slope",
+  "weighted_chunk": 256,
+  "comparison": "width",
+  "gpu": "3",
+  "cpu_affinity": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "no_jit": true,
+  "no_digest_operations": true
+}

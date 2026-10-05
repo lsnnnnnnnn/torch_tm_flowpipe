@@ -1,0 +1,37 @@
+{
+  "started_utc": "2026-10-05T14:32:12.891384+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_p3_fused1_20261005_001/run_unicycle_candidate.py",
+    "--weighted-mode",
+    "fused",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_p3_fused1_20261005_001/run_001/candidate"
+  ],
+  "source_snapshot": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full_source",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/p3_full50_001/payload",
+  "gate": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+  "gpu": "3",
+  "cpu_affinity": [
+    32,
+    33,
+    34,
+    35
+  ],
+  "scope": "new full paper Unicycle implementation candidate; archived source/result read-only",
+  "changes": [
+    "private output allocation",
+    "preloaded Horner remainder binding",
+    "single-row two-round graph, success-only commit and original fallback"
+  ],
+  "weighted_mode": "fused",
+  "fused_reference_check": "first successful input: direct output bytes and full statistics; included in timers",
+  "contract": "one original eight-state box; w'=0 and w only in speed; 50 periods / 500 steps to T=10",
+  "frozen_runner_note": "inherited payload/P3_METHOD.json has stale first-period scope text; full mode, START/RESULT and all 500 saved rows determine this run's scope",
+  "timing_policy": "wrapper wall includes imports/preloads; baseline payload wall includes its preflight/prepare; driver elapsed excludes setup/preload/engine creation, includes lazy graph capture",
+  "timing_qualification": "Torch is imported before the payload timer to install compilation guards; compare driver elapsed separately and do not treat old/new payload wall alone as matched timing",
+  "runtime_guards": "all digests and compilation prohibited; script decorators remain eager Python",
+  "no_jit": true,
+  "no_digest_operations": true
+}

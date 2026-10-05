@@ -1,0 +1,45 @@
+{
+  "status": "PASSED_NEW_PRIVATE_OUTPUT_GPU_GATE",
+  "passed_pairs": 192,
+  "end_to_end_strict_certificate": false,
+  "exports": [
+    "seg_mul_iv",
+    "seg_mul_pt",
+    "seg_dot_pt_iv",
+    "iv_mul",
+    "iv_addsub",
+    "iv_neg",
+    "iv_mul_point",
+    "iv_sum",
+    "iv_dot_point_iv"
+  ],
+  "binding_receipt": {
+    "schema": "p3-private-output-binding-v1",
+    "torch_version": "2.5.1+cu121",
+    "original_extension": "flowstar_seg_kernels",
+    "selected_extension": "flowstar_seg_private_output_v1",
+    "exports_checked": [
+      "seg_mul_iv",
+      "seg_mul_pt",
+      "seg_dot_pt_iv",
+      "iv_mul",
+      "iv_addsub",
+      "iv_neg",
+      "iv_mul_point",
+      "iv_sum",
+      "iv_dot_point_iv"
+    ],
+    "changed_field": "flowstar_gpu.cuda_kernels._ext",
+    "scope": "preloaded output allocation only; arithmetic and settings unchanged",
+    "hash_or_jit_performed": false,
+    "qualification": "configuration checks only; numerical GPU gate is separate"
+  },
+  "deterministic_algorithms": true,
+  "deterministic_fill": true,
+  "global_settings_unchanged": true,
+  "empty_scope": "empty input segments and inner reductions with nonzero output; zero-output kernel grids excluded",
+  "scope": "finite byte-equivalence checks only; no independent arithmetic or NNCS certificate",
+  "exit_code": 0,
+  "elapsed_s": 14.432088554982329,
+  "finished_utc": "2026-10-05T13:25:20.750111+00:00"
+}

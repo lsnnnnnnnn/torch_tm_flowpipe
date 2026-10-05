@@ -1,0 +1,18 @@
+{
+  "policy": "single_lane_two_round_weighted_graph_success_only",
+  "source_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_p3_fused1_20261005_001/weighted_fused_single.py",
+  "weighted_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/weighted_validation.py",
+  "sparse_exec_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py",
+  "B": 1,
+  "rounds": 2,
+  "check_first": 1,
+  "failed_validation_unchanged": true,
+  "recentered_validation_unchanged": true,
+  "trace_uses_original": true,
+  "fallback": "original refine_accepted, including default 512-row map padding",
+  "graph_map_calls_definition": "two maps per successful replay plus its eager warmup maps; capture records are not executions; failed captures and reference/fallback maps excluded",
+  "timing_qualification": "includes graph warmup/capture and optional one-time original refinement byte/statistics comparison",
+  "qualification": "new implementation candidate; CPU control semantics only until a separate GPU qualification",
+  "no_jit": true,
+  "no_digest_operations": true
+}

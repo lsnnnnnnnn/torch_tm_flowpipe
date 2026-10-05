@@ -1,0 +1,36 @@
+{
+  "recorded_utc": "2026-10-05T13:49:03.333340+00:00",
+  "scope": "Local transport observation only; not a remote experiment RESULT",
+  "remote_run": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_20261005_001/run_001",
+  "remote_supervisor_pid": 701727,
+  "local_ssh_session_id": 56056,
+  "remote_numerical_status": "UNOBSERVED",
+  "supervisor_timeout_seconds": 240,
+  "known_started_once": true,
+  "old_experiments_restarted": false,
+  "last_observations": [
+    {
+      "route": "existing multiplex socket",
+      "action": "cat result files only",
+      "outcome": "20-second read timeout"
+    },
+    {
+      "route": "existing multiplex socket",
+      "action": "printf only",
+      "outcome": "12-second read timeout"
+    },
+    {
+      "route": "new direct same-host SSH with BatchMode",
+      "action": "cat result files only",
+      "outcome": "exit255 Permission denied (publickey,password)"
+    }
+  ],
+  "subsequent_runs_started": false,
+  "pending_queue": [
+    "nav_robust_p3_fast32_20261005_001/run_001",
+    "unicycle_p3_fast1_20261005_001/run_001",
+    "quad_paper_p3_two_slope256_20261005_001/run_001"
+  ],
+  "next_action": "After an authenticated connection is restored, read this original run RESULT/progress first. Do not restart this run or infer numerical failure from transport errors.",
+  "digest_operations": 0
+}

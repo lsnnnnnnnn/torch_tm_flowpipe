@@ -1,0 +1,35 @@
+{
+  "started_utc": "2026-10-05T13:58:00.947843+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_robust_p3_fast32_20261005_001/run_nav_candidate.py",
+    "--mode",
+    "fast",
+    "--weighted-chunk",
+    "32",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_robust_p3_fast32_20261005_001/run_001/candidate"
+  ],
+  "mode": "fast",
+  "source_snapshot": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_working_p3_full30_source_001",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_working_p3_full30_001",
+  "gate": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+  "gpu": "1",
+  "cpu_affinity": [
+    6,
+    7,
+    8,
+    9
+  ],
+  "scope": "new NAV robust implementation candidate; archived reference is read-only",
+  "changes": [
+    "private output allocation",
+    "preloaded Horner remainder binding",
+    "accepted two-round weighted graph scratch: fixed 32 rows for B<=32"
+  ],
+  "weighted_chunk": 32,
+  "runtime_guards": "all digests and compilation prohibited; import-time script decorators remain eager Python",
+  "no_jit": true,
+  "no_digest_operations": true
+}

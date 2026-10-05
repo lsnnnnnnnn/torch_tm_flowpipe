@@ -1,0 +1,101 @@
+{
+  "profile": "later05_ours_p3",
+  "started_utc": "2026-10-05T14:12:12.097492+00:00",
+  "method": "working-P3 plant engine, strict endpoint/injection + shared author CROWN driver",
+  "gpu_physical": 2,
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "contract": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001/run_001/candidate/data/config.yaml",
+    "controller": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001/run_001/candidate/data/controller_plant_u.onnx",
+    "mat": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001/run_001/candidate/data/nn_tora_sigmoid.mat",
+    "state_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1"
+    ],
+    "initial_box": [
+      [
+        -0.77,
+        -0.75
+      ],
+      [
+        -0.45,
+        -0.43
+      ],
+      [
+        0.51,
+        0.54
+      ],
+      [
+        -0.3,
+        -0.28
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "control_period_s": 0.5,
+    "control_periods": 10,
+    "ode_substeps": 500,
+    "controller_ops": [
+      "Gemm",
+      "Sigmoid",
+      "Gemm",
+      "Sigmoid",
+      "Gemm",
+      "Sigmoid",
+      "Gemm",
+      "Sigmoid",
+      "Mul",
+      "Add"
+    ],
+    "internal_control": "u = 11 * f(x) + 0",
+    "external_control": "output_scale = 1; output_offset = 0; dx4 = u1",
+    "center_plant_u": 5.078156863296165,
+    "property_evaluated": false,
+    "gpu_initialized": false
+  },
+  "scope": "one full initial box; ten 0.5 s control periods; no target verdict",
+  "qualification": "numerical flowpipe only; no end-to-end floating NNCS certificate",
+  "engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center",
+  "cuda_memory_cap_bytes": 11811160064,
+  "working_order": 3,
+  "validation_order": 4,
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001/run_001/candidate/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--strict",
+    "--order",
+    "3",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001/run_001/candidate/data/metrics.json"
+  ]
+}

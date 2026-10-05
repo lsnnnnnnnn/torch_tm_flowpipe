@@ -1,0 +1,59 @@
+{
+  "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/data/config.yaml",
+  "controller": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/data/controller_plant_u.onnx",
+  "mat": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/data/nn_tora_sigmoid.mat",
+  "state_order": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "t",
+    "u1"
+  ],
+  "initial_box": [
+    [
+      -0.77,
+      -0.75
+    ],
+    [
+      -0.45,
+      -0.43
+    ],
+    [
+      0.51,
+      0.54
+    ],
+    [
+      -0.3,
+      -0.28
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ]
+  ],
+  "control_period_s": 0.5,
+  "control_periods": 10,
+  "ode_substeps": 500,
+  "controller_ops": [
+    "Gemm",
+    "Sigmoid",
+    "Gemm",
+    "Sigmoid",
+    "Gemm",
+    "Sigmoid",
+    "Gemm",
+    "Sigmoid",
+    "Mul",
+    "Add"
+  ],
+  "internal_control": "u = 11 * f(x) + 0",
+  "external_control": "output_scale = 1; output_offset = 0; dx4 = u1",
+  "center_plant_u": 5.078156863296165,
+  "property_evaluated": false,
+  "gpu_initialized": false
+}

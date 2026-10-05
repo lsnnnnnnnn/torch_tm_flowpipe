@@ -1,0 +1,348 @@
+{
+  "kind": "read-only projection of historical timing fields",
+  "source": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp_review_20260923/evidence_v2/timing_v1/CAMPAIGN.json",
+  "historical_scope": "Fresh process wall time from watchdog, imports/cached extensions/NN startup/complete solver/verdict/summary included; no trajectory observation or RPC logging; five repeats plus excluded preflight. CPU14-17, GPU3, torch1thread. Native fixed full-h steps; worker pool4 for batch tasks, original single-lane behavior otherwise. Native observed excluded preflight must match prior full width stream exactly.",
+  "report_branch": "codex/progress-report-20260923",
+  "server_engine": "engine_linear_leaf_v2",
+  "server_engine_branch": "codex/linear-leaf-validation-v2",
+  "samples": [
+    {
+      "case": "acc",
+      "method": "huan",
+      "process_wall_s": [
+        8.01893194206059,
+        7.875580474268645,
+        8.034780357033014,
+        8.063844562973827,
+        8.078415667172521
+      ],
+      "median_s": 8.034780357033014
+    },
+    {
+      "case": "acc",
+      "method": "native",
+      "process_wall_s": [
+        8.224242654629052,
+        8.341849952936172,
+        8.240750600583851,
+        8.259421317372471,
+        8.313525093253702
+      ],
+      "median_s": 8.259421317372471
+    },
+    {
+      "case": "acc",
+      "method": "ours",
+      "process_wall_s": [
+        7.825749789830297,
+        7.775514092762023,
+        7.792835651896894,
+        7.868384837638587,
+        7.740354544017464
+      ],
+      "median_s": 7.792835651896894
+    },
+    {
+      "case": "acc",
+      "method": "xiangru",
+      "process_wall_s": [
+        8.080712736118585,
+        8.045751387719065,
+        7.959670700132847,
+        7.862016172148287,
+        7.889424697961658
+      ],
+      "median_s": 7.959670700132847
+    },
+    {
+      "case": "attitude_control",
+      "method": "huan",
+      "process_wall_s": [
+        6.962338880170137,
+        7.015692389104515,
+        6.960294217336923,
+        7.0587670360691845,
+        6.989571475889534
+      ],
+      "median_s": 6.989571475889534
+    },
+    {
+      "case": "attitude_control",
+      "method": "native",
+      "process_wall_s": [
+        6.320637563243508,
+        6.354589326772839,
+        6.111067395657301,
+        6.284625879023224,
+        6.3153039161115885
+      ],
+      "median_s": 6.3153039161115885
+    },
+    {
+      "case": "attitude_control",
+      "method": "ours",
+      "process_wall_s": [
+        6.97854589112103,
+        7.186482816003263,
+        7.12832671077922,
+        7.120502879843116,
+        7.083104057237506
+      ],
+      "median_s": 7.120502879843116
+    },
+    {
+      "case": "attitude_control",
+      "method": "xiangru",
+      "process_wall_s": [
+        6.921361139975488,
+        6.839284816291183,
+        7.133709075860679,
+        7.028113450389355,
+        7.375633214134723
+      ],
+      "median_s": 7.028113450389355
+    },
+    {
+      "case": "nav_robust",
+      "method": "huan",
+      "process_wall_s": [
+        14.835879087913781,
+        14.646262255031615,
+        15.074266738723963,
+        14.289331184700131,
+        14.070550709962845
+      ],
+      "median_s": 14.646262255031615
+    },
+    {
+      "case": "nav_robust",
+      "method": "native",
+      "process_wall_s": [
+        68.35048078093678,
+        78.31844660500064,
+        66.91627377504483,
+        68.16352194081992,
+        67.24512755218893
+      ],
+      "median_s": 68.16352194081992
+    },
+    {
+      "case": "nav_robust",
+      "method": "ours",
+      "process_wall_s": [
+        9.814284001011401,
+        9.966918285004795,
+        9.729651770088822,
+        9.348544280976057,
+        9.357650155667216
+      ],
+      "median_s": 9.729651770088822
+    },
+    {
+      "case": "nav_robust",
+      "method": "xiangru",
+      "process_wall_s": [
+        14.813849942293018,
+        14.878120739012957,
+        14.915904195979238,
+        14.201490740757436,
+        14.044635701924562
+      ],
+      "median_s": 14.813849942293018
+    },
+    {
+      "case": "single_pendulum",
+      "method": "huan",
+      "process_wall_s": [
+        5.556999051012099,
+        5.527276409324259,
+        5.624498785007745,
+        5.596915560774505,
+        5.605392410885543
+      ],
+      "median_s": 5.596915560774505
+    },
+    {
+      "case": "single_pendulum",
+      "method": "native",
+      "process_wall_s": [
+        4.916538425255567,
+        4.914646857883781,
+        4.873598255217075,
+        4.773311116732657,
+        4.907801297027618
+      ],
+      "median_s": 4.907801297027618
+    },
+    {
+      "case": "single_pendulum",
+      "method": "ours",
+      "process_wall_s": [
+        5.068480156827718,
+        5.173316693864763,
+        5.2352127018384635,
+        5.374685887247324,
+        5.176120488904417
+      ],
+      "median_s": 5.176120488904417
+    },
+    {
+      "case": "single_pendulum",
+      "method": "xiangru",
+      "process_wall_s": [
+        5.819269321858883,
+        5.618161164224148,
+        5.50368559313938,
+        5.642699200194329,
+        5.553788706194609
+      ],
+      "median_s": 5.618161164224148
+    },
+    {
+      "case": "tora_relu_tanh",
+      "method": "huan",
+      "process_wall_s": [
+        12.42106647696346,
+        12.461287382990122,
+        12.502957601100206,
+        12.421311793848872,
+        12.137124569155276
+      ],
+      "median_s": 12.421311793848872
+    },
+    {
+      "case": "tora_relu_tanh",
+      "method": "native",
+      "process_wall_s": [
+        8.675511649809778,
+        8.67637203913182,
+        8.621089165098965,
+        8.632177483756095,
+        8.617336554918438
+      ],
+      "median_s": 8.632177483756095
+    },
+    {
+      "case": "tora_relu_tanh",
+      "method": "ours",
+      "process_wall_s": [
+        7.713434404693544,
+        7.874789931811392,
+        7.684915921185166,
+        7.668996465858072,
+        7.659162726718932
+      ],
+      "median_s": 7.684915921185166
+    },
+    {
+      "case": "tora_relu_tanh",
+      "method": "xiangru",
+      "process_wall_s": [
+        12.331676703412086,
+        12.34569666115567,
+        12.291665299329907,
+        12.705246469005942,
+        12.225945325102657
+      ],
+      "median_s": 12.331676703412086
+    },
+    {
+      "case": "tora_sigmoid",
+      "method": "huan",
+      "process_wall_s": [
+        13.040054658893496,
+        13.164733983110636,
+        12.969238196033984,
+        13.252533834893256,
+        13.25901562673971
+      ],
+      "median_s": 13.164733983110636
+    },
+    {
+      "case": "tora_sigmoid",
+      "method": "native",
+      "process_wall_s": [
+        9.098131979815662,
+        9.090954474173486,
+        9.03363214014098,
+        9.11736187711358,
+        9.1211799941957
+      ],
+      "median_s": 9.098131979815662
+    },
+    {
+      "case": "tora_sigmoid",
+      "method": "ours",
+      "process_wall_s": [
+        8.200824140571058,
+        8.265885775908828,
+        8.126622470095754,
+        8.31045174319297,
+        8.207989416085184
+      ],
+      "median_s": 8.207989416085184
+    },
+    {
+      "case": "tora_sigmoid",
+      "method": "xiangru",
+      "process_wall_s": [
+        13.515251117758453,
+        13.188093966804445,
+        13.286256424151361,
+        13.273851118050516,
+        13.195199644658715
+      ],
+      "median_s": 13.273851118050516
+    },
+    {
+      "case": "unicycle",
+      "method": "huan",
+      "process_wall_s": [
+        9.660740429069847,
+        9.859737301710993,
+        10.058479723054916,
+        9.795657753944397,
+        9.622197279240936
+      ],
+      "median_s": 9.795657753944397
+    },
+    {
+      "case": "unicycle",
+      "method": "native",
+      "process_wall_s": [
+        10.55398763390258,
+        10.730220471974462,
+        10.778262207750231,
+        10.564731025602669,
+        10.721960385795683
+      ],
+      "median_s": 10.721960385795683
+    },
+    {
+      "case": "unicycle",
+      "method": "ours",
+      "process_wall_s": [
+        7.041851623915136,
+        6.908678827807307,
+        6.929832989815623,
+        6.852377817966044,
+        6.857756637968123
+      ],
+      "median_s": 6.908678827807307
+    },
+    {
+      "case": "unicycle",
+      "method": "xiangru",
+      "process_wall_s": [
+        9.580614742822945,
+        9.550221823621541,
+        10.054353820160031,
+        9.70096137886867,
+        9.544477419927716
+      ],
+      "median_s": 9.580614742822945
+    }
+  ],
+  "qualification": "Historical policy/orders differ; old TORA sigmoid and Unicycle contracts differ from current selected contracts; no per-step geometry observation in this timing. Do not use as a current all-benchmark ranking.",
+  "digest_operations": 0
+}

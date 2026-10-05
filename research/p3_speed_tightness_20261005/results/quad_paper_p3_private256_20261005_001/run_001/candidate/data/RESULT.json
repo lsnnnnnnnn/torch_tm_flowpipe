@@ -1,0 +1,161 @@
+{
+  "status": "completed",
+  "mode": "batch2",
+  "completed_substeps": 40,
+  "crown_domain": "box",
+  "crown_relax": "same-slope",
+  "end_to_end_strict_certificate": false,
+  "end_to_end_floating_point_nn_certificate": false,
+  "driver_return": 0,
+  "expected_substeps": 40,
+  "expected_lane_substeps": 40960,
+  "accepted_lane_substeps": 40960,
+  "all_lanes_accepted": true,
+  "nn_calls": 2,
+  "control_refresh_steps": [
+    0,
+    20
+  ],
+  "sr_length": 40,
+  "sr_epoch": 0,
+  "metadata_validation_receipts": [
+    {
+      "n": 16,
+      "working": 3,
+      "validation": 4,
+      "full_degree_six_prefix": {
+        "full": 100947,
+        "spatial": 74613
+      },
+      "prefix_checked": true,
+      "setup_s": 0.9872367520001717
+    }
+  ],
+  "weighted_counters": {
+    "refine_calls": 40,
+    "graph_map_calls": 320,
+    "target_rows": 81920,
+    "padded_rows": 0,
+    "chunk_size": 256
+  },
+  "valid_counters": {
+    "calls": 40,
+    "block_calls": 320,
+    "registered_specs": 1,
+    "full_batch": 1024,
+    "chunk_size": 128
+  },
+  "postwarm_releases": 14,
+  "working_prune_counters": {
+    "begun_steps": 40,
+    "finished_steps": 40,
+    "working_run_calls": 80,
+    "evicted_entries": 9
+  },
+  "working_eager_counters": {
+    "begun_steps": 40,
+    "finished_steps": 40,
+    "eager_calls": 199,
+    "forwarded_calls": 760,
+    "nested_forwarded_calls": 0,
+    "input_version_checks": 199,
+    "by_family": {
+      "endpoint": 40,
+      "sr_linear_prepare": 40,
+      "combine_linear": 39,
+      "normalize": 40,
+      "glue:emit": 40
+    }
+  },
+  "trig_counters": {
+    "exec_calls": 6,
+    "completed_execs": 6,
+    "failed_execs": 0,
+    "trig_calls": 276,
+    "original_bodies": 36,
+    "reuse_hits": 240,
+    "ineligible_calls": 0,
+    "outside_exec_forwarded": 0
+  },
+  "trig_plan": {
+    "trig_calls": 46,
+    "eligible_direct_calls": 46,
+    "unique_direct_plans": 6,
+    "potential_reuse_hits": 40,
+    "interval_coefficients": true,
+    "order": 4
+  },
+  "metrics_broken": 0,
+  "final_hull": {
+    "x1": [
+      -0.48033305271774096,
+      0.4802634586877518
+    ],
+    "x2": [
+      -0.48024907871692224,
+      0.4804584599904447
+    ],
+    "x3": [
+      -0.2769317952729671,
+      0.5439106341829465
+    ],
+    "x4": [
+      -0.40321403360360225,
+      0.4032667661684307
+    ],
+    "x5": [
+      -0.4034008939459503,
+      0.4038786217105503
+    ],
+    "x6": [
+      -1.9846305330070835,
+      -0.5068709361789345
+    ],
+    "x7": [
+      -0.001785051783236085,
+      0.0034080342900901107
+    ],
+    "x8": [
+      -0.0017550777632633582,
+      0.0026564282798525623
+    ],
+    "x9": [
+      -5.532340897865168e-06,
+      5.912761663986132e-06
+    ],
+    "x10": [
+      -0.04253408938125409,
+      0.03848408458730272
+    ],
+    "x11": [
+      -0.03939265748454037,
+      0.03884853102958312
+    ],
+    "x12": [
+      -2.225073858507273e-308,
+      2.225073858507273e-308
+    ],
+    "t": [
+      0.1999999999999959,
+      0.20000000000000429
+    ],
+    "u1": [
+      3.1255771770793803,
+      11.833874185048792
+    ],
+    "u2": [
+      -0.03803865207921366,
+      0.02703211488428574
+    ],
+    "u3": [
+      -0.032629309378330654,
+      0.02732198604592997
+    ]
+  },
+  "endpoint_target_inside": null,
+  "driver_elapsed_s": 39.28880410900456,
+  "wall_s": 44.67410918700625,
+  "cuda_peak_allocated_bytes": 8273138688,
+  "cuda_peak_reserved_bytes": 9848225792,
+  "peak_rss_kb": 5801140
+}

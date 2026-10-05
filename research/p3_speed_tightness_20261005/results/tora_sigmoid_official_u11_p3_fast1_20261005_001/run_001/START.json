@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "taskset",
+    "-c",
+    "10-13",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "-B",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001/run_small1_candidate.py",
+    "--instance",
+    "tora-sigmoid",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001/run_001/candidate"
+  ],
+  "contract_label": "official-tora-u11-full500-same-numerics",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fast1_20261005_001",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-34-generic",
+    "system": "Linux"
+  },
+  "instance": "tora-sigmoid-official-u11-full500",
+  "method": "p3-private-horner-weighted1",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "CUDA_VISIBLE_DEVICES": "2",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_utc": "2026-10-05T14:12:09.514354+00:00",
+  "timeout_s": 120.0
+}

@@ -1,0 +1,158 @@
+{
+  "schema": "archcomp26-unicycle-paper-speed-w-constant-author-nohash-v1",
+  "started_utc": "2026-10-05T14:02:42.554057+00:00",
+  "method": "p3",
+  "mode": "full",
+  "profile": "unicycle-paper-speed-w-constant-v1",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/unicycle.yaml",
+  "controller": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_prep_001/controllerB_2026.onnx",
+  "model_preflight": {
+    "input_shape": [
+      1,
+      1,
+      1,
+      4
+    ],
+    "output_shape": [
+      1,
+      2
+    ],
+    "operators": [
+      "Sub",
+      "Conv",
+      "Relu",
+      "Conv",
+      "Relu",
+      "Flatten"
+    ],
+    "center_raw_outputs": [
+      20.90175364997264,
+      21.8513536810925
+    ],
+    "cuda_initialized": false
+  },
+  "state_order": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "w",
+    "t",
+    "u1",
+    "u2"
+  ],
+  "initial_set": [
+    [
+      9.5,
+      9.55
+    ],
+    [
+      -4.5,
+      -4.45
+    ],
+    [
+      2.1,
+      2.11
+    ],
+    [
+      1.5,
+      1.51
+    ],
+    [
+      -0.0001,
+      0.0001
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "dynamics_expressions": [
+    "x4 * cos(x3)",
+    "x4 * sin(x3)",
+    "u2 - 20",
+    "u1 + w - 20",
+    "0",
+    "1",
+    "0",
+    "0"
+  ],
+  "controller_input_order": [
+    "x1",
+    "x2",
+    "x3",
+    "x4"
+  ],
+  "controller_output": "raw (f1,f2), each held 0.2 s; plant subtracts 20 once",
+  "w_semantics": "one initial w per trajectory, w'=0, only x4'=u1-20+w",
+  "target": [
+    [
+      -0.6,
+      0.6
+    ],
+    [
+      -0.2,
+      0.2
+    ],
+    [
+      -0.06,
+      0.06
+    ],
+    [
+      -0.3,
+      0.3
+    ]
+  ],
+  "property_rule": "complete T=10 endpoint inclusion is sufficient for reach within 10 s; otherwise UNKNOWN",
+  "period_s": 0.2,
+  "ode_step_s": 0.02,
+  "ode_order": 2,
+  "full_periods": 50,
+  "full_substeps": 500,
+  "qualification": "author GPU plant and CROWN diagnostic; no independent end-to-end floating-point NNCS certificate",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_p3_fast1_20261005_001/run_001/candidate/data/config.yaml",
+  "controller_periods": 50,
+  "engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center",
+  "shared_driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "cuda_cache": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13",
+  "physical_gpu": "3",
+  "cpu_affinity": [
+    32,
+    33,
+    34,
+    35
+  ],
+  "gpu_memory_cap_bytes": 11811160064,
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_p3_fast1_20261005_001/run_001/candidate/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--strict",
+    "--order",
+    "3",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/unicycle_p3_fast1_20261005_001/run_001/candidate/data/metrics.json"
+  ]
+}

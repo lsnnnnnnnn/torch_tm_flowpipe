@@ -1,0 +1,69 @@
+{
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_ours_p3/data",
+  "saved_bytes_equal": {
+    "ranges.jsonl": 28931,
+    "safety.jsonl": 5807
+  },
+  "completed_substeps": 50,
+  "B": 1,
+  "config_equal_after_artifact_path_relocation": true,
+  "driver_argv_equal_after_artifact_path_relocation": true,
+  "shared_driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "equal_fields": {
+    "RESULT.json": [
+      "adapter_feature_calls",
+      "adapter_injection_calls",
+      "all_substeps_accepted",
+      "author_safe_bounds_all_nonpositive",
+      "completed_substeps",
+      "driver_return",
+      "end_to_end_floating_point_nn_certificate",
+      "expected_substeps",
+      "independent_tube_boxes_all_safe",
+      "independent_tube_halfspace_min_lower",
+      "safety_events",
+      "status",
+      "t_endpoint"
+    ],
+    "metrics.json": [
+      "B",
+      "alpha_iters",
+      "broken",
+      "compose_parent_assembly",
+      "coupling",
+      "crown_input_layout",
+      "crown_transport",
+      "ctrl_steps",
+      "engine",
+      "final_hull",
+      "final_hull_width_sum_mean",
+      "nvtx_detail",
+      "nvtx_phases",
+      "order",
+      "segment_cuda_kernel_available",
+      "steps",
+      "substeps",
+      "tape_cuda_kernel_available",
+      "valid_cuda_kernel_available"
+    ]
+  },
+  "excluded_runtime_fields": [
+    "config",
+    "cuda_graph_captures",
+    "cuda_graph_hits",
+    "cuda_peak_allocated_bytes",
+    "cuda_peak_reserved_bytes",
+    "elapsed_s",
+    "peak_allocated_bytes",
+    "peak_reserved_bytes",
+    "wall_s"
+  ],
+  "property_record": {
+    "safety_events": 50,
+    "author_safe_bounds_all_nonpositive": true,
+    "independent_tube_halfspace_min_lower": 16.43485856971698,
+    "independent_tube_boxes_all_safe": true
+  },
+  "digest_operations": 0,
+  "scope": "all saved physical ranges, observations/property rows, all non-runtime result/metrics fields; hidden TM/SR not compared"
+}
