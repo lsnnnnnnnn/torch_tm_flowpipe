@@ -1,0 +1,78 @@
+{
+  "receipt": {
+    "implementation_revision": "v2_real_support_exponent_lookup",
+    "policy": "same-slope polynomial with independent two-slope affine remainder intersection",
+    "scope": "paper QUAD, strict box/native-f64, order 3",
+    "baseline_nn_counter": "canonical nn_calls counts original same-slope calls only",
+    "actual_nn_counter": "base_nn_calls + extra_nn_calls count attempted calls, including a call that raises; completed attempts require every pair to reach injection",
+    "timing": "extra model construction precedes driver timed loop; extra CROWN and contraction are inside it; component wall timers are unsynchronized host timings, not device profiles; outer wall includes all",
+    "certificate_assumption": "both floating affine enclosures concern the same unmodified controller over the exact recorded hull",
+    "end_to_end_strict_certificate": false,
+    "gpu_qualified": false
+  },
+  "counters": {
+    "base_nn_calls": 2,
+    "extra_nn_calls": 2,
+    "total_nn_calls": 4,
+    "injected_refreshes": 2,
+    "contracted_rows": 3629,
+    "total_control_rows": 6144,
+    "extra_model_build_wall_s": 0.12003192698466592,
+    "extra_crown_wall_s": 0.17252867898787372,
+    "contraction_wall_s": 0.01397496199933812
+  },
+  "refreshes": [
+    {
+      "refresh": 1,
+      "contracted_rows": 2605,
+      "total_rows": 3072,
+      "old_remainder_width_mean": [
+        0.06671007069265167,
+        0.017206176240886134,
+        0.016880548940262835
+      ],
+      "new_remainder_width_mean": [
+        0.06661794750828609,
+        0.017152492384058582,
+        0.016847459788025772
+      ],
+      "old_remainder_width_max": [
+        0.06860778548473569,
+        0.018061514616293912,
+        0.017635051723310372
+      ],
+      "new_remainder_width_max": [
+        0.06851222331096002,
+        0.018054273032245157,
+        0.017635051723310372
+      ]
+    },
+    {
+      "refresh": 2,
+      "contracted_rows": 1024,
+      "total_rows": 3072,
+      "old_remainder_width_mean": [
+        0.09064805376756907,
+        0.024256988097719513,
+        0.023769504324419537
+      ],
+      "new_remainder_width_mean": [
+        0.09055319828969066,
+        0.024247172337388247,
+        0.023769504324419537
+      ],
+      "old_remainder_width_max": [
+        0.09437431754021978,
+        0.02556081339633054,
+        0.02483813682091114
+      ],
+      "new_remainder_width_max": [
+        0.09429195978630606,
+        0.02556081339633054,
+        0.02483813682091114
+      ]
+    }
+  ],
+  "binding_restored": true,
+  "independent_end_to_end_floating_nncs_certificate": false
+}

@@ -1,0 +1,234 @@
+[
+  {
+    "benchmark": "attitude-control-avoid",
+    "previous_selected_run": "attempt_169",
+    "new_selected_run": "20261006/attitude_fused1_full60_001",
+    "run_id": "attitude_fused1_full60_001",
+    "reason": "New full saved-output-equivalent sample with lower driver and process times; one sample only.",
+    "width_policy": "equivalent_saved_reference",
+    "old_timings": {
+      "process_wall_s": 12.951749542728066,
+      "wrapper_wall_s": null,
+      "payload_wall_s": 12.109390892088413,
+      "driver_elapsed_s": 8.80362562648952,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 10.447382291982649,
+      "wrapper_wall_s": 9.643325527984416,
+      "payload_wall_s": 8.043378745001974,
+      "driver_elapsed_s": 6.263654606009368,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  },
+  {
+    "benchmark": "tora-reach-tanh",
+    "previous_selected_run": "attempt_189",
+    "new_selected_run": "20261006/tora_tanh_cutoff1e8_full500_001",
+    "run_id": "tora_tanh_cutoff1e8_full500_001",
+    "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+    "width_policy": "new_saved_ranges",
+    "old_timings": {
+      "process_wall_s": 13.45662879012525,
+      "wrapper_wall_s": null,
+      "payload_wall_s": 10.998220620676875,
+      "driver_elapsed_s": 9.305222434923053,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 9.242419217014685,
+      "wrapper_wall_s": 8.342009782005334,
+      "payload_wall_s": 6.684103437000886,
+      "driver_elapsed_s": 4.9629915400000755,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  },
+  {
+    "benchmark": "docking-constraint",
+    "previous_selected_run": "attempt_089",
+    "new_selected_run": "20261006/docking_fused1_full400_001",
+    "run_id": "docking_fused1_full400_001",
+    "reason": "New full saved-output-equivalent sample with lower driver and process times; original UNKNOWN verdict retained; one sample only.",
+    "width_policy": "equivalent_saved_reference",
+    "old_timings": {
+      "process_wall_s": 17.411771160550416,
+      "wrapper_wall_s": null,
+      "payload_wall_s": 16.600982329808176,
+      "driver_elapsed_s": 13.239101497456431,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 12.700198759004707,
+      "wrapper_wall_s": 11.893564362981124,
+      "payload_wall_s": 10.342755553981988,
+      "driver_elapsed_s": 8.538492886000313,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  },
+  {
+    "benchmark": "single-pendulum-reach",
+    "previous_selected_run": "attempt_140",
+    "new_selected_run": "20261006/sp_two_state_fused1_full100_001",
+    "run_id": "sp_two_state_fused1_full100_001",
+    "reason": "New full saved-output-equivalent sample with lower driver and process times for named two-state order-2 contract; one sample only.",
+    "width_policy": "equivalent_saved_reference",
+    "old_timings": {
+      "process_wall_s": 6.184106973931193,
+      "wrapper_wall_s": null,
+      "payload_wall_s": 5.415671797469258,
+      "driver_elapsed_s": 2.334325439296663,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 5.18033077500877,
+      "wrapper_wall_s": 4.41024625999853,
+      "payload_wall_s": 2.862283288995968,
+      "driver_elapsed_s": 1.2888010989991017,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  },
+  {
+    "benchmark": "nav-robust",
+    "previous_selected_run": "nav_robust_p3_fast32_20261005_001/run_001",
+    "new_selected_run": "20261006/nav_robust_fused32_full600_001",
+    "run_id": "nav_robust_fused32_full600_001",
+    "reason": "New full saved-output-equivalent sample with lower driver and process times; configuration and relocated argv also directly compared locally; one sample only.",
+    "width_policy": "equivalent_saved_reference",
+    "old_timings": {
+      "process_wall_s": 16.61601877299836,
+      "wrapper_wall_s": 15.780995185021311,
+      "payload_wall_s": 14.280086265003774,
+      "driver_elapsed_s": 12.666988223005319,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 14.961163219995797,
+      "wrapper_wall_s": 14.097305876988685,
+      "payload_wall_s": 12.616582752001705,
+      "driver_elapsed_s": 10.998513644008199,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  },
+  {
+    "benchmark": "nav-standard",
+    "previous_selected_run": "attempt_114",
+    "new_selected_run": "20261006/nav_standard_fused512_full600_001",
+    "run_id": "nav_standard_fused512_full600_001",
+    "reason": "New full640x600 saved-output-equivalent candidate with lower internal driver time; old outer process was not separately recorded. Slower private256 candidate remains unselected; one sample only.",
+    "width_policy": "equivalent_saved_reference",
+    "old_timings": {
+      "process_wall_s": null,
+      "wrapper_wall_s": null,
+      "payload_wall_s": 28.99988542776555,
+      "driver_elapsed_s": 25.86537012923509,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 24.0313841199968,
+      "wrapper_wall_s": 23.167755433998536,
+      "payload_wall_s": 21.602567219990306,
+      "driver_elapsed_s": 19.86449391199858,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  },
+  {
+    "benchmark": "tora-reach-sigmoid",
+    "previous_selected_run": "tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001",
+    "new_selected_run": "20261006/tora_sigmoid_cutoff1e8_full500_001",
+    "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+    "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+    "width_policy": "new_saved_ranges",
+    "old_timings": {
+      "process_wall_s": 9.392365337000228,
+      "wrapper_wall_s": 8.51435758799198,
+      "payload_wall_s": 6.997353458980797,
+      "driver_elapsed_s": 5.25525902499794,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 9.995346380979754,
+      "wrapper_wall_s": 9.087873133976245,
+      "payload_wall_s": 7.498024041007739,
+      "driver_elapsed_s": 5.762879880989203,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  },
+  {
+    "benchmark": "quad-reach",
+    "previous_selected_run": "quad_paper_p3_private256_full1000_20261005_001/run_001",
+    "new_selected_run": "20261006/quad_paper_joint_full1000_001",
+    "run_id": "quad_paper_joint_full1000_001",
+    "reason": "Balanced joint full1024x1000 candidate: lower process and driver times than Oct5 private256, with its own saved pooled widths showing21990narrower/2002equal/8tinywider rows and all12terminal widths nonincreasing. The8local increases are x9 tube/endpoint atsteps43–46; no exact all-step monotonicity or global containment claim. Configuration, relocated argv and source/model/method fields directly match the fixed physical contract. Actual NN calls100 including50extra bounds. Trig-only full remains the slightly faster unchanged-width alternative; one sample only, no per-lane or independent certificate upgrade.",
+    "width_policy": "new_saved_ranges",
+    "old_timings": {
+      "process_wall_s": 1004.1972547589976,
+      "wrapper_wall_s": 1003.0628872660163,
+      "payload_wall_s": 1002.9958233530051,
+      "driver_elapsed_s": 997.6750070389826,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "new_timings": {
+      "process_wall_s": 978.0667734360031,
+      "wrapper_wall_s": 976.9238441520138,
+      "payload_wall_s": 975.9659048860194,
+      "driver_elapsed_s": 969.5491336009873,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "note": "single measurements; timing layers stay separate"
+  }
+]

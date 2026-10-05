@@ -1,0 +1,161 @@
+{
+  "status": "PASSED_NEW_TRIG_POWER_GATE",
+  "torch_version": "2.5.1+cu121",
+  "device": "cuda:0",
+  "cases": [
+    {
+      "order": 3,
+      "batch": 1,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 3,
+      "batch": 1,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": false,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": false,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": true,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": true,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": true,
+      "input_bytes_unchanged": true
+    }
+  ],
+  "counter_delta": {
+    "exec_calls": 20,
+    "completed_execs": 20,
+    "failed_execs": 0,
+    "trig_calls": 110,
+    "saved_power_chains": 30,
+    "reused_power_chains": 30,
+    "computed_powers": 110,
+    "reused_powers": 110,
+    "ineligible_calls": 20,
+    "outside_exec_forwarded": 44
+  },
+  "cuda_graph_captures": 4,
+  "scope": "new small direct/indirect point/interval inputs, changed-value replay; no trajectory qualification",
+  "no_jit": true,
+  "digest_operations": 0,
+  "old_checker_runs": 0,
+  "wall_s": 0.9378774040087592
+}

@@ -23,6 +23,14 @@ receipts and is not an acceptance tool for the new path/byte-size receipts.
 The [2026-10-04 saved-data acceptance](evidence/results/python_plot_cli_cleanup_20261004_001/README.md)
 checks all three CLI paths with digest computation and MATLAB export blocked.
 
+The current `tools/archcomp26_plot_saved_nohash.py` entry also emits only
+Python PNG/PDF and geometry, with `matlab_files_generated: 0`. Its
+[October 6 saved-observation smoke receipt](../research/p3_speed_tightness_20261006/plotting/CLI_SMOKE.json)
+records unchanged geometry and visual checks without starting a solver.
+The [current optimization figures](evidence/results/archcomp26_report_20261006/figures/)
+use each selected numerical candidate's own saved geometry and preserve missing
+author trajectories as missing.
+
 For the continuous ARCH-COMP 2026 Double Pendulum less-robust contract, use the
 full 100 local ODE steps (`20` control periods × `5` substeps), even when the
 saved binary contains only a prefix:

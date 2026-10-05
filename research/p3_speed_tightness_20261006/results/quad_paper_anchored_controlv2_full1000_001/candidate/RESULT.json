@@ -1,0 +1,41 @@
+{
+  "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+  "end_to_end_strict_certificate": false,
+  "exit_code": 0,
+  "completed_substeps": 1000,
+  "accepted_lane_substeps": 1024000,
+  "crown_relax": "same-slope",
+  "weighted_chunk": 256,
+  "weighted_binding_restored": true,
+  "binding_restored": true,
+  "wall_s": 1007.846622165991,
+  "ended_utc": "2026-10-05T18:21:31.621753+00:00",
+  "implementation_revision": "v2_real_support_exponent_lookup",
+  "control_candidate": "same-slope polynomial + extra two-slope affine remainder",
+  "control_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/control_v2/run_quad_control_candidate.py",
+  "base_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+  "control_outer_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/control_v2/run_quad_control_candidate.py",
+    "--mode",
+    "full50",
+    "--base-wrapper",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_anchored_controlv2_full1000_001/candidate"
+  ],
+  "control_counters": {
+    "base_nn_calls": 50,
+    "extra_nn_calls": 50,
+    "total_nn_calls": 100,
+    "injected_refreshes": 50,
+    "contracted_rows": 141489,
+    "total_control_rows": 153600,
+    "extra_model_build_wall_s": 0.13298504499834962,
+    "extra_crown_wall_s": 3.641749816859374,
+    "contraction_wall_s": 0.1515929560700897
+  },
+  "control_binding_restored": true,
+  "width_is_not_containment_or_nncs_certificate": true
+}

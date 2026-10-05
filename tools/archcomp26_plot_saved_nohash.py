@@ -281,11 +281,9 @@ def main(argv: list[str] | None = None) -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     geometry = output.with_suffix(".geometry.json")
     geometry.write_text(json.dumps(data, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
-    matlab = output.with_suffix(".m")
-    _write_matlab(data, matlab)
     _render(data, output)
     artifacts = {suffix: _source(output.with_suffix(suffix))
-                 for suffix in (".geometry.json", ".m", ".png", ".pdf")}
+                 for suffix in (".geometry.json", ".png", ".pdf")}
     summary = ({"minimum_tube_margin_lower_by_method":
                 {item["label"]: item["min_lower"] for item in data["series"]}}
                if data["plot"].startswith("acc-") else
@@ -299,7 +297,7 @@ def main(argv: list[str] | None = None) -> int:
                "plot_configuration": {"step_size": data["step_size"], "expected_steps": data["expected_steps"],
                                       "view": data["view"], "qualification": data["qualification"]},
                "artifacts": artifacts,
-               "matlab_runtime_check": "not performed"}
+               "matlab_files_generated": 0}
     output.with_suffix(".render.json").write_text(
         json.dumps(receipt, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
     return 0

@@ -1,0 +1,40 @@
+{
+  "baseline": "docs/evidence/results/archcomp26_report_20261005",
+  "source_selection": "research/p3_speed_tightness_20261006/report_data/selection.json",
+  "new_runs": 20,
+  "selected_new_p3": 8,
+  "method_cells": 64,
+  "width_summary_rows": 364,
+  "pairwise_rows": 372,
+  "merged_geometry": {
+    "old_rows": 168888,
+    "retained_rows": 136876,
+    "new_rows": 32012,
+    "output_rows": 168888,
+    "replaced_old_rows": {
+      "tora-reach-tanh": 4000,
+      "tora-reach-sigmoid": 4000,
+      "quad-reach": 24012
+    },
+    "source": "docs/evidence/results/archcomp26_report_20261005/widths/widths_long.csv",
+    "policy": "all unselected rows retain original field values/order; selected numerical trajectories use only their new saved ranges"
+  },
+  "updated_status_cells": [
+    "attitude-control-avoid",
+    "docking-constraint",
+    "nav-standard",
+    "nav-robust",
+    "quad-reach",
+    "single-pendulum-reach",
+    "tora-reach-sigmoid",
+    "tora-reach-tanh"
+  ],
+  "old_solver_or_checker_executed": false,
+  "digest_operations": 0,
+  "old_sources_or_results_modified": false,
+  "width_policy": "new numerical candidate ranges are derived independently; equivalent trajectories retain old geometry with explicit comparison receipt",
+  "selected_local_read_audits": {
+    "quad-reach": "research/p3_speed_tightness_20261006/report_data/quad_paper_joint_full1000_001_local_read_audit.json"
+  },
+  "pending": []
+}

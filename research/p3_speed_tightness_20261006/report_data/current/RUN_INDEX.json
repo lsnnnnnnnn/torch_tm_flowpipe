@@ -1,0 +1,3958 @@
+{
+  "scope": "20261006 new stages; old 289 attempts and Oct 5 results unchanged",
+  "timing": "all source timing layers retained; one sample per new run",
+  "qualification": "numerical completion, property observation and independent certificate remain separate",
+  "digest_operations": 0,
+  "runs": [
+    {
+      "run_id": "attitude_fused1_full60_001",
+      "run_key": "20261006/attitude_fused1_full60_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "attitude-control-avoid",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 60,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 60,
+      "boxes": 1,
+      "outer_wall_s": 10.447382291982649,
+      "wrapper_wall_s": 9.643325527984416,
+      "payload_wall_s": 8.043378745001974,
+      "driver_elapsed_s": 6.263654606009368,
+      "timings": {
+        "process_wall_s": 10.447382291982649,
+        "wrapper_wall_s": 9.643325527984416,
+        "payload_wall_s": 8.043378745001974,
+        "driver_elapsed_s": 6.263654606009368,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "physical_gpu": 2,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 60,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 60,
+        "requested_candidate_steps": 60
+      },
+      "started_utc": "2026-10-05T16:59:51.654777+00:00",
+      "ended_utc": "2026-10-05T17:00:02.116368+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/START.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 30,
+        "substeps": 2
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "saved physical ranges and scientific observations/fields; hidden TM/SR not compared"
+    },
+    {
+      "run_id": "docking_fused1_full400_001",
+      "run_key": "20261006/docking_fused1_full400_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "docking-constraint",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 400,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 400,
+      "boxes": 1,
+      "outer_wall_s": 12.700198759004707,
+      "wrapper_wall_s": 11.893564362981124,
+      "payload_wall_s": 10.342755553981988,
+      "driver_elapsed_s": 8.538492886000313,
+      "timings": {
+        "process_wall_s": 12.700198759004707,
+        "wrapper_wall_s": 11.893564362981124,
+        "payload_wall_s": 10.342755553981988,
+        "driver_elapsed_s": 8.538492886000313,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": 3,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 400,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 400,
+        "requested_candidate_steps": 400
+      },
+      "started_utc": "2026-10-05T17:11:32.476788+00:00",
+      "ended_utc": "2026-10-05T17:11:45.191961+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/START.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 40,
+        "substeps": 10
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "all saved ranges/property rows and scientific fields; hidden TM/SR not compared"
+    },
+    {
+      "run_id": "nav_robust_fused32_full600_001",
+      "run_key": "20261006/nav_robust_fused32_full600_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "nav-robust",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 600,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 600,
+      "boxes": 25,
+      "outer_wall_s": 14.961163219995797,
+      "wrapper_wall_s": 14.097305876988685,
+      "payload_wall_s": 12.616582752001705,
+      "driver_elapsed_s": 10.998513644008199,
+      "timings": {
+        "process_wall_s": 14.961163219995797,
+        "wrapper_wall_s": 14.097305876988685,
+        "payload_wall_s": 12.616582752001705,
+        "driver_elapsed_s": 10.998513644008199,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "physical_gpu": "1",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 600,
+        "boxes": 25,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 600,
+        "requested_candidate_steps": 600
+      },
+      "started_utc": "2026-10-05T17:05:11.022239+00:00",
+      "ended_utc": "2026-10-05T17:05:25.998446+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/nav_author_robust_working_p3_full30_001/config.yaml",
+            "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/nav_author_robust_working_p3_full30_001/START.json",
+            "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "initial_box_ledger",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges"
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 30,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "all saved four-state tube/endpoint ranges and acceptance/property records; hidden TM/SR not compared"
+    },
+    {
+      "run_id": "nav_standard_fused512_full600_001",
+      "run_key": "20261006/nav_standard_fused512_full600_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "nav-standard",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 600,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 600,
+      "boxes": 640,
+      "outer_wall_s": 24.0313841199968,
+      "wrapper_wall_s": 23.167755433998536,
+      "payload_wall_s": 21.602567219990306,
+      "driver_elapsed_s": 19.86449391199858,
+      "timings": {
+        "process_wall_s": 24.0313841199968,
+        "wrapper_wall_s": 23.167755433998536,
+        "payload_wall_s": 21.602567219990306,
+        "driver_elapsed_s": 19.86449391199858,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "physical_gpu": 1,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 600,
+        "boxes": 640,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 600,
+        "requested_candidate_steps": 600
+      },
+      "started_utc": "2026-10-05T17:29:27.022539+00:00",
+      "ended_utc": "2026-10-05T17:29:51.068782+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 30,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "all saved per-box four-state tube/endpoint ranges and acceptance/property records; hidden TM/SR not compared"
+    },
+    {
+      "run_id": "nav_standard_private256_full600_001",
+      "run_key": "20261006/nav_standard_private256_full600_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "nav-standard",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 600,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 600,
+      "boxes": 640,
+      "outer_wall_s": 34.22132452300866,
+      "wrapper_wall_s": 33.40728564601159,
+      "payload_wall_s": 31.770186611975078,
+      "driver_elapsed_s": 30.02233498499845,
+      "timings": {
+        "process_wall_s": 34.22132452300866,
+        "wrapper_wall_s": 33.40728564601159,
+        "payload_wall_s": 31.770186611975078,
+        "driver_elapsed_s": 30.02233498499845,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "physical_gpu": 1,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 600,
+        "boxes": 640,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 600,
+        "requested_candidate_steps": 600
+      },
+      "started_utc": "2026-10-05T17:13:48.267595+00:00",
+      "ended_utc": "2026-10-05T17:14:22.503417+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 30,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "all saved per-box four-state tube/endpoint ranges and acceptance/property records; hidden TM/SR not compared"
+    },
+    {
+      "run_id": "quad_paper_anchored_control40_001",
+      "run_key": "20261006/quad_paper_anchored_control40_001",
+      "stage": "setup_or_pre_step_failure",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "exception",
+      "outer_status": "failed",
+      "error_type": "AttributeError",
+      "error": "'SparseEngine' object has no attribute 'exponents'",
+      "payload_numerical_status": "exception",
+      "payload_requested_substeps": null,
+      "candidate_outcome_classification": "execution_exception_before_first_step",
+      "outer_exit_code": 1,
+      "completed_substeps": 0,
+      "boxes": null,
+      "outer_wall_s": 6.886285815999145,
+      "wrapper_wall_s": 5.929593862005277,
+      "payload_wall_s": 5.922823280008743,
+      "driver_elapsed_s": null,
+      "timings": {
+        "process_wall_s": 6.886285815999145,
+        "wrapper_wall_s": 5.929593862005277,
+        "payload_wall_s": 5.922823280008743,
+        "driver_elapsed_s": null,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": null,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 0,
+        "boxes": null,
+        "complete_named_horizon": false,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": null
+      },
+      "started_utc": "2026-10-05T17:21:40.692001+00:00",
+      "ended_utc": "2026-10-05T17:21:47.593227+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/data/RESULT.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": null,
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": null,
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": null,
+        "steps": null,
+        "substeps": null
+      },
+      "control_candidate": "same-slope polynomial + extra two-slope affine remainder",
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": {
+        "base_nn_calls": 1,
+        "extra_nn_calls": 1,
+        "total_nn_calls": 2,
+        "injected_refreshes": 0,
+        "contracted_rows": 0,
+        "total_control_rows": 0,
+        "extra_model_build_wall_s": 0.12595989400870167,
+        "extra_crown_wall_s": 0.10441961398464628,
+        "contraction_wall_s": 0.0
+      },
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": 2,
+        "base_source": null,
+        "actual_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/RESULT.json",
+          "field": "control_counters.total_nn_calls"
+        }
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged"
+    },
+    {
+      "run_id": "quad_paper_anchored_controlv2_40_001",
+      "run_key": "20261006/quad_paper_anchored_controlv2_40_001",
+      "stage": "prefix_candidate",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 40,
+      "candidate_outcome_classification": "completed_requested_prefix_not_full_benchmark",
+      "outer_exit_code": 0,
+      "completed_substeps": 40,
+      "boxes": 1024,
+      "outer_wall_s": 46.2086944259936,
+      "wrapper_wall_s": 45.17503624400706,
+      "payload_wall_s": 45.136068424006226,
+      "driver_elapsed_s": 39.576246741984505,
+      "timings": {
+        "process_wall_s": 46.2086944259936,
+        "wrapper_wall_s": 45.17503624400706,
+        "payload_wall_s": 45.136068424006226,
+        "driver_elapsed_s": 39.576246741984505,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 40,
+        "boxes": 1024,
+        "complete_named_horizon": false,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 40
+      },
+      "started_utc": "2026-10-05T17:43:12.151591+00:00",
+      "ended_utc": "2026-10-05T17:43:58.374783+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/SAVED_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 2,
+        "substeps": 20
+      },
+      "control_candidate": "same-slope polynomial + extra two-slope affine remainder",
+      "joint_candidate": null,
+      "implementation_revision": "v2_real_support_exponent_lookup",
+      "control_counters": {
+        "base_nn_calls": 2,
+        "extra_nn_calls": 2,
+        "total_nn_calls": 4,
+        "injected_refreshes": 2,
+        "contracted_rows": 3629,
+        "total_control_rows": 6144,
+        "extra_model_build_wall_s": 0.12734765600180253,
+        "extra_crown_wall_s": 0.18059069899027236,
+        "contraction_wall_s": 0.022557043965207413
+      },
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": 2,
+        "actual_calls_including_extra_bounds": 4,
+        "base_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/RESULT.json",
+          "field": "nn_calls"
+        },
+        "actual_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/RESULT.json",
+          "field": "control_counters.total_nn_calls"
+        }
+      },
+      "property_record": {
+        "payload_endpoint_target_inside": null,
+        "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/RESULT.json",
+        "field": "endpoint_target_inside"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "absolute widths of all 12 saved physical-state tube and endpoint projections; no per-lane or NNCS certificate",
+      "width_tradeoff_review": "research/p3_speed_tightness_20261006/report_data/current/quad_paper_anchored_controlv2_40_001_width_review.json"
+    },
+    {
+      "run_id": "quad_paper_anchored_controlv2_full1000_001",
+      "run_key": "20261006/quad_paper_anchored_controlv2_full1000_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 1000,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 1000,
+      "boxes": 1024,
+      "outer_wall_s": 1008.8949455919792,
+      "wrapper_wall_s": 1007.846622165991,
+      "payload_wall_s": 1006.9238545999979,
+      "driver_elapsed_s": 1001.4311335870007,
+      "timings": {
+        "process_wall_s": 1008.8949455919792,
+        "wrapper_wall_s": 1007.846622165991,
+        "payload_wall_s": 1006.9238545999979,
+        "driver_elapsed_s": 1001.4311335870007,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 1000,
+        "boxes": 1024,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 1000
+      },
+      "started_utc": "2026-10-05T18:04:43.709434+00:00",
+      "ended_utc": "2026-10-05T18:21:32.618963+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/SAVED_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 50,
+        "substeps": 20
+      },
+      "control_candidate": "same-slope polynomial + extra two-slope affine remainder",
+      "joint_candidate": null,
+      "implementation_revision": "v2_real_support_exponent_lookup",
+      "control_counters": {
+        "base_nn_calls": 50,
+        "extra_nn_calls": 50,
+        "total_nn_calls": 100,
+        "injected_refreshes": 50,
+        "contracted_rows": 141489,
+        "total_control_rows": 153600,
+        "extra_model_build_wall_s": 0.13298504499834962,
+        "extra_crown_wall_s": 3.641749816859374,
+        "contraction_wall_s": 0.1515929560700897
+      },
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": 50,
+        "actual_calls_including_extra_bounds": 100,
+        "base_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+          "field": "nn_calls"
+        },
+        "actual_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/RESULT.json",
+          "field": "control_counters.total_nn_calls"
+        }
+      },
+      "property_record": {
+        "payload_endpoint_target_inside": true,
+        "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+        "field": "endpoint_target_inside"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "absolute widths of all 12 saved physical-state tube and endpoint projections; no per-lane or NNCS certificate",
+      "width_tradeoff_review": "research/p3_speed_tightness_20261006/report_data/current/quad_paper_anchored_controlv2_full1000_001_width_review.json",
+      "geometry_observation_path": "research/p3_speed_tightness_20261006/report_data/current/quad_paper_anchored_controlv2_full1000_001_geometry_observations.json",
+      "geometry_observation_notes": {
+        "run_id": "quad_paper_anchored_controlv2_full1000_001",
+        "observer_source": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/observations.jsonl",
+        "payload_source": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+        "steps": 1000,
+        "scope": "pooled across1024 accepted boxes,12 physical states; no per-lane hidden-state or independent NNCS proof",
+        "endpoint_object_differences": [
+          {
+            "state": "x1",
+            "pooled_endpoint": [
+              -3.4500710406663724,
+              3.3450982470581168
+            ],
+            "driver_final_hull": [
+              -3.450071040666373,
+              3.3450982470581154
+            ],
+            "pooled_width": 6.795169287724489,
+            "driver_width": 6.795169287724488,
+            "driver_minus_pooled_lower": -4.440892098500626e-16,
+            "driver_minus_pooled_upper": -1.3322676295501878e-15,
+            "driver_minus_pooled_width": -8.881784197001252e-16,
+            "max_absolute_bound_difference": 1.3322676295501878e-15
+          },
+          {
+            "state": "x2",
+            "pooled_endpoint": [
+              -3.311546353642979,
+              3.6727664762686176
+            ],
+            "driver_final_hull": [
+              -3.3115463536429774,
+              3.6727664755345577
+            ],
+            "pooled_width": 6.984312829911596,
+            "driver_width": 6.984312829177535,
+            "driver_minus_pooled_lower": 1.3322676295501878e-15,
+            "driver_minus_pooled_upper": -7.340599239569201e-10,
+            "driver_minus_pooled_width": -7.340612562245497e-10,
+            "max_absolute_bound_difference": 7.340599239569201e-10
+          },
+          {
+            "state": "x3",
+            "pooled_endpoint": [
+              0.9593123849053918,
+              1.024828204063859
+            ],
+            "driver_final_hull": [
+              0.9593123849053911,
+              1.0248282030489007
+            ],
+            "pooled_width": 0.06551581915846716,
+            "driver_width": 0.0655158181435096,
+            "driver_minus_pooled_lower": -7.771561172376096e-16,
+            "driver_minus_pooled_upper": -1.0149583395957507e-09,
+            "driver_minus_pooled_width": -1.0149575624396334e-09,
+            "max_absolute_bound_difference": 1.0149583395957507e-09
+          },
+          {
+            "state": "x4",
+            "pooled_endpoint": [
+              -0.8087186985312684,
+              0.7536796718643616
+            ],
+            "driver_final_hull": [
+              -0.808714092551027,
+              0.7536752444339508
+            ],
+            "pooled_width": 1.5623983703956301,
+            "driver_width": 1.5623893369849777,
+            "driver_minus_pooled_lower": 4.6059802414344375e-06,
+            "driver_minus_pooled_upper": -4.427430410736122e-06,
+            "driver_minus_pooled_width": -9.03341065217056e-06,
+            "max_absolute_bound_difference": 4.6059802414344375e-06
+          },
+          {
+            "state": "x5",
+            "pooled_endpoint": [
+              -0.7431958123213878,
+              0.9081853140043429
+            ],
+            "driver_final_hull": [
+              -0.7431903749718622,
+              0.9081799867015854
+            ],
+            "pooled_width": 1.6513811263257305,
+            "driver_width": 1.6513703616734476,
+            "driver_minus_pooled_lower": 5.437349525516666e-06,
+            "driver_minus_pooled_upper": -5.327302757485164e-06,
+            "driver_minus_pooled_width": -1.076465228300183e-05,
+            "max_absolute_bound_difference": 5.437349525516666e-06
+          },
+          {
+            "state": "x6",
+            "pooled_endpoint": [
+              -0.09261149381351641,
+              0.0748738666458889
+            ],
+            "driver_final_hull": [
+              -0.09261148781755829,
+              0.07487386256338191
+            ],
+            "pooled_width": 0.16748536045940532,
+            "driver_width": 0.1674853503809402,
+            "driver_minus_pooled_lower": 5.9959581188984146e-09,
+            "driver_minus_pooled_upper": -4.0825069852479245e-09,
+            "driver_minus_pooled_width": -1.0078465104146339e-08,
+            "max_absolute_bound_difference": 5.9959581188984146e-09
+          },
+          {
+            "state": "x7",
+            "pooled_endpoint": [
+              -0.003457901024306352,
+              0.007428980492478974
+            ],
+            "driver_final_hull": [
+              -0.003457901024306356,
+              0.0074289804924789786
+            ],
+            "pooled_width": 0.010886881516785326,
+            "driver_width": 0.010886881516785334,
+            "driver_minus_pooled_lower": -4.336808689942018e-18,
+            "driver_minus_pooled_upper": 4.336808689942018e-18,
+            "driver_minus_pooled_width": 8.673617379884035e-18,
+            "max_absolute_bound_difference": 4.336808689942018e-18
+          },
+          {
+            "state": "x8",
+            "pooled_endpoint": [
+              -0.003718166423067755,
+              0.005452192576903934
+            ],
+            "driver_final_hull": [
+              -0.003718166423067759,
+              0.0054521925769039385
+            ],
+            "pooled_width": 0.009170358999971689,
+            "driver_width": 0.009170358999971697,
+            "driver_minus_pooled_lower": -3.903127820947816e-18,
+            "driver_minus_pooled_upper": 4.336808689942018e-18,
+            "driver_minus_pooled_width": 8.239936510889834e-18,
+            "max_absolute_bound_difference": 4.336808689942018e-18
+          },
+          {
+            "state": "x9",
+            "pooled_endpoint": [
+              -0.0030265152409111747,
+              0.003028607837779327
+            ],
+            "driver_final_hull": [
+              -0.003026515201997977,
+              0.0030286077988661295
+            ],
+            "pooled_width": 0.006055123078690501,
+            "driver_width": 0.0060551230008641065,
+            "driver_minus_pooled_lower": 3.8913197750872763e-11,
+            "driver_minus_pooled_upper": -3.8913197317191894e-11,
+            "driver_minus_pooled_width": -7.782639506806466e-11,
+            "max_absolute_bound_difference": 3.8913197750872763e-11
+          },
+          {
+            "state": "x10",
+            "pooled_endpoint": [
+              -0.07318220191856675,
+              0.07312276535685061
+            ],
+            "driver_final_hull": [
+              -0.0731822019185668,
+              0.07312276535685064
+            ],
+            "pooled_width": 0.14630496727541736,
+            "driver_width": 0.14630496727541742,
+            "driver_minus_pooled_lower": -4.163336342344337e-17,
+            "driver_minus_pooled_upper": 2.7755575615628914e-17,
+            "driver_minus_pooled_width": 6.938893903907228e-17,
+            "max_absolute_bound_difference": 4.163336342344337e-17
+          },
+          {
+            "state": "x11",
+            "pooled_endpoint": [
+              -0.06123138214766091,
+              0.061292120993754626
+            ],
+            "driver_final_hull": [
+              -0.06123138214766094,
+              0.06129212099375466
+            ],
+            "pooled_width": 0.12252350314141554,
+            "driver_width": 0.12252350314141561,
+            "driver_minus_pooled_lower": -2.7755575615628914e-17,
+            "driver_minus_pooled_upper": 3.469446951953614e-17,
+            "driver_minus_pooled_width": 6.245004513516506e-17,
+            "max_absolute_bound_difference": 3.469446951953614e-17
+          },
+          {
+            "state": "x12",
+            "pooled_endpoint": [
+              -2.2250738585072014e-308,
+              2.2250738585072014e-308
+            ],
+            "driver_final_hull": [
+              -2.2250738585072854e-308,
+              2.2250738585072854e-308
+            ],
+            "pooled_width": 4.450147717014403e-308,
+            "driver_width": 4.450147717014571e-308,
+            "driver_minus_pooled_lower": -8.4e-322,
+            "driver_minus_pooled_upper": 8.4e-322,
+            "driver_minus_pooled_width": 1.68e-321,
+            "max_absolute_bound_difference": 8.4e-322
+          }
+        ],
+        "height_band": {
+          "state": "x3",
+          "limits": [
+            0.94,
+            1.06
+          ],
+          "source": "docs/ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md",
+          "endpoint_target_not_all_time_safety_band": true,
+          "bound_comparison": "saved binary64 endpoints against exact decimal target bounds",
+          "suffixes": {
+            "tube": {
+              "first_saved_step": 790,
+              "saved_suffix_steps": 211,
+              "nominal_segment_start_s": 3.945,
+              "first_saved_endpoint_time_s": 3.95,
+              "preceding_step": 789,
+              "preceding_bounds": [
+                0.9708849174712446,
+                1.0600985827359806
+              ],
+              "meaning": "whole-step intervals"
+            },
+            "endpoint": {
+              "first_saved_step": 789,
+              "saved_suffix_steps": 212,
+              "nominal_segment_start_s": 3.94,
+              "first_saved_endpoint_time_s": 3.945,
+              "preceding_step": 788,
+              "preceding_bounds": [
+                0.9710490352705669,
+                1.060105956206512
+              ],
+              "meaning": "endpoint points only; no between-points claim"
+            },
+            "tube_endpoint_union": {
+              "first_saved_step": 790,
+              "saved_suffix_steps": 211,
+              "nominal_segment_start_s": 3.945,
+              "first_saved_endpoint_time_s": 3.95,
+              "preceding_step": 789,
+              "preceding_bounds": [
+                0.9708849174712443,
+                1.0600985827359806
+              ],
+              "meaning": "whole-step intervals"
+            }
+          },
+          "endpoint_extends_beyond_tube_steps": 174,
+          "maximum_endpoint_excess_beyond_tube": 8.881784197001252e-16,
+          "endpoint_extends_beyond_tube_within_combined_suffix_steps": 9,
+          "qualification": "numerical observation from this run's saved tube AND endpoint; not a participant temporal checker or full reach-and-remain proof"
+        },
+        "native_historical_geometry": {
+          "source": "docs/evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/SAVED_REMAIN_AUDIT.json",
+          "note": "unchanged independent historical native record; never used as the new P3 suffix"
+        }
+      }
+    },
+    {
+      "run_id": "quad_paper_fused256_40_001",
+      "run_key": "20261006/quad_paper_fused256_40_001",
+      "stage": "setup_or_pre_step_failure",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "exception",
+      "outer_status": "failed",
+      "error_type": "RuntimeError",
+      "error": "fused-batch requires pristine weighted functions",
+      "payload_numerical_status": "exception",
+      "payload_requested_substeps": null,
+      "candidate_outcome_classification": "execution_exception_before_first_step",
+      "outer_exit_code": 1,
+      "completed_substeps": 0,
+      "boxes": null,
+      "outer_wall_s": 2.3713580339972395,
+      "wrapper_wall_s": 1.8515589050075505,
+      "payload_wall_s": 1.8464217559958342,
+      "driver_elapsed_s": null,
+      "timings": {
+        "process_wall_s": 2.3713580339972395,
+        "wrapper_wall_s": 1.8515589050075505,
+        "payload_wall_s": 1.8464217559958342,
+        "driver_elapsed_s": null,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": null,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 0,
+        "boxes": null,
+        "complete_named_horizon": false,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 40
+      },
+      "started_utc": "2026-10-05T17:07:40.100192+00:00",
+      "ended_utc": "2026-10-05T17:07:42.486237+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/candidate/data/RESULT.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": null,
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": null,
+      "contract_comparison_evidence": {
+        "path": null,
+        "configuration_and_arguments_equal": false,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": null,
+        "steps": null,
+        "substeps": null
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged"
+    },
+    {
+      "run_id": "quad_paper_fused256v2_40_001",
+      "run_key": "20261006/quad_paper_fused256v2_40_001",
+      "stage": "prefix_candidate",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "exception",
+      "outer_status": "failed",
+      "error_type": "RuntimeError",
+      "error": "fused batch qualification failed: {'fast_calls': {'expected': 40, 'actual': 38}, 'fallback_calls': {'expected': 0, 'actual': 2}}",
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 40,
+      "candidate_outcome_classification": "wrapper_qualification_failure_after_completed_requested_numeric_prefix",
+      "outer_exit_code": 1,
+      "completed_substeps": 40,
+      "boxes": 1024,
+      "outer_wall_s": 49.669292396021774,
+      "wrapper_wall_s": 48.49865681602387,
+      "payload_wall_s": 48.49185266101267,
+      "driver_elapsed_s": 43.13606577902101,
+      "timings": {
+        "process_wall_s": 49.669292396021774,
+        "wrapper_wall_s": 48.49865681602387,
+        "payload_wall_s": 48.49185266101267,
+        "driver_elapsed_s": 43.13606577902101,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 40,
+        "boxes": 1024,
+        "complete_named_horizon": false,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 40
+      },
+      "started_utc": "2026-10-05T17:17:23.844687+00:00",
+      "ended_utc": "2026-10-05T17:18:13.544810+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": null,
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": null,
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 2,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": 2,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/RESULT.json",
+          "field": "nn_calls"
+        },
+        "actual_source": null
+      },
+      "property_record": {
+        "payload_endpoint_target_inside": null,
+        "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/RESULT.json",
+        "field": "endpoint_target_inside"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "posthoc_saved_comparison": {
+        "path": "research/p3_speed_tightness_20261006/results/posthoc/quad_fused_v2_saved_comparison.json",
+        "associated_run_id": "quad_paper_fused256v2_40_001",
+        "receipt": {
+          "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data",
+          "observation_lines_byte_equal": 40,
+          "final_fields_equal": [
+            "completed_substeps",
+            "expected_substeps",
+            "expected_lane_substeps",
+            "accepted_lane_substeps",
+            "all_lanes_accepted",
+            "nn_calls",
+            "control_refresh_steps",
+            "sr_length",
+            "sr_epoch",
+            "metrics_broken",
+            "final_hull",
+            "end_to_end_strict_certificate"
+          ],
+          "digest_operations": 0,
+          "scope": "all saved pooled tube/endpoint rows and final fields; no per-lane TM identity claim"
+        },
+        "scope": "saved-data comparison after wrapper dispatch qualification failure; original failed wrapper RESULT unchanged; 40-step prefix only"
+      }
+    },
+    {
+      "run_id": "quad_paper_joint40_001",
+      "run_key": "20261006/quad_paper_joint40_001",
+      "stage": "prefix_candidate",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 40,
+      "candidate_outcome_classification": "completed_requested_prefix_not_full_benchmark",
+      "outer_exit_code": 0,
+      "completed_substeps": 40,
+      "boxes": 1024,
+      "outer_wall_s": 45.70709843799705,
+      "wrapper_wall_s": 44.62274466099916,
+      "payload_wall_s": 44.58263078899472,
+      "driver_elapsed_s": 38.272548679000465,
+      "timings": {
+        "process_wall_s": 45.70709843799705,
+        "wrapper_wall_s": 44.62274466099916,
+        "payload_wall_s": 44.58263078899472,
+        "driver_elapsed_s": 38.272548679000465,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 40,
+        "boxes": 1024,
+        "complete_named_horizon": false,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 40
+      },
+      "started_utc": "2026-10-05T18:22:38.922104+00:00",
+      "ended_utc": "2026-10-05T18:23:24.644327+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/WIDTH_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": null,
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 2,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": "trig_power_plus_anchored_control_v2",
+      "implementation_revision": null,
+      "control_counters": {
+        "base_nn_calls": 2,
+        "extra_nn_calls": 2,
+        "total_nn_calls": 4,
+        "injected_refreshes": 2,
+        "contracted_rows": 3629,
+        "total_control_rows": 6144,
+        "extra_model_build_wall_s": 0.12003192698466592,
+        "extra_crown_wall_s": 0.17252867898787372,
+        "contraction_wall_s": 0.01397496199933812
+      },
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": 2,
+        "actual_calls_including_extra_bounds": 4,
+        "base_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/RESULT.json",
+          "field": "nn_calls"
+        },
+        "actual_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/RESULT.json",
+          "field": "control_counters.total_nn_calls"
+        }
+      },
+      "property_record": {
+        "payload_endpoint_target_inside": null,
+        "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/RESULT.json",
+        "field": "endpoint_target_inside"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "width_tradeoff_review": "research/p3_speed_tightness_20261006/report_data/current/quad_paper_joint40_001_width_review.json"
+    },
+    {
+      "run_id": "quad_paper_joint_full1000_001",
+      "run_key": "20261006/quad_paper_joint_full1000_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 1000,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 1000,
+      "boxes": 1024,
+      "outer_wall_s": 978.0667734360031,
+      "wrapper_wall_s": 976.9238441520138,
+      "payload_wall_s": 975.9659048860194,
+      "driver_elapsed_s": 969.5491336009873,
+      "timings": {
+        "process_wall_s": 978.0667734360031,
+        "wrapper_wall_s": 976.9238441520138,
+        "payload_wall_s": 975.9659048860194,
+        "driver_elapsed_s": 969.5491336009873,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 1000,
+        "boxes": 1024,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 1000
+      },
+      "started_utc": "2026-10-05T18:25:07.927436+00:00",
+      "ended_utc": "2026-10-05T18:41:26.009402+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/WIDTH_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": null,
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 50,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": "trig_power_plus_anchored_control_v2",
+      "implementation_revision": null,
+      "control_counters": {
+        "base_nn_calls": 50,
+        "extra_nn_calls": 50,
+        "total_nn_calls": 100,
+        "injected_refreshes": 50,
+        "contracted_rows": 141489,
+        "total_control_rows": 153600,
+        "extra_model_build_wall_s": 0.1147145539871417,
+        "extra_crown_wall_s": 3.480013591062743,
+        "contraction_wall_s": 0.14068372402107343
+      },
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": 50,
+        "actual_calls_including_extra_bounds": 100,
+        "base_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+          "field": "nn_calls"
+        },
+        "actual_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/RESULT.json",
+          "field": "control_counters.total_nn_calls"
+        }
+      },
+      "property_record": {
+        "payload_endpoint_target_inside": true,
+        "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+        "field": "endpoint_target_inside"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "local_saved_data_read_audit": "research/p3_speed_tightness_20261006/report_data/quad_paper_joint_full1000_001_local_read_audit.json",
+      "posthoc_saved_comparison": {
+        "path": "research/p3_speed_tightness_20261006/results/posthoc/jointfull_vs_controlfull_saved_comparison.json",
+        "associated_run_id": "quad_paper_joint_full1000_001",
+        "receipt": {
+          "scope": "Completed new joint full1000 versus completed new anchored-control-v2 full1000: saved outputs only; no hidden TM/SR identity or independent certificate.",
+          "joint_run": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001",
+          "control_run": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001",
+          "saved_observations_byte_equal": true,
+          "config_bytes_equal": true,
+          "final_hull_equal": true,
+          "absolute_widths_csv_byte_equal": true,
+          "digest_operations": 0
+        },
+        "scope": "direct saved-data comparison between two distinct completed new full runs; joint geometry still derives from its own files, not the control-run files"
+      },
+      "width_tradeoff_review": "research/p3_speed_tightness_20261006/report_data/current/quad_paper_joint_full1000_001_width_review.json",
+      "geometry_observation_path": "research/p3_speed_tightness_20261006/report_data/current/quad_paper_joint_full1000_001_geometry_observations.json",
+      "geometry_observation_notes": {
+        "run_id": "quad_paper_joint_full1000_001",
+        "observer_source": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/observations.jsonl",
+        "payload_source": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+        "steps": 1000,
+        "scope": "pooled across1024 accepted boxes,12 physical states; no per-lane hidden-state or independent NNCS proof",
+        "endpoint_object_differences": [
+          {
+            "state": "x1",
+            "pooled_endpoint": [
+              -3.4500710406663724,
+              3.3450982470581168
+            ],
+            "driver_final_hull": [
+              -3.450071040666373,
+              3.3450982470581154
+            ],
+            "pooled_width": 6.795169287724489,
+            "driver_width": 6.795169287724488,
+            "driver_minus_pooled_lower": -4.440892098500626e-16,
+            "driver_minus_pooled_upper": -1.3322676295501878e-15,
+            "driver_minus_pooled_width": -8.881784197001252e-16,
+            "max_absolute_bound_difference": 1.3322676295501878e-15
+          },
+          {
+            "state": "x2",
+            "pooled_endpoint": [
+              -3.311546353642979,
+              3.6727664762686176
+            ],
+            "driver_final_hull": [
+              -3.3115463536429774,
+              3.6727664755345577
+            ],
+            "pooled_width": 6.984312829911596,
+            "driver_width": 6.984312829177535,
+            "driver_minus_pooled_lower": 1.3322676295501878e-15,
+            "driver_minus_pooled_upper": -7.340599239569201e-10,
+            "driver_minus_pooled_width": -7.340612562245497e-10,
+            "max_absolute_bound_difference": 7.340599239569201e-10
+          },
+          {
+            "state": "x3",
+            "pooled_endpoint": [
+              0.9593123849053918,
+              1.024828204063859
+            ],
+            "driver_final_hull": [
+              0.9593123849053911,
+              1.0248282030489007
+            ],
+            "pooled_width": 0.06551581915846716,
+            "driver_width": 0.0655158181435096,
+            "driver_minus_pooled_lower": -7.771561172376096e-16,
+            "driver_minus_pooled_upper": -1.0149583395957507e-09,
+            "driver_minus_pooled_width": -1.0149575624396334e-09,
+            "max_absolute_bound_difference": 1.0149583395957507e-09
+          },
+          {
+            "state": "x4",
+            "pooled_endpoint": [
+              -0.8087186985312684,
+              0.7536796718643616
+            ],
+            "driver_final_hull": [
+              -0.808714092551027,
+              0.7536752444339508
+            ],
+            "pooled_width": 1.5623983703956301,
+            "driver_width": 1.5623893369849777,
+            "driver_minus_pooled_lower": 4.6059802414344375e-06,
+            "driver_minus_pooled_upper": -4.427430410736122e-06,
+            "driver_minus_pooled_width": -9.03341065217056e-06,
+            "max_absolute_bound_difference": 4.6059802414344375e-06
+          },
+          {
+            "state": "x5",
+            "pooled_endpoint": [
+              -0.7431958123213878,
+              0.9081853140043429
+            ],
+            "driver_final_hull": [
+              -0.7431903749718622,
+              0.9081799867015854
+            ],
+            "pooled_width": 1.6513811263257305,
+            "driver_width": 1.6513703616734476,
+            "driver_minus_pooled_lower": 5.437349525516666e-06,
+            "driver_minus_pooled_upper": -5.327302757485164e-06,
+            "driver_minus_pooled_width": -1.076465228300183e-05,
+            "max_absolute_bound_difference": 5.437349525516666e-06
+          },
+          {
+            "state": "x6",
+            "pooled_endpoint": [
+              -0.09261149381351641,
+              0.0748738666458889
+            ],
+            "driver_final_hull": [
+              -0.09261148781755829,
+              0.07487386256338191
+            ],
+            "pooled_width": 0.16748536045940532,
+            "driver_width": 0.1674853503809402,
+            "driver_minus_pooled_lower": 5.9959581188984146e-09,
+            "driver_minus_pooled_upper": -4.0825069852479245e-09,
+            "driver_minus_pooled_width": -1.0078465104146339e-08,
+            "max_absolute_bound_difference": 5.9959581188984146e-09
+          },
+          {
+            "state": "x7",
+            "pooled_endpoint": [
+              -0.003457901024306352,
+              0.007428980492478974
+            ],
+            "driver_final_hull": [
+              -0.003457901024306356,
+              0.0074289804924789786
+            ],
+            "pooled_width": 0.010886881516785326,
+            "driver_width": 0.010886881516785334,
+            "driver_minus_pooled_lower": -4.336808689942018e-18,
+            "driver_minus_pooled_upper": 4.336808689942018e-18,
+            "driver_minus_pooled_width": 8.673617379884035e-18,
+            "max_absolute_bound_difference": 4.336808689942018e-18
+          },
+          {
+            "state": "x8",
+            "pooled_endpoint": [
+              -0.003718166423067755,
+              0.005452192576903934
+            ],
+            "driver_final_hull": [
+              -0.003718166423067759,
+              0.0054521925769039385
+            ],
+            "pooled_width": 0.009170358999971689,
+            "driver_width": 0.009170358999971697,
+            "driver_minus_pooled_lower": -3.903127820947816e-18,
+            "driver_minus_pooled_upper": 4.336808689942018e-18,
+            "driver_minus_pooled_width": 8.239936510889834e-18,
+            "max_absolute_bound_difference": 4.336808689942018e-18
+          },
+          {
+            "state": "x9",
+            "pooled_endpoint": [
+              -0.0030265152409111747,
+              0.003028607837779327
+            ],
+            "driver_final_hull": [
+              -0.003026515201997977,
+              0.0030286077988661295
+            ],
+            "pooled_width": 0.006055123078690501,
+            "driver_width": 0.0060551230008641065,
+            "driver_minus_pooled_lower": 3.8913197750872763e-11,
+            "driver_minus_pooled_upper": -3.8913197317191894e-11,
+            "driver_minus_pooled_width": -7.782639506806466e-11,
+            "max_absolute_bound_difference": 3.8913197750872763e-11
+          },
+          {
+            "state": "x10",
+            "pooled_endpoint": [
+              -0.07318220191856675,
+              0.07312276535685061
+            ],
+            "driver_final_hull": [
+              -0.0731822019185668,
+              0.07312276535685064
+            ],
+            "pooled_width": 0.14630496727541736,
+            "driver_width": 0.14630496727541742,
+            "driver_minus_pooled_lower": -4.163336342344337e-17,
+            "driver_minus_pooled_upper": 2.7755575615628914e-17,
+            "driver_minus_pooled_width": 6.938893903907228e-17,
+            "max_absolute_bound_difference": 4.163336342344337e-17
+          },
+          {
+            "state": "x11",
+            "pooled_endpoint": [
+              -0.06123138214766091,
+              0.061292120993754626
+            ],
+            "driver_final_hull": [
+              -0.06123138214766094,
+              0.06129212099375466
+            ],
+            "pooled_width": 0.12252350314141554,
+            "driver_width": 0.12252350314141561,
+            "driver_minus_pooled_lower": -2.7755575615628914e-17,
+            "driver_minus_pooled_upper": 3.469446951953614e-17,
+            "driver_minus_pooled_width": 6.245004513516506e-17,
+            "max_absolute_bound_difference": 3.469446951953614e-17
+          },
+          {
+            "state": "x12",
+            "pooled_endpoint": [
+              -2.2250738585072014e-308,
+              2.2250738585072014e-308
+            ],
+            "driver_final_hull": [
+              -2.2250738585072854e-308,
+              2.2250738585072854e-308
+            ],
+            "pooled_width": 4.450147717014403e-308,
+            "driver_width": 4.450147717014571e-308,
+            "driver_minus_pooled_lower": -8.4e-322,
+            "driver_minus_pooled_upper": 8.4e-322,
+            "driver_minus_pooled_width": 1.68e-321,
+            "max_absolute_bound_difference": 8.4e-322
+          }
+        ],
+        "height_band": {
+          "state": "x3",
+          "limits": [
+            0.94,
+            1.06
+          ],
+          "source": "docs/ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md",
+          "endpoint_target_not_all_time_safety_band": true,
+          "bound_comparison": "saved binary64 endpoints against exact decimal target bounds",
+          "suffixes": {
+            "tube": {
+              "first_saved_step": 790,
+              "saved_suffix_steps": 211,
+              "nominal_segment_start_s": 3.945,
+              "first_saved_endpoint_time_s": 3.95,
+              "preceding_step": 789,
+              "preceding_bounds": [
+                0.9708849174712446,
+                1.0600985827359806
+              ],
+              "meaning": "whole-step intervals"
+            },
+            "endpoint": {
+              "first_saved_step": 789,
+              "saved_suffix_steps": 212,
+              "nominal_segment_start_s": 3.94,
+              "first_saved_endpoint_time_s": 3.945,
+              "preceding_step": 788,
+              "preceding_bounds": [
+                0.9710490352705669,
+                1.060105956206512
+              ],
+              "meaning": "endpoint points only; no between-points claim"
+            },
+            "tube_endpoint_union": {
+              "first_saved_step": 790,
+              "saved_suffix_steps": 211,
+              "nominal_segment_start_s": 3.945,
+              "first_saved_endpoint_time_s": 3.95,
+              "preceding_step": 789,
+              "preceding_bounds": [
+                0.9708849174712443,
+                1.0600985827359806
+              ],
+              "meaning": "whole-step intervals"
+            }
+          },
+          "endpoint_extends_beyond_tube_steps": 174,
+          "maximum_endpoint_excess_beyond_tube": 8.881784197001252e-16,
+          "endpoint_extends_beyond_tube_within_combined_suffix_steps": 9,
+          "qualification": "numerical observation from this run's saved tube AND endpoint; not a participant temporal checker or full reach-and-remain proof"
+        },
+        "native_historical_geometry": {
+          "source": "docs/evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/SAVED_REMAIN_AUDIT.json",
+          "note": "unchanged independent historical native record; never used as the new P3 suffix"
+        }
+      }
+    },
+    {
+      "run_id": "quad_paper_trigpower40_001",
+      "run_key": "20261006/quad_paper_trigpower40_001",
+      "stage": "prefix_candidate",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 40,
+      "candidate_outcome_classification": "completed_requested_prefix_not_full_benchmark",
+      "outer_exit_code": 0,
+      "completed_substeps": 40,
+      "boxes": 1024,
+      "outer_wall_s": 45.55464725600905,
+      "wrapper_wall_s": 44.438093456003116,
+      "payload_wall_s": 44.430756471992936,
+      "driver_elapsed_s": 38.148986182990484,
+      "timings": {
+        "process_wall_s": 45.55464725600905,
+        "wrapper_wall_s": 44.438093456003116,
+        "payload_wall_s": 44.430756471992936,
+        "driver_elapsed_s": 38.148986182990484,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 40,
+        "boxes": 1024,
+        "complete_named_horizon": false,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 40
+      },
+      "started_utc": "2026-10-05T17:41:03.766815+00:00",
+      "ended_utc": "2026-10-05T17:41:49.336037+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 2,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": 2,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/RESULT.json",
+          "field": "nn_calls"
+        },
+        "actual_source": null
+      },
+      "property_record": {
+        "payload_endpoint_target_inside": null,
+        "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/RESULT.json",
+        "field": "endpoint_target_inside"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "all saved pooled tube/endpoint rows and final fields; no per-lane TM identity claim"
+    },
+    {
+      "run_id": "quad_paper_trigpower_full1000_001",
+      "run_key": "20261006/quad_paper_trigpower_full1000_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "quad-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 1000,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 1000,
+      "boxes": 1024,
+      "outer_wall_s": 975.8620024909906,
+      "wrapper_wall_s": 974.7322410930065,
+      "payload_wall_s": 974.7028267950227,
+      "driver_elapsed_s": 968.5159638090117,
+      "timings": {
+        "process_wall_s": 975.8620024909906,
+        "wrapper_wall_s": 974.7322410930065,
+        "payload_wall_s": 974.7028267950227,
+        "driver_elapsed_s": 968.5159638090117,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/metrics.json",
+          "field": "elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "physical_gpu": "3",
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 1000,
+        "boxes": 1024,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 1000,
+        "requested_candidate_steps": 1000
+      },
+      "started_utc": "2026-10-05T17:48:17.873606+00:00",
+      "ended_utc": "2026-10-05T18:04:33.750271+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": {
+          "config_bytes_equal": true,
+          "driver_argv_equal_after_output_path_relocation": true,
+          "paths": [
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/config.yaml",
+            "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/config.yaml",
+            "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/START.json",
+            "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/START.json"
+          ],
+          "initial_set_location": "config",
+          "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+          "source_and_method_fields_equal": {
+            "source_config": true,
+            "engine": true,
+            "driver": true,
+            "model": true,
+            "method": true,
+            "mode": true
+          }
+        },
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 50,
+        "substeps": 20
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": 50,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": {
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/RESULT.json",
+          "field": "nn_calls"
+        },
+        "actual_source": null
+      },
+      "property_record": {
+        "payload_endpoint_target_inside": true,
+        "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/RESULT.json",
+        "field": "endpoint_target_inside"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "all saved pooled tube/endpoint rows and final fields; no per-lane TM identity claim",
+      "local_saved_data_read_audit": "research/p3_speed_tightness_20261006/report_data/quad_paper_trigpower_full1000_001_local_read_audit.json",
+      "geometry_observation_path": "research/p3_speed_tightness_20261006/report_data/current/quad_paper_trigpower_full1000_001_geometry_observations.json",
+      "geometry_observation_notes": {
+        "run_id": "quad_paper_trigpower_full1000_001",
+        "observer_source": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/observations.jsonl",
+        "payload_source": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/RESULT.json",
+        "steps": 1000,
+        "scope": "pooled across1024 accepted boxes,12 physical states; no per-lane hidden-state or independent NNCS proof",
+        "endpoint_object_differences": [
+          {
+            "state": "x1",
+            "pooled_endpoint": [
+              -3.454723093786696,
+              3.3509484759007497
+            ],
+            "driver_final_hull": [
+              -3.4547230937866953,
+              3.350948475900749
+            ],
+            "pooled_width": 6.805671569687446,
+            "driver_width": 6.805671569687444,
+            "driver_minus_pooled_lower": 8.881784197001252e-16,
+            "driver_minus_pooled_upper": -8.881784197001252e-16,
+            "driver_minus_pooled_width": -1.7763568394002505e-15,
+            "max_absolute_bound_difference": 8.881784197001252e-16
+          },
+          {
+            "state": "x2",
+            "pooled_endpoint": [
+              -3.3181233914581743,
+              3.6776008617335876
+            ],
+            "driver_final_hull": [
+              -3.318123391458173,
+              3.677600860994592
+            ],
+            "pooled_width": 6.995724253191762,
+            "driver_width": 6.995724252452765,
+            "driver_minus_pooled_lower": 1.3322676295501878e-15,
+            "driver_minus_pooled_upper": -7.389955314351937e-10,
+            "driver_minus_pooled_width": -7.389968637028232e-10,
+            "max_absolute_bound_difference": 7.389955314351937e-10
+          },
+          {
+            "state": "x3",
+            "pooled_endpoint": [
+              0.9584732146312499,
+              1.0256989643984427
+            ],
+            "driver_final_hull": [
+              0.9584732146312492,
+              1.0256989633476477
+            ],
+            "pooled_width": 0.06722574976719276,
+            "driver_width": 0.06722574871639841,
+            "driver_minus_pooled_lower": -6.661338147750939e-16,
+            "driver_minus_pooled_upper": -1.0507950065630212e-09,
+            "driver_minus_pooled_width": -1.0507943404292064e-09,
+            "max_absolute_bound_difference": 1.0507950065630212e-09
+          },
+          {
+            "state": "x4",
+            "pooled_endpoint": [
+              -0.8123485180703652,
+              0.7579204607933511
+            ],
+            "driver_final_hull": [
+              -0.8123436829221226,
+              0.7579158108116438
+            ],
+            "pooled_width": 1.5702689788637163,
+            "driver_width": 1.5702594937337664,
+            "driver_minus_pooled_lower": 4.835148242676723e-06,
+            "driver_minus_pooled_upper": -4.649981707238737e-06,
+            "driver_minus_pooled_width": -9.48512994991546e-06,
+            "max_absolute_bound_difference": 4.835148242676723e-06
+          },
+          {
+            "state": "x5",
+            "pooled_endpoint": [
+              -0.7478241441912051,
+              0.9119651042729509
+            ],
+            "driver_final_hull": [
+              -0.7478184512095445,
+              0.9119595250920222
+            ],
+            "pooled_width": 1.6597892484641559,
+            "driver_width": 1.6597779763015668,
+            "driver_minus_pooled_lower": 5.692981660643248e-06,
+            "driver_minus_pooled_upper": -5.5791809286942495e-06,
+            "driver_minus_pooled_width": -1.1272162589337498e-05,
+            "max_absolute_bound_difference": 5.692981660643248e-06
+          },
+          {
+            "state": "x6",
+            "pooled_endpoint": [
+              -0.0948355607464346,
+              0.07720258741602215
+            ],
+            "driver_final_hull": [
+              -0.0948355542521529,
+              0.07720258316336172
+            ],
+            "pooled_width": 0.17203814816245674,
+            "driver_width": 0.1720381374155146,
+            "driver_minus_pooled_lower": 6.4942816957458405e-09,
+            "driver_minus_pooled_upper": -4.252660432135791e-09,
+            "driver_minus_pooled_width": -1.0746942127881631e-08,
+            "max_absolute_bound_difference": 6.4942816957458405e-09
+          },
+          {
+            "state": "x7",
+            "pooled_endpoint": [
+              -0.003666679682678846,
+              0.007627728659577691
+            ],
+            "driver_final_hull": [
+              -0.0036666796826788505,
+              0.007627728659577696
+            ],
+            "pooled_width": 0.011294408342256538,
+            "driver_width": 0.011294408342256547,
+            "driver_minus_pooled_lower": -4.336808689942018e-18,
+            "driver_minus_pooled_upper": 4.336808689942018e-18,
+            "driver_minus_pooled_width": 8.673617379884035e-18,
+            "max_absolute_bound_difference": 4.336808689942018e-18
+          },
+          {
+            "state": "x8",
+            "pooled_endpoint": [
+              -0.003920920649117447,
+              0.005638530821564507
+            ],
+            "driver_final_hull": [
+              -0.00392092064911745,
+              0.00563853082156451
+            ],
+            "pooled_width": 0.009559451470681954,
+            "driver_width": 0.00955945147068196,
+            "driver_minus_pooled_lower": -3.469446951953614e-18,
+            "driver_minus_pooled_upper": 3.469446951953614e-18,
+            "driver_minus_pooled_width": 6.938893903907228e-18,
+            "max_absolute_bound_difference": 3.469446951953614e-18
+          },
+          {
+            "state": "x9",
+            "pooled_endpoint": [
+              -0.0030707438066694764,
+              0.003072796605344719
+            ],
+            "driver_final_hull": [
+              -0.0030707437709705347,
+              0.003072796569645777
+            ],
+            "pooled_width": 0.006143540412014195,
+            "driver_width": 0.006143540340616312,
+            "driver_minus_pooled_lower": 3.569894163266141e-11,
+            "driver_minus_pooled_upper": -3.569894163266141e-11,
+            "driver_minus_pooled_width": -7.139788326532281e-11,
+            "max_absolute_bound_difference": 3.569894163266141e-11
+          },
+          {
+            "state": "x10",
+            "pooled_endpoint": [
+              -0.07662541392799459,
+              0.07657310665881793
+            ],
+            "driver_final_hull": [
+              -0.07662541392799463,
+              0.07657310665881797
+            ],
+            "pooled_width": 0.15319852058681252,
+            "driver_width": 0.1531985205868126,
+            "driver_minus_pooled_lower": -4.163336342344337e-17,
+            "driver_minus_pooled_upper": 4.163336342344337e-17,
+            "driver_minus_pooled_width": 8.326672684688674e-17,
+            "max_absolute_bound_difference": 4.163336342344337e-17
+          },
+          {
+            "state": "x11",
+            "pooled_endpoint": [
+              -0.06429095292410558,
+              0.06435189454989648
+            ],
+            "driver_final_hull": [
+              -0.06429095292410561,
+              0.06435189454989651
+            ],
+            "pooled_width": 0.12864284747400206,
+            "driver_width": 0.12864284747400212,
+            "driver_minus_pooled_lower": -2.7755575615628914e-17,
+            "driver_minus_pooled_upper": 2.7755575615628914e-17,
+            "driver_minus_pooled_width": 5.551115123125783e-17,
+            "max_absolute_bound_difference": 2.7755575615628914e-17
+          },
+          {
+            "state": "x12",
+            "pooled_endpoint": [
+              -2.2250738585072014e-308,
+              2.2250738585072014e-308
+            ],
+            "driver_final_hull": [
+              -2.2250738585072854e-308,
+              2.2250738585072854e-308
+            ],
+            "pooled_width": 4.450147717014403e-308,
+            "driver_width": 4.450147717014571e-308,
+            "driver_minus_pooled_lower": -8.4e-322,
+            "driver_minus_pooled_upper": 8.4e-322,
+            "driver_minus_pooled_width": 1.68e-321,
+            "max_absolute_bound_difference": 8.4e-322
+          }
+        ],
+        "height_band": {
+          "state": "x3",
+          "limits": [
+            0.94,
+            1.06
+          ],
+          "source": "docs/ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md",
+          "endpoint_target_not_all_time_safety_band": true,
+          "bound_comparison": "saved binary64 endpoints against exact decimal target bounds",
+          "suffixes": {
+            "tube": {
+              "first_saved_step": 791,
+              "saved_suffix_steps": 210,
+              "nominal_segment_start_s": 3.95,
+              "first_saved_endpoint_time_s": 3.955,
+              "preceding_step": 790,
+              "preceding_bounds": [
+                0.9702197620937903,
+                1.060264485339775
+              ],
+              "meaning": "whole-step intervals"
+            },
+            "endpoint": {
+              "first_saved_step": 790,
+              "saved_suffix_steps": 211,
+              "nominal_segment_start_s": 3.945,
+              "first_saved_endpoint_time_s": 3.95,
+              "preceding_step": 789,
+              "preceding_bounds": [
+                0.97038428075426,
+                1.0602721512407887
+              ],
+              "meaning": "endpoint points only; no between-points claim"
+            },
+            "tube_endpoint_union": {
+              "first_saved_step": 791,
+              "saved_suffix_steps": 210,
+              "nominal_segment_start_s": 3.95,
+              "first_saved_endpoint_time_s": 3.955,
+              "preceding_step": 790,
+              "preceding_bounds": [
+                0.9702197620937901,
+                1.060264485339775
+              ],
+              "meaning": "whole-step intervals"
+            }
+          },
+          "endpoint_extends_beyond_tube_steps": 174,
+          "maximum_endpoint_excess_beyond_tube": 8.881784197001252e-16,
+          "endpoint_extends_beyond_tube_within_combined_suffix_steps": 9,
+          "qualification": "numerical observation from this run's saved tube AND endpoint; not a participant temporal checker or full reach-and-remain proof"
+        },
+        "native_historical_geometry": {
+          "source": "docs/evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/SAVED_REMAIN_AUDIT.json",
+          "note": "unchanged independent historical native record; never used as the new P3 suffix"
+        }
+      }
+    },
+    {
+      "run_id": "sp_two_state_fused1_full100_001",
+      "run_key": "20261006/sp_two_state_fused1_full100_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "single-pendulum-reach",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed",
+      "payload_requested_substeps": 100,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 100,
+      "boxes": 1,
+      "outer_wall_s": 5.18033077500877,
+      "wrapper_wall_s": 4.41024625999853,
+      "payload_wall_s": 2.862283288995968,
+      "driver_elapsed_s": 1.2888010989991017,
+      "timings": {
+        "process_wall_s": 5.18033077500877,
+        "wrapper_wall_s": 4.41024625999853,
+        "payload_wall_s": 2.862283288995968,
+        "driver_elapsed_s": 1.2888010989991017,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "physical_gpu": 2,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 100,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 100,
+        "requested_candidate_steps": 100
+      },
+      "started_utc": "2026-10-05T17:10:16.165423+00:00",
+      "ended_utc": "2026-10-05T17:10:21.360911+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/START.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 2,
+        "steps": 20,
+        "substeps": 5
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "all saved ranges/property rows and scientific fields; hidden TM/SR not compared"
+    },
+    {
+      "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+      "run_key": "20261006/tora_sigmoid_cutoff1e8_full500_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed_full_numerical_horizon",
+      "payload_requested_substeps": null,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 500,
+      "boxes": 1,
+      "outer_wall_s": 9.995346380979754,
+      "wrapper_wall_s": 9.087873133976245,
+      "payload_wall_s": 7.498024041007739,
+      "driver_elapsed_s": 5.762879880989203,
+      "timings": {
+        "process_wall_s": 9.995346380979754,
+        "wrapper_wall_s": 9.087873133976245,
+        "payload_wall_s": 7.498024041007739,
+        "driver_elapsed_s": 5.762879880989203,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "physical_gpu": 2,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 500,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 500,
+        "requested_candidate_steps": 500
+      },
+      "started_utc": "2026-10-05T17:01:51.091850+00:00",
+      "ended_utc": "2026-10-05T17:02:01.101422+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+        "configuration_and_arguments_equal": false,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": true,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": {
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 3,
+        "steps": 10,
+        "substeps": 50
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": {
+        "payload_property_evaluated": false,
+        "new_property_checker_executed": false,
+        "terminal_x1_x2": {
+          "x1": [
+            0.13464115672665658,
+            0.1604960332623117
+          ],
+          "x2": [
+            -0.876317842323564,
+            -0.8506286578519373
+          ]
+        },
+        "target_limits": {
+          "x1": [
+            -0.1,
+            0.2
+          ],
+          "x2": [
+            -0.9,
+            -0.6
+          ]
+        },
+        "terminal_box_in_target": true,
+        "basis": "direct saved endpoint box observation; no inherited old result or independent NNCS certificate"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "property_record"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged"
+    },
+    {
+      "run_id": "tora_sigmoid_order4_cutoff1e8_full500_001",
+      "run_key": "20261006/tora_sigmoid_order4_cutoff1e8_full500_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed_full_numerical_horizon",
+      "payload_requested_substeps": null,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 500,
+      "boxes": 1,
+      "outer_wall_s": 10.496905173000414,
+      "wrapper_wall_s": 9.609955197985983,
+      "payload_wall_s": 7.96584631598671,
+      "driver_elapsed_s": 6.237087960995268,
+      "timings": {
+        "process_wall_s": 10.496905173000414,
+        "wrapper_wall_s": 9.609955197985983,
+        "payload_wall_s": 7.96584631598671,
+        "driver_elapsed_s": 6.237087960995268,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "physical_gpu": 2,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 500,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 500,
+        "requested_candidate_steps": 500
+      },
+      "started_utc": "2026-10-05T17:30:00.466898+00:00",
+      "ended_utc": "2026-10-05T17:30:10.970215+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+        "configuration_and_arguments_equal": false,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": true,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": {
+        "ode_order": [
+          3,
+          4
+        ],
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 4,
+        "steps": 10,
+        "substeps": 50
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": {
+        "payload_property_evaluated": false,
+        "new_property_checker_executed": false,
+        "terminal_all_states": {
+          "x1": [
+            0.13466624350805642,
+            0.16047112352723925
+          ],
+          "x2": [
+            -0.8762907784730438,
+            -0.8506557741977495
+          ],
+          "x3": [
+            43.89270675722187,
+            43.99380250366619
+          ],
+          "x4": [
+            16.465220938534213,
+            16.491875286957217
+          ]
+        },
+        "target_limits": {
+          "x1": [
+            -0.1,
+            0.2
+          ],
+          "x2": [
+            -0.9,
+            -0.6
+          ]
+        },
+        "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+        "target_contained_saved_endpoint_steps": [
+          496,
+          497,
+          498,
+          499,
+          500
+        ],
+        "terminal_box_in_target": true,
+        "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "property_record"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged"
+    },
+    {
+      "run_id": "tora_sigmoid_order6_cutoff1e8_full500_001",
+      "run_key": "20261006/tora_sigmoid_order6_cutoff1e8_full500_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed_full_numerical_horizon",
+      "payload_requested_substeps": null,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 500,
+      "boxes": 1,
+      "outer_wall_s": 15.511160404974362,
+      "wrapper_wall_s": 14.662219213001663,
+      "payload_wall_s": 13.001743940025335,
+      "driver_elapsed_s": 10.69647469400661,
+      "timings": {
+        "process_wall_s": 15.511160404974362,
+        "wrapper_wall_s": 14.662219213001663,
+        "payload_wall_s": 13.001743940025335,
+        "driver_elapsed_s": 10.69647469400661,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "physical_gpu": 2,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 500,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 500,
+        "requested_candidate_steps": 500
+      },
+      "started_utc": "2026-10-05T17:46:47.871355+00:00",
+      "ended_utc": "2026-10-05T17:47:03.398161+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+        "configuration_and_arguments_equal": false,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": true,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": {
+        "ode_order": [
+          3,
+          6
+        ],
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 6,
+        "steps": 10,
+        "substeps": 50
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": {
+        "payload_property_evaluated": false,
+        "new_property_checker_executed": false,
+        "terminal_all_states": {
+          "x1": [
+            0.13466713732175153,
+            0.16047023000959892
+          ],
+          "x2": [
+            -0.8762896376106758,
+            -0.8506569325181552
+          ],
+          "x3": [
+            43.89270675910603,
+            43.99380250167997
+          ],
+          "x4": [
+            16.46522093902449,
+            16.491875286440465
+          ]
+        },
+        "target_limits": {
+          "x1": [
+            -0.1,
+            0.2
+          ],
+          "x2": [
+            -0.9,
+            -0.6
+          ]
+        },
+        "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+        "target_contained_saved_endpoint_steps": [
+          496,
+          497,
+          498,
+          499,
+          500
+        ],
+        "terminal_box_in_target": true,
+        "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "property_record"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged"
+    },
+    {
+      "run_id": "tora_tanh_cutoff1e8_full500_001",
+      "run_key": "20261006/tora_tanh_cutoff1e8_full500_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed_full_numerical_horizon",
+      "payload_requested_substeps": null,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 500,
+      "boxes": 1,
+      "outer_wall_s": 9.242419217014685,
+      "wrapper_wall_s": 8.342009782005334,
+      "payload_wall_s": 6.684103437000886,
+      "driver_elapsed_s": 4.9629915400000755,
+      "timings": {
+        "process_wall_s": 9.242419217014685,
+        "wrapper_wall_s": 8.342009782005334,
+        "payload_wall_s": 6.684103437000886,
+        "driver_elapsed_s": 4.9629915400000755,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          18,
+          19
+        ],
+        "physical_gpu": 3,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 500,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 500,
+        "requested_candidate_steps": 500
+      },
+      "started_utc": "2026-10-05T17:29:51.144369+00:00",
+      "ended_utc": "2026-10-05T17:30:00.394051+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": null,
+      "width_comparison": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+      "saved_outputs_equal_claim": false,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+        "configuration_and_arguments_equal": false,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": true,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": {
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 3,
+        "steps": 10,
+        "substeps": 50
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": {
+        "payload_property_evaluated": false,
+        "new_property_checker_executed": false,
+        "terminal_all_states": {
+          "x1": [
+            0.0679243208176169,
+            0.09301812428441425
+          ],
+          "x2": [
+            -0.8033765085865077,
+            -0.775990571524303
+          ],
+          "x3": [
+            0.06170555414972686,
+            0.08370998213666288
+          ],
+          "x4": [
+            0.3600088566504152,
+            0.38165727585253606
+          ]
+        },
+        "target_limits": {
+          "x1": [
+            -0.1,
+            0.2
+          ],
+          "x2": [
+            -0.9,
+            -0.6
+          ]
+        },
+        "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+        "target_contained_saved_endpoint_steps": [
+          487,
+          488,
+          489,
+          490,
+          491,
+          492,
+          493,
+          494,
+          495,
+          496,
+          497,
+          498,
+          499,
+          500
+        ],
+        "terminal_box_in_target": true,
+        "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+      },
+      "property_record_source": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+        "field": "property_record"
+      },
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged"
+    },
+    {
+      "run_id": "tora_tanh_fused1_full500_001",
+      "run_key": "20261006/tora_tanh_fused1_full500_001",
+      "stage": "full_horizon_candidate",
+      "benchmark": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "generation": "20261006 new candidate",
+      "sample_count": 1,
+      "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+      "outer_status": "completed",
+      "error_type": null,
+      "error": null,
+      "payload_numerical_status": "completed_full_numerical_horizon",
+      "payload_requested_substeps": null,
+      "candidate_outcome_classification": "completed_full_named_horizon",
+      "outer_exit_code": 0,
+      "completed_substeps": 500,
+      "boxes": 1,
+      "outer_wall_s": 8.791421467001783,
+      "wrapper_wall_s": 7.954077786998823,
+      "payload_wall_s": 6.348436649015639,
+      "driver_elapsed_s": 4.5627186819911,
+      "timings": {
+        "process_wall_s": 8.791421467001783,
+        "wrapper_wall_s": 7.954077786998823,
+        "payload_wall_s": 6.348436649015639,
+        "driver_elapsed_s": 4.5627186819911,
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "timing_sources": {
+        "process_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+        },
+        "wrapper_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+        },
+        "payload_wall_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/data/RESULT.json",
+          "field": "wall_s",
+          "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+        },
+        "driver_elapsed_s": {
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/RESULT.json",
+          "field": "driver_elapsed_s",
+          "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+        },
+        "driver_call_wall_s": null,
+        "native_process_wall_s": null,
+        "server_startup_s": null,
+        "watchdog_process_wall_s": null
+      },
+      "resources": {
+        "cpu_affinity": [
+          18,
+          19
+        ],
+        "physical_gpu": 3,
+        "host": {
+          "machine": "x86_64",
+          "name": "huan-c4140-server-3",
+          "release": "7.0.0-34-generic",
+          "system": "Linux"
+        }
+      },
+      "horizon": {
+        "observed_substeps": 500,
+        "boxes": 1,
+        "complete_named_horizon": true,
+        "benchmark_planned_steps": 500,
+        "requested_candidate_steps": 500
+      },
+      "started_utc": "2026-10-05T16:56:11.263969+00:00",
+      "ended_utc": "2026-10-05T16:56:20.069730+00:00",
+      "raw_result": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/RESULT.json",
+      "raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/data/metrics.json"
+      ],
+      "saved_comparison": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/SAVED_COMPARISON.json",
+      "width_comparison": null,
+      "saved_outputs_equal_claim": true,
+      "same_physical_contract_as_current": true,
+      "contract_comparison_evidence": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/SAVED_COMPARISON.json",
+        "configuration_and_arguments_equal": true,
+        "local_saved_configuration_comparison": null,
+        "configuration_equal_except_declared_numerical_parameters": false,
+        "note": "Completion status alone is not contract-equivalence evidence."
+      },
+      "numerical_change": null,
+      "numerical_settings": {
+        "order": 3,
+        "steps": 10,
+        "substeps": 50
+      },
+      "control_candidate": null,
+      "joint_candidate": null,
+      "implementation_revision": null,
+      "control_counters": null,
+      "nn_call_evidence": {
+        "driver_recorded_base_calls": null,
+        "actual_calls_including_extra_bounds": null,
+        "base_source": null,
+        "actual_source": null
+      },
+      "property_record": null,
+      "property_record_source": null,
+      "stable_speed_ranking_eligible": false,
+      "ranking_limitations": [
+        "One new process; no repeated-process ranking.",
+        "Shared-host timing; possible concurrency is not evidence of isolation.",
+        "Payload timer excludes earlier wrapper imports; do not substitute it for process wall."
+      ],
+      "qualification": "saved numerical evidence only; independent NNCS certificate unchanged",
+      "comparison_scope": "saved physical ranges and scientific observations/fields; hidden TM/SR not compared"
+    }
+  ],
+  "posthoc_saved_data_comparisons": [
+    {
+      "path": "research/p3_speed_tightness_20261006/results/posthoc/quad_fused_v2_saved_comparison.json",
+      "associated_run_id": "quad_paper_fused256v2_40_001",
+      "receipt": {
+        "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001/data",
+        "observation_lines_byte_equal": 40,
+        "final_fields_equal": [
+          "completed_substeps",
+          "expected_substeps",
+          "expected_lane_substeps",
+          "accepted_lane_substeps",
+          "all_lanes_accepted",
+          "nn_calls",
+          "control_refresh_steps",
+          "sr_length",
+          "sr_epoch",
+          "metrics_broken",
+          "final_hull",
+          "end_to_end_strict_certificate"
+        ],
+        "digest_operations": 0,
+        "scope": "all saved pooled tube/endpoint rows and final fields; no per-lane TM identity claim"
+      },
+      "scope": "saved-data comparison after wrapper dispatch qualification failure; original failed wrapper RESULT unchanged; 40-step prefix only"
+    },
+    {
+      "path": "research/p3_speed_tightness_20261006/results/posthoc/jointfull_vs_controlfull_saved_comparison.json",
+      "associated_run_id": "quad_paper_joint_full1000_001",
+      "receipt": {
+        "scope": "Completed new joint full1000 versus completed new anchored-control-v2 full1000: saved outputs only; no hidden TM/SR identity or independent certificate.",
+        "joint_run": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001",
+        "control_run": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001",
+        "saved_observations_byte_equal": true,
+        "config_bytes_equal": true,
+        "final_hull_equal": true,
+        "absolute_widths_csv_byte_equal": true,
+        "digest_operations": 0
+      },
+      "scope": "direct saved-data comparison between two distinct completed new full runs; joint geometry still derives from its own files, not the control-run files"
+    }
+  ],
+  "pending_local_result_directories": [],
+  "outcome_counts": {
+    "completed_full_named_horizon": 14,
+    "completed_requested_prefix_not_full_benchmark": 3,
+    "execution_exception_before_first_step": 2,
+    "wrapper_qualification_failure_after_completed_requested_numeric_prefix": 1
+  }
+}

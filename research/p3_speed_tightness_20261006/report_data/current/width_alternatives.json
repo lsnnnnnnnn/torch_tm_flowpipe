@@ -1,0 +1,331 @@
+[
+  {
+    "run_id": "quad_paper_anchored_controlv2_full1000_001",
+    "benchmark": "quad-reach",
+    "new_width_source": {
+      "source_id": "OCT6_quad_paper_anchored_controlv2_full1000_001",
+      "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/observations.jsonl",
+      "bytes": 1216906,
+      "raw_source": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/observations.jsonl",
+      "control_candidate": "same-slope polynomial + extra two-slope affine remainder",
+      "joint_candidate": null,
+      "implementation_revision": "v2_real_support_exponent_lookup",
+      "note": "new saved pooled tube/endpoint across 1024 accepted lanes; per-lane ranges, hidden TM/SR and independent NNCS proof unavailable",
+      "additional_sources": [
+        {
+          "source_id": "OCT6_quad_paper_anchored_controlv2_full1000_001_RESULT",
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+          "bytes": 3769,
+          "raw_source": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+          "note": "distinct new driver final_hull endpoint object; does not replace the pooled observer"
+        }
+      ]
+    },
+    "width_rows": 24012,
+    "original_comparison_receipt": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/SAVED_COMPARISON.json",
+    "property_record": {
+      "payload_endpoint_target_inside": true,
+      "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+    },
+    "selected": false
+  },
+  {
+    "run_id": "quad_paper_joint_full1000_001",
+    "benchmark": "quad-reach",
+    "new_width_source": {
+      "source_id": "OCT6_quad_paper_joint_full1000_001",
+      "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/observations.jsonl",
+      "bytes": 1216906,
+      "raw_source": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/observations.jsonl",
+      "control_candidate": null,
+      "joint_candidate": "trig_power_plus_anchored_control_v2",
+      "implementation_revision": null,
+      "note": "new saved pooled tube/endpoint across 1024 accepted lanes; per-lane ranges, hidden TM/SR and independent NNCS proof unavailable",
+      "additional_sources": [
+        {
+          "source_id": "OCT6_quad_paper_joint_full1000_001_RESULT",
+          "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+          "bytes": 3771,
+          "raw_source": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+          "note": "distinct new driver final_hull endpoint object; does not replace the pooled observer"
+        }
+      ]
+    },
+    "width_rows": 24012,
+    "original_comparison_receipt": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/WIDTH_COMPARISON.json",
+    "property_record": {
+      "payload_endpoint_target_inside": true,
+      "basis": "original payload endpoint field only; no full-time reach-remain checker or independent NNCS certificate inferred"
+    },
+    "selected": true
+  },
+  {
+    "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+    "benchmark": "tora-reach-sigmoid",
+    "new_width_source": {
+      "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+      "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "bytes": 76000,
+      "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "numerical_change": {
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 3,
+        "steps": 10,
+        "substeps": 50
+      },
+      "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+    },
+    "width_rows": 4000,
+    "original_comparison_receipt": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "property_record": {
+      "payload_property_evaluated": false,
+      "new_property_checker_executed": false,
+      "terminal_x1_x2": {
+        "x1": [
+          0.13464115672665658,
+          0.1604960332623117
+        ],
+        "x2": [
+          -0.876317842323564,
+          -0.8506286578519373
+        ]
+      },
+      "target_limits": {
+        "x1": [
+          -0.1,
+          0.2
+        ],
+        "x2": [
+          -0.9,
+          -0.6
+        ]
+      },
+      "terminal_box_in_target": true,
+      "basis": "direct saved endpoint box observation; no inherited old result or independent NNCS certificate"
+    },
+    "selected": true
+  },
+  {
+    "run_id": "tora_sigmoid_order4_cutoff1e8_full500_001",
+    "benchmark": "tora-reach-sigmoid",
+    "new_width_source": {
+      "source_id": "OCT6_tora_sigmoid_order4_cutoff1e8_full500_001",
+      "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "bytes": 76000,
+      "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "numerical_change": {
+        "ode_order": [
+          3,
+          4
+        ],
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 4,
+        "steps": 10,
+        "substeps": 50
+      },
+      "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+    },
+    "width_rows": 4000,
+    "original_comparison_receipt": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "property_record": {
+      "payload_property_evaluated": false,
+      "new_property_checker_executed": false,
+      "terminal_all_states": {
+        "x1": [
+          0.13466624350805642,
+          0.16047112352723925
+        ],
+        "x2": [
+          -0.8762907784730438,
+          -0.8506557741977495
+        ],
+        "x3": [
+          43.89270675722187,
+          43.99380250366619
+        ],
+        "x4": [
+          16.465220938534213,
+          16.491875286957217
+        ]
+      },
+      "target_limits": {
+        "x1": [
+          -0.1,
+          0.2
+        ],
+        "x2": [
+          -0.9,
+          -0.6
+        ]
+      },
+      "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+      "target_contained_saved_endpoint_steps": [
+        496,
+        497,
+        498,
+        499,
+        500
+      ],
+      "terminal_box_in_target": true,
+      "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+    },
+    "selected": false
+  },
+  {
+    "run_id": "tora_sigmoid_order6_cutoff1e8_full500_001",
+    "benchmark": "tora-reach-sigmoid",
+    "new_width_source": {
+      "source_id": "OCT6_tora_sigmoid_order6_cutoff1e8_full500_001",
+      "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "bytes": 76000,
+      "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "numerical_change": {
+        "ode_order": [
+          3,
+          6
+        ],
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 6,
+        "steps": 10,
+        "substeps": 50
+      },
+      "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+    },
+    "width_rows": 4000,
+    "original_comparison_receipt": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "property_record": {
+      "payload_property_evaluated": false,
+      "new_property_checker_executed": false,
+      "terminal_all_states": {
+        "x1": [
+          0.13466713732175153,
+          0.16047023000959892
+        ],
+        "x2": [
+          -0.8762896376106758,
+          -0.8506569325181552
+        ],
+        "x3": [
+          43.89270675910603,
+          43.99380250167997
+        ],
+        "x4": [
+          16.46522093902449,
+          16.491875286440465
+        ]
+      },
+      "target_limits": {
+        "x1": [
+          -0.1,
+          0.2
+        ],
+        "x2": [
+          -0.9,
+          -0.6
+        ]
+      },
+      "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+      "target_contained_saved_endpoint_steps": [
+        496,
+        497,
+        498,
+        499,
+        500
+      ],
+      "terminal_box_in_target": true,
+      "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+    },
+    "selected": false
+  },
+  {
+    "run_id": "tora_tanh_cutoff1e8_full500_001",
+    "benchmark": "tora-reach-tanh",
+    "new_width_source": {
+      "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+      "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "bytes": 76000,
+      "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+      "numerical_change": {
+        "cut_off_threshold": [
+          1e-06,
+          1e-08
+        ]
+      },
+      "numerical_settings": {
+        "order": 3,
+        "steps": 10,
+        "substeps": 50
+      },
+      "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+    },
+    "width_rows": 4000,
+    "original_comparison_receipt": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "property_record": {
+      "payload_property_evaluated": false,
+      "new_property_checker_executed": false,
+      "terminal_all_states": {
+        "x1": [
+          0.0679243208176169,
+          0.09301812428441425
+        ],
+        "x2": [
+          -0.8033765085865077,
+          -0.775990571524303
+        ],
+        "x3": [
+          0.06170555414972686,
+          0.08370998213666288
+        ],
+        "x4": [
+          0.3600088566504152,
+          0.38165727585253606
+        ]
+      },
+      "target_limits": {
+        "x1": [
+          -0.1,
+          0.2
+        ],
+        "x2": [
+          -0.9,
+          -0.6
+        ]
+      },
+      "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+      "target_contained_saved_endpoint_steps": [
+        487,
+        488,
+        489,
+        490,
+        491,
+        492,
+        493,
+        494,
+        495,
+        496,
+        497,
+        498,
+        499,
+        500
+      ],
+      "terminal_box_in_target": true,
+      "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+    },
+    "selected": true
+  }
+]

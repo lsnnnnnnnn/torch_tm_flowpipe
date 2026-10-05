@@ -1,0 +1,2362 @@
+{
+  "selection_file": "research/p3_speed_tightness_20261006/report_data/selection.json",
+  "selection": {
+    "attitude-control-avoid": {
+      "run_id": "attitude_fused1_full60_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "tora-reach-tanh": {
+      "run_id": "tora_tanh_cutoff1e8_full500_001",
+      "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+      "width_policy": "new_saved_ranges"
+    },
+    "docking-constraint": {
+      "run_id": "docking_fused1_full400_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times; original UNKNOWN verdict retained; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "single-pendulum-reach": {
+      "run_id": "sp_two_state_fused1_full100_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times for named two-state order-2 contract; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "nav-robust": {
+      "run_id": "nav_robust_fused32_full600_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times; configuration and relocated argv also directly compared locally; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "nav-standard": {
+      "run_id": "nav_standard_fused512_full600_001",
+      "reason": "New full640x600 saved-output-equivalent candidate with lower internal driver time; old outer process was not separately recorded. Slower private256 candidate remains unselected; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "tora-reach-sigmoid": {
+      "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+      "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+      "width_policy": "new_saved_ranges"
+    },
+    "quad-reach": {
+      "run_id": "quad_paper_joint_full1000_001",
+      "reason": "Balanced joint full1024x1000 candidate: lower process and driver times than Oct5 private256, with its own saved pooled widths showing21990narrower/2002equal/8tinywider rows and all12terminal widths nonincreasing. The8local increases are x9 tube/endpoint atsteps43–46; no exact all-step monotonicity or global containment claim. Configuration, relocated argv and source/model/method fields directly match the fixed physical contract. Actual NN calls100 including50extra bounds. Trig-only full remains the slightly faster unchanged-width alternative; one sample only, no per-lane or independent certificate upgrade.",
+      "width_policy": "new_saved_ranges"
+    }
+  },
+  "data_directory": "docs/evidence/results/archcomp26_report_20261006",
+  "speed_rows": [
+    {
+      "benchmark": "attitude-control-avoid",
+      "previous_s": 8.80362562648952,
+      "selected_s": 6.263654606009368,
+      "change_percent": -28.851420178949336,
+      "previous_run": "attempt_169",
+      "selected_run": "20261006/attitude_fused1_full60_001",
+      "width_policy": "equivalent_saved_reference",
+      "previous_source": {
+        "path": "docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/payload/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/payload/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/payload/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/START.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/data/metrics.json"
+      ]
+    },
+    {
+      "benchmark": "docking-constraint",
+      "previous_s": 13.239101497456431,
+      "selected_s": 8.538492886000313,
+      "change_percent": -35.5054956891087,
+      "previous_run": "attempt_089",
+      "selected_run": "20261006/docking_fused1_full400_001",
+      "width_policy": "equivalent_saved_reference",
+      "previous_source": {
+        "path": "docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/detail/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/detail/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/detail/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/START.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/data/metrics.json"
+      ]
+    },
+    {
+      "benchmark": "nav-robust",
+      "previous_s": 12.666988223005319,
+      "selected_s": 10.998513644008199,
+      "change_percent": -13.171833348411093,
+      "previous_run": "nav_robust_p3_fast32_20261005_001/run_001",
+      "selected_run": "20261006/nav_robust_fused32_full600_001",
+      "width_policy": "equivalent_saved_reference",
+      "previous_source": {
+        "path": "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/candidate/data/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/metrics.json"
+      ]
+    },
+    {
+      "benchmark": "nav-standard",
+      "previous_s": 25.86537012923509,
+      "selected_s": 19.86449391199858,
+      "change_percent": -23.20042662159257,
+      "previous_run": "attempt_114",
+      "selected_run": "20261006/nav_standard_fused512_full600_001",
+      "width_policy": "equivalent_saved_reference",
+      "previous_source": {
+        "path": "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/SUPERVISOR_RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/data/metrics.json"
+      ]
+    },
+    {
+      "benchmark": "quad-reach",
+      "previous_s": 997.6750070389826,
+      "selected_s": 969.5491336009873,
+      "change_percent": -2.819141828707387,
+      "previous_run": "quad_paper_p3_private256_full1000_20261005_001/run_001",
+      "selected_run": "20261006/quad_paper_joint_full1000_001",
+      "width_policy": "new_saved_ranges",
+      "previous_source": {
+        "path": "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/data/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/data/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/metrics.json"
+      ]
+    },
+    {
+      "benchmark": "single-pendulum-reach",
+      "previous_s": 2.334325439296663,
+      "selected_s": 1.2888010989991017,
+      "change_percent": -44.78914219486808,
+      "previous_run": "attempt_140",
+      "selected_run": "20261006/sp_two_state_fused1_full100_001",
+      "width_policy": "equivalent_saved_reference",
+      "previous_source": {
+        "path": "docs/evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/data/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "docs/evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/data/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/data/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/START.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/data/metrics.json"
+      ]
+    },
+    {
+      "benchmark": "tora-reach-sigmoid",
+      "previous_s": 5.25525902499794,
+      "selected_s": 5.762879880989203,
+      "change_percent": 9.659292787979407,
+      "previous_run": "tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001",
+      "selected_run": "20261006/tora_sigmoid_cutoff1e8_full500_001",
+      "width_policy": "new_saved_ranges",
+      "previous_source": {
+        "path": "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/data/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/metrics.json"
+      ]
+    },
+    {
+      "benchmark": "tora-reach-tanh",
+      "previous_s": 9.305222434923053,
+      "selected_s": 4.9629915400000755,
+      "change_percent": -46.66445026210579,
+      "previous_run": "attempt_189",
+      "selected_run": "20261006/tora_tanh_cutoff1e8_full500_001",
+      "width_policy": "new_saved_ranges",
+      "previous_source": {
+        "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "selected_source": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "previous_raw_receipts": [
+        "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_outer_20261002_001/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/RESULT.json",
+        "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/metrics.json"
+      ],
+      "selected_raw_receipts": [
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/START.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/metrics.json"
+      ]
+    }
+  ],
+  "width_series": [
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_tanh_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_tanh_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_tanh_cutoff1e8_full500_001",
+        "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "huan",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S026"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S026",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/huan_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "xiangru",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S027"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S027",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/xiangru_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S028"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S028",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_tanh_current_p3_saved_20261004_001/saved_bounds.csv",
+          "bytes": 2787911,
+          "raw_source": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_historical_fourway_saved_20261002/raw/native_ranges.bin",
+          "note": "read-only existing pooled CSV; no old checker executed"
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "single_box_observer"
+      ],
+      "source_ids": [
+        "OCT6_tora_sigmoid_cutoff1e8_full500_001"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "OCT6_tora_sigmoid_cutoff1e8_full500_001",
+          "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "bytes": 76000,
+          "raw_source": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+          "numerical_change": {
+            "cut_off_threshold": [
+              1e-06,
+              1e-08
+            ]
+          },
+          "numerical_settings": {
+            "order": 3,
+            "steps": 10,
+            "substeps": 50
+          },
+          "note": "new numerical candidate direct saved binary ranges; no old widths inherited"
+        }
+      ],
+      "selected_p3": {
+        "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+        "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+        "width_policy": "new_saved_ranges"
+      },
+      "new_raw_geometry": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/ranges.bin",
+        "bytes": 76000
+      }
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "huan",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S036"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S036",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S038"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S038",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/payload/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    },
+    {
+      "instance": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "source_tables": [
+        "docs/evidence/results/archcomp26_report_20261006/widths/widths_long.csv"
+      ],
+      "saved_objects": [
+        "pooled_observer"
+      ],
+      "source_ids": [
+        "S040"
+      ],
+      "raw_sources": [
+        {
+          "source_id": "S040",
+          "path": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/ranges.bin",
+          "bytes": 76000,
+          "raw_source": null,
+          "note": ""
+        }
+      ],
+      "selected_p3": null,
+      "new_raw_geometry": null
+    }
+  ],
+  "artifacts": [
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/driver_selected_before_after.pdf",
+      "pdf_bytes": 3055,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/driver_selected_before_after.png",
+      "png_bytes": 235739
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_endpoint_widths.pdf",
+      "pdf_bytes": 47061,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_endpoint_widths.png",
+      "png_bytes": 214786
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_tube_widths.pdf",
+      "pdf_bytes": 47873,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_tube_widths.png",
+      "png_bytes": 216487
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_endpoint_widths.pdf",
+      "pdf_bytes": 48371,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_endpoint_widths.png",
+      "png_bytes": 220626
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_tube_widths.pdf",
+      "pdf_bytes": 50528,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_tube_widths.png",
+      "png_bytes": 227520
+    }
+  ],
+  "no_numerical_experiments": true,
+  "old_checker_executed": false,
+  "digest_operations": 0,
+  "pdf_id": "fixed literal; PDFDocument signature accumulator disabled without any digest",
+  "qualification": "descriptive single samples; state units kept separate; saved widths are not independent NNCS certificates"
+}

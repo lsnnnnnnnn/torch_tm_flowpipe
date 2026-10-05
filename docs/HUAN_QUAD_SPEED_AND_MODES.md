@@ -1,5 +1,7 @@
 # Huan QUAD speed and mode audit
 
+> Historical mode audit through 2026-10-03. The roughly 80-second results below use the old author equations. Current paper-contract optimization results, complete times and state widths are in the [2026-10-06 report](ARCHCOMP26_FINAL_REPORT_DRAFT.md) and [new candidate study](../research/p3_speed_tightness_20261006/README.md). The evidence and historical measurements below remain unchanged.
+
 Status: **evidence-backed draft; Huan mode and phase audits, P3 observer diagnostics, and matched-wrapper 128/256-row full-horizon runs completed**
 Date: 2026-10-03
 

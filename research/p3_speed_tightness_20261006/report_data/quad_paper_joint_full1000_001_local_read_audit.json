@@ -1,0 +1,53 @@
+{
+  "run_id": "quad_paper_joint_full1000_001",
+  "raw_result": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json",
+  "raw_observer_source": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/observations.jsonl",
+  "raw_width_csv": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/ABSOLUTE_WIDTHS.csv",
+  "contract": {
+    "config_bytes_equal": true,
+    "driver_argv_equal_after_output_path_relocation": true,
+    "paths": [
+      "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/config.yaml",
+      "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/config.yaml",
+      "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001/data/START.json",
+      "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/START.json"
+    ],
+    "initial_set_location": "config",
+    "scope": "saved configuration and argv only; original comparison separately covers boxes and ranges",
+    "source_and_method_fields_equal": {
+      "source_config": true,
+      "engine": true,
+      "driver": true,
+      "model": true,
+      "method": true,
+      "mode": true
+    }
+  },
+  "own_saved_records": 1000,
+  "all_records_accepted_boxes": 1024,
+  "physical_states": 12,
+  "pooled_geometry_rows": 24000,
+  "distinct_driver_final_rows": 12,
+  "all_24000_csv_bounds_and_exact_widths_match_own_observer": true,
+  "trig_gpu_gate_passed": true,
+  "binding_restorations": {
+    "binding_restored": true,
+    "weighted_binding_restored": true,
+    "control_binding_restored": true,
+    "trig_power_binding_restored": true
+  },
+  "actual_nn_calls": 100,
+  "timings": {
+    "process_wall_s": 978.0667734360031,
+    "wrapper_wall_s": 976.9238441520138,
+    "payload_wall_s": 975.9659048860194,
+    "driver_elapsed_s": 969.5491336009873,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null
+  },
+  "end_to_end_strict_certificate": false,
+  "scope": "read-only derivation from the new joint run saved raw files; no solver or old checker, no per-lane or hidden TM/SR identity claim",
+  "digest_operations": 0
+}

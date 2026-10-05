@@ -1,0 +1,1258 @@
+[
+  {
+    "benchmark": "attitude-control-avoid",
+    "run_key": "attempt_169",
+    "role": "previous_selected_reference",
+    "status": "completed",
+    "complete_named_horizon": true,
+    "process_wall_s": 12.951749542728066,
+    "wrapper_wall_s": null,
+    "payload_wall_s": 12.109390892088413,
+    "driver_elapsed_s": 8.80362562648952,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": null,
+      "payload_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/payload/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/payload/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "attitude-control-avoid",
+    "run_key": "20261006/attitude_fused1_full60_001",
+    "role": "selected_main",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 10.447382291982649,
+    "wrapper_wall_s": 9.643325527984416,
+    "payload_wall_s": 8.043378745001974,
+    "driver_elapsed_s": 6.263654606009368,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "docking-constraint",
+    "run_key": "attempt_089",
+    "role": "previous_selected_reference",
+    "status": "completed",
+    "complete_named_horizon": true,
+    "process_wall_s": 17.411771160550416,
+    "wrapper_wall_s": null,
+    "payload_wall_s": 16.600982329808176,
+    "driver_elapsed_s": 13.239101497456431,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": null,
+      "payload_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/detail/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/docking_p3_full40_001/detail/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "docking-constraint",
+    "run_key": "20261006/docking_fused1_full400_001",
+    "role": "selected_main",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 12.700198759004707,
+    "wrapper_wall_s": 11.893564362981124,
+    "payload_wall_s": 10.342755553981988,
+    "driver_elapsed_s": 8.538492886000313,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "nav-robust",
+    "run_key": "nav_robust_p3_fast32_20261005_001/run_001",
+    "role": "previous_selected_reference",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 16.61601877299836,
+    "wrapper_wall_s": 15.780995185021311,
+    "payload_wall_s": 14.280086265003774,
+    "driver_elapsed_s": 12.666988223005319,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "results/nav_robust_p3_fast32_20261005_001/run_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "nav-robust",
+    "run_key": "20261006/nav_robust_fused32_full600_001",
+    "role": "selected_main",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 14.961163219995797,
+    "wrapper_wall_s": 14.097305876988685,
+    "payload_wall_s": 12.616582752001705,
+    "driver_elapsed_s": 10.998513644008199,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "nav-standard",
+    "run_key": "attempt_114",
+    "role": "previous_selected_reference",
+    "status": "completed",
+    "complete_named_horizon": true,
+    "process_wall_s": null,
+    "wrapper_wall_s": null,
+    "payload_wall_s": 28.99988542776555,
+    "driver_elapsed_s": 25.86537012923509,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": null,
+      "wrapper_wall_s": null,
+      "payload_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "nav-standard",
+    "run_key": "20261006/nav_standard_fused512_full600_001",
+    "role": "selected_main",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 24.0313841199968,
+    "wrapper_wall_s": 23.167755433998536,
+    "payload_wall_s": 21.602567219990306,
+    "driver_elapsed_s": 19.86449391199858,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "nav-standard",
+    "run_key": "20261006/nav_standard_private256_full600_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 34.22132452300866,
+    "wrapper_wall_s": 33.40728564601159,
+    "payload_wall_s": 31.770186611975078,
+    "driver_elapsed_s": 30.02233498499845,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "quad_paper_p3_private256_full1000_20261005_001/run_001",
+    "role": "previous_selected_reference",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 1004.1972547589976,
+    "wrapper_wall_s": 1003.0628872660163,
+    "payload_wall_s": 1002.9958233530051,
+    "driver_elapsed_s": 997.6750070389826,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/data/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "results/quad_paper_p3_private256_full1000_20261005_001/run_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_anchored_control40_001",
+    "role": "unselected_new_candidate",
+    "status": "exception",
+    "complete_named_horizon": false,
+    "process_wall_s": 6.886285815999145,
+    "wrapper_wall_s": 5.929593862005277,
+    "payload_wall_s": 5.922823280008743,
+    "driver_elapsed_s": null,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": null,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_anchored_controlv2_40_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+    "complete_named_horizon": false,
+    "process_wall_s": 46.2086944259936,
+    "wrapper_wall_s": 45.17503624400706,
+    "payload_wall_s": 45.136068424006226,
+    "driver_elapsed_s": 39.576246741984505,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/candidate/SAVED_COMPARISON.json",
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_anchored_controlv2_full1000_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+    "complete_named_horizon": true,
+    "process_wall_s": 1008.8949455919792,
+    "wrapper_wall_s": 1007.846622165991,
+    "payload_wall_s": 1006.9238545999979,
+    "driver_elapsed_s": 1001.4311335870007,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/candidate/SAVED_COMPARISON.json",
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_fused256_40_001",
+    "role": "unselected_new_candidate",
+    "status": "exception",
+    "complete_named_horizon": false,
+    "process_wall_s": 2.3713580339972395,
+    "wrapper_wall_s": 1.8515589050075505,
+    "payload_wall_s": 1.8464217559958342,
+    "driver_elapsed_s": null,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": null,
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_fused256v2_40_001",
+    "role": "unselected_new_candidate",
+    "status": "exception",
+    "complete_named_horizon": false,
+    "process_wall_s": 49.669292396021774,
+    "wrapper_wall_s": 48.49865681602387,
+    "payload_wall_s": 48.49185266101267,
+    "driver_elapsed_s": 43.13606577902101,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_joint40_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+    "complete_named_horizon": false,
+    "process_wall_s": 45.70709843799705,
+    "wrapper_wall_s": 44.62274466099916,
+    "payload_wall_s": 44.58263078899472,
+    "driver_elapsed_s": 38.272548679000465,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/candidate/WIDTH_COMPARISON.json",
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_joint_full1000_001",
+    "role": "selected_main",
+    "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+    "complete_named_horizon": true,
+    "process_wall_s": 978.0667734360031,
+    "wrapper_wall_s": 976.9238441520138,
+    "payload_wall_s": 975.9659048860194,
+    "driver_elapsed_s": 969.5491336009873,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/candidate/WIDTH_COMPARISON.json",
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_trigpower40_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": false,
+    "process_wall_s": 45.55464725600905,
+    "wrapper_wall_s": 44.438093456003116,
+    "payload_wall_s": 44.430756471992936,
+    "driver_elapsed_s": 38.148986182990484,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "quad-reach",
+    "run_key": "20261006/quad_paper_trigpower_full1000_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 975.8620024909906,
+    "wrapper_wall_s": 974.7322410930065,
+    "payload_wall_s": 974.7028267950227,
+    "driver_elapsed_s": 968.5159638090117,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/data/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "single-pendulum-reach",
+    "run_key": "attempt_140",
+    "role": "previous_selected_reference",
+    "status": "completed",
+    "complete_named_horizon": true,
+    "process_wall_s": 6.184106973931193,
+    "wrapper_wall_s": null,
+    "payload_wall_s": 5.415671797469258,
+    "driver_elapsed_s": 2.334325439296663,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": null,
+      "payload_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/data/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "single-pendulum-reach",
+    "run_key": "20261006/sp_two_state_fused1_full100_001",
+    "role": "selected_main",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 5.18033077500877,
+    "wrapper_wall_s": 4.41024625999853,
+    "payload_wall_s": 2.862283288995968,
+    "driver_elapsed_s": 1.2888010989991017,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "tora-reach-sigmoid",
+    "run_key": "tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001",
+    "role": "previous_selected_reference",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 9.392365337000228,
+    "wrapper_wall_s": 8.51435758799198,
+    "payload_wall_s": 6.997353458980797,
+    "driver_elapsed_s": 5.25525902499794,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "tora-reach-sigmoid",
+    "run_key": "20261006/tora_sigmoid_cutoff1e8_full500_001",
+    "role": "selected_main",
+    "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+    "complete_named_horizon": true,
+    "process_wall_s": 9.995346380979754,
+    "wrapper_wall_s": 9.087873133976245,
+    "payload_wall_s": 7.498024041007739,
+    "driver_elapsed_s": 5.762879880989203,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "numerical_change": {
+      "cut_off_threshold": [
+        1e-06,
+        1e-08
+      ]
+    },
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "tora-reach-sigmoid",
+    "run_key": "20261006/tora_sigmoid_order4_cutoff1e8_full500_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+    "complete_named_horizon": true,
+    "process_wall_s": 10.496905173000414,
+    "wrapper_wall_s": 9.609955197985983,
+    "payload_wall_s": 7.96584631598671,
+    "driver_elapsed_s": 6.237087960995268,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "numerical_change": {
+      "ode_order": [
+        3,
+        4
+      ],
+      "cut_off_threshold": [
+        1e-06,
+        1e-08
+      ]
+    },
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "tora-reach-sigmoid",
+    "run_key": "20261006/tora_sigmoid_order6_cutoff1e8_full500_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+    "complete_named_horizon": true,
+    "process_wall_s": 15.511160404974362,
+    "wrapper_wall_s": 14.662219213001663,
+    "payload_wall_s": 13.001743940025335,
+    "driver_elapsed_s": 10.69647469400661,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "numerical_change": {
+      "ode_order": [
+        3,
+        6
+      ],
+      "cut_off_threshold": [
+        1e-06,
+        1e-08
+      ]
+    },
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "tora-reach-tanh",
+    "run_key": "attempt_189",
+    "role": "previous_selected_reference",
+    "status": "completed",
+    "complete_named_horizon": true,
+    "process_wall_s": 13.45662879012525,
+    "wrapper_wall_s": null,
+    "payload_wall_s": 10.998220620676875,
+    "driver_elapsed_s": 9.305222434923053,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_outer_20261002_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": null,
+      "payload_wall_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "docs/evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/metrics.json",
+        "field": "elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "tora-reach-tanh",
+    "run_key": "20261006/tora_tanh_cutoff1e8_full500_001",
+    "role": "selected_main",
+    "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+    "complete_named_horizon": true,
+    "process_wall_s": 9.242419217014685,
+    "wrapper_wall_s": 8.342009782005334,
+    "payload_wall_s": 6.684103437000886,
+    "driver_elapsed_s": 4.9629915400000755,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": null,
+    "width_comparison": "research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/candidate/WIDTH_COMPARISON.json",
+    "numerical_change": {
+      "cut_off_threshold": [
+        1e-06,
+        1e-08
+      ]
+    },
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  },
+  {
+    "benchmark": "tora-reach-tanh",
+    "run_key": "20261006/tora_tanh_fused1_full500_001",
+    "role": "unselected_new_candidate",
+    "status": "COMPLETED_SAVED_OUTPUT_EQUIVALENT",
+    "complete_named_horizon": true,
+    "process_wall_s": 8.791421467001783,
+    "wrapper_wall_s": 7.954077786998823,
+    "payload_wall_s": 6.348436649015639,
+    "driver_elapsed_s": 4.5627186819911,
+    "driver_call_wall_s": null,
+    "native_process_wall_s": null,
+    "server_startup_s": null,
+    "watchdog_process_wall_s": null,
+    "timing_sources": {
+      "process_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "outer supervisor process start-to-reap wall; may include server startup"
+      },
+      "wrapper_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "candidate Python wrapper wall including its stated staging/import/check work"
+      },
+      "payload_wall_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/data/RESULT.json",
+        "field": "wall_s",
+        "boundary_note": "benchmark runner wall; new candidates may preload Torch before this timer"
+      },
+      "driver_elapsed_s": {
+        "path": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/RESULT.json",
+        "field": "driver_elapsed_s",
+        "boundary_note": "driver internal elapsed_s; excludes runner setup; includes its own lazy capture work"
+      },
+      "driver_call_wall_s": null,
+      "native_process_wall_s": null,
+      "server_startup_s": null,
+      "watchdog_process_wall_s": null
+    },
+    "saved_comparison": "research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/candidate/SAVED_COMPARISON.json",
+    "width_comparison": null,
+    "numerical_change": null,
+    "qualification": "time/width tradeoff retained; no automatic fastest-only promotion or global containment claim"
+  }
+]

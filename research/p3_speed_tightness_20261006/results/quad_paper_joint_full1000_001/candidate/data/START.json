@@ -1,0 +1,116 @@
+{
+  "schema": "archcomp26-quad-paper-p3-nohash-v1",
+  "started_utc": "2026-10-05T18:25:08.000342+00:00",
+  "mode": "full50",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/quad_paper.yaml",
+  "engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center",
+  "driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "model": "/srv/local/shengenli/CROWN-Reach-GPU/ARCH-COMP2024/benchmarks/QUAD/quad_controller_3_64_torch.onnx",
+  "method": "working-P3/point-P2/validation-P4 strict, geometric reciprocal, strict endpoint/injection, host-K20 full SR, trig reuse",
+  "qualification": "new paper-equation diagnostic; retained numerical modules, no old digest-gated run or fresh end-to-end proof",
+  "gpu": "3",
+  "cpu_affinity": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "source_modules": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/reciprocal_geometric_20260928/core.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_control_transfer_20260927/reciprocal_five_cuda_v2/sources/tape_candidate.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_targeted_recovery_20260927/strict_endpoint.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_control_transfer_20260927/strict_injection.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_sr_reassociate_20260928/host_ledger.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_fullbatch_p3_20260928/trig_direct_reuse.py"
+  ],
+  "nohash_adapters": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/capture_workspace_release.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/graded_lex.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/horner_closure_cleanup.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/hybrid_metadata.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/legacy_sparse_metadata.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/metadata_backend.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/valid_chunk128.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/weighted_chunk128.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/working_eager_segments.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash/working_graph_prune.py"
+  ],
+  "preloaded_binaries": {
+    "flowstar_seg_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+      "bytes": 1279632,
+      "mtime_ns": 1790044995822392249
+    },
+    "flowstar_sr_interval_matmul": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+      "bytes": 1039048,
+      "mtime_ns": 1790045165604522166
+    },
+    "flowstar_sr_history_sum": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+      "bytes": 1054888,
+      "mtime_ns": 1790045218041121176
+    },
+    "flowstar_injective_index_v2": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_injective_index_v2/flowstar_injective_index_v2.so",
+      "bytes": 1089688,
+      "mtime_ns": 1790045271185795654
+    },
+    "flowstar_seg_private_output_v1": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_seg_private_output_v1/flowstar_seg_private_output_v1.so",
+      "bytes": 1279928,
+      "mtime_ns": 1790045330956177433
+    },
+    "horner_edge_1312fa8b2aed": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_horner_entry/horner_edge_1312fa8b2aed/horner_edge_1312fa8b2aed.so",
+      "bytes": 1097456,
+      "mtime_ns": 1790051417194011392
+    },
+    "flowstar_recip_geom_replay_1f9efda6325c": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_reciprocal_geometric_20260928/flowstar_recip_geom_replay_1f9efda6325c/flowstar_recip_geom_replay_1f9efda6325c.so",
+      "bytes": 1442792,
+      "mtime_ns": 1790571497473136248
+    },
+    "flowstar_recip_geom_valid_1f9efda6325c": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_reciprocal_geometric_20260928/flowstar_recip_geom_valid_1f9efda6325c/flowstar_recip_geom_valid_1f9efda6325c.so",
+      "bytes": 1425496,
+      "mtime_ns": 1790571544408157282
+    }
+  },
+  "controller_note": "saved Torch ONNX directly byte-compared with fixed official 2026 Torch ONNX in prior contract audit",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_joint_full1000_001/candidate/data/config.yaml",
+  "expected_boxes": 1024,
+  "allocator_cap_bytes": 14495514624,
+  "hybrid_metadata_policy": "dense_working3_on_demand_validation4_original_arithmetic",
+  "weighted_policy": "original_early_weighted_rounds_and_attempts_fixed256_graph_scratch",
+  "valid_policy": "full1024_validated_RHS_original_dispatch_fixed128_owned_full_outputs",
+  "postwarm_policy": "release_unused_cache_after_original_warmup_sync_before_private_graph_capture",
+  "working_prune_policy": "after_complete_prune_evict_working_graph_keys_unused_in_current_advance",
+  "horner_cleanup_policy": "clear_recursive_horner_evaluate_cell_after_original_return_expression",
+  "working_eager_policy": "active_fresh_working_engine_five_regions_original_fn_eager_other_graphs_unchanged",
+  "trig_policy": "one_exec_valid_s_direct_var_same_op_shared_plan_owned_clones_original_cache_layout",
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_joint_full1000_001/candidate/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--strict",
+    "--engine",
+    "sparse",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "native-f64",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--order",
+    "3",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_joint_full1000_001/candidate/data/metrics.json"
+  ]
+}

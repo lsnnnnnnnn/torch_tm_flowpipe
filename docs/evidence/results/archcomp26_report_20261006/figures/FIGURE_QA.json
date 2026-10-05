@@ -1,0 +1,100 @@
+{
+  "status": "PASS",
+  "reviewed_on": "2026-10-06",
+  "selection": {
+    "attitude-control-avoid": {
+      "run_id": "attitude_fused1_full60_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "tora-reach-tanh": {
+      "run_id": "tora_tanh_cutoff1e8_full500_001",
+      "reason": "Balanced candidate: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; faster unchanged-width fused1 remains an alternative. Width decrease does not imply every interval is a subset; one sample only.",
+      "width_policy": "new_saved_ranges"
+    },
+    "docking-constraint": {
+      "run_id": "docking_fused1_full400_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times; original UNKNOWN verdict retained; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "single-pendulum-reach": {
+      "run_id": "sp_two_state_fused1_full100_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times for named two-state order-2 contract; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "nav-robust": {
+      "run_id": "nav_robust_fused32_full600_001",
+      "reason": "New full saved-output-equivalent sample with lower driver and process times; configuration and relocated argv also directly compared locally; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "nav-standard": {
+      "run_id": "nav_standard_fused512_full600_001",
+      "reason": "New full640x600 saved-output-equivalent candidate with lower internal driver time; old outer process was not separately recorded. Slower private256 candidate remains unselected; one sample only.",
+      "width_policy": "equivalent_saved_reference"
+    },
+    "tora-reach-sigmoid": {
+      "run_id": "tora_sigmoid_cutoff1e8_full500_001",
+      "reason": "Balanced time/width choice: all saved state/geometry widths nonincreasing versus original reference, still faster than original P3; Oct5 unchanged-width fused1 remains the fastest recorded alternative. Order4/6 offer small further endpoint tightening at greater time cost. Their tiny early x3/x4 increases prevent an exact all-step monotonicity claim but are not treated as material numerical degradation or the sole reason for non-promotion; one sample only.",
+      "width_policy": "new_saved_ranges"
+    },
+    "quad-reach": {
+      "run_id": "quad_paper_joint_full1000_001",
+      "reason": "Balanced joint full1024x1000 candidate: lower process and driver times than Oct5 private256, with its own saved pooled widths showing21990narrower/2002equal/8tinywider rows and all12terminal widths nonincreasing. The8local increases are x9 tube/endpoint atsteps43\u201346; no exact all-step monotonicity or global containment claim. Configuration, relocated argv and source/model/method fields directly match the fixed physical contract. Actual NN calls100 including50extra bounds. Trig-only full remains the slightly faster unchanged-width alternative; one sample only, no per-lane or independent certificate upgrade.",
+      "width_policy": "new_saved_ranges"
+    }
+  },
+  "speed_pairs": 8,
+  "width_series": 64,
+  "points_per_width_series": 500,
+  "visual_review": "Viewed all five final PNGs individually after final joint selection and formal-data rebuild. Titles, legends, state values, independent scales and footnotes legible; no clipping or overlap. Slower sigmoid selection remains visible.",
+  "data_checks": "All selected timing fields match complete-run receipts. Finite ordered intervals, exact saved widths, complete steps1..500 and t=5, and final endpoint/max-step-tube summaries agree. Width source tables point directly to the formal published package.",
+  "no_experiments_or_checkers_run": true,
+  "no_digest_operations": true,
+  "artifacts": [
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/driver_selected_before_after.pdf",
+      "pdf_bytes": 3055,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/driver_selected_before_after.png",
+      "png_bytes": 235739,
+      "png_width": 2063,
+      "png_height": 1628,
+      "visual_review": "PASS"
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_endpoint_widths.pdf",
+      "pdf_bytes": 47061,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_endpoint_widths.png",
+      "png_bytes": 214786,
+      "png_width": 2063,
+      "png_height": 1788,
+      "visual_review": "PASS"
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_tube_widths.pdf",
+      "pdf_bytes": 47873,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_tube_widths.png",
+      "png_bytes": 216487,
+      "png_width": 2063,
+      "png_height": 1788,
+      "visual_review": "PASS"
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_endpoint_widths.pdf",
+      "pdf_bytes": 48371,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_endpoint_widths.png",
+      "png_bytes": 220626,
+      "png_width": 2063,
+      "png_height": 1788,
+      "visual_review": "PASS"
+    },
+    {
+      "pdf": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_tube_widths.pdf",
+      "pdf_bytes": 50528,
+      "png": "docs/evidence/results/archcomp26_report_20261006/figures/tora_tanh_tube_widths.png",
+      "png_bytes": 227520,
+      "png_width": 2063,
+      "png_height": 1788,
+      "visual_review": "PASS"
+    }
+  ]
+}

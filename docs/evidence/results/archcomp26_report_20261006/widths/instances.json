@@ -1,0 +1,272 @@
+[
+  {
+    "instance_id": "acc-safe-distance",
+    "planned_steps": 50,
+    "step_s": 0.1,
+    "physical_states": [
+      "x_lead",
+      "v_lead",
+      "a_lead",
+      "x_ego",
+      "v_ego",
+      "a_ego"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_ACC_PARTICIPANT_CONTRACT_20261001.md"
+    ]
+  },
+  {
+    "instance_id": "airplane-continuous",
+    "planned_steps": 200,
+    "step_s": 0.01,
+    "physical_states": [
+      "sx",
+      "sy",
+      "sz",
+      "vx",
+      "vy",
+      "vz",
+      "phi",
+      "theta",
+      "psi",
+      "r",
+      "p",
+      "q"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_AIRPLANE_2026_ENTRY_AUDIT.md"
+    ]
+  },
+  {
+    "instance_id": "airplane-discrete",
+    "planned_steps": 20,
+    "step_s": 0.1,
+    "physical_states": [
+      "sx",
+      "sy",
+      "sz",
+      "vx",
+      "vy",
+      "vz",
+      "phi",
+      "theta",
+      "psi",
+      "r",
+      "p",
+      "q"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_AIRPLANE_DISCRETE_EXECUTION_GATE_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "attitude-control-avoid",
+    "planned_steps": 60,
+    "step_s": 0.05,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md"
+    ]
+  },
+  {
+    "instance_id": "balancing-reach",
+    "planned_steps": 2000,
+    "step_s": 0.005,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_BALANCING_EXECUTION_GATE_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "docking-constraint",
+    "planned_steps": 400,
+    "step_s": 0.1,
+    "physical_states": [
+      "sx",
+      "sy",
+      "vx",
+      "vy"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_DOCKING_BALANCING_SOURCE_CONTRACT_20261001.md"
+    ]
+  },
+  {
+    "instance_id": "double-pendulum-less-robust",
+    "planned_steps": 100,
+    "step_s": 0.01,
+    "physical_states": [
+      "theta1",
+      "theta2",
+      "theta1_dot",
+      "theta2_dot"
+    ],
+    "expected_lanes": 225,
+    "contract_sources": [
+      "docs/ARCHCOMP26_DOUBLE_PENDULUM_LESS_CONTRACT_20261001.md",
+      "docs/ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "double-pendulum-more-robust",
+    "planned_steps": 80,
+    "step_s": 0.005,
+    "physical_states": [
+      "theta1",
+      "theta2",
+      "theta1_dot",
+      "theta2_dot"
+    ],
+    "expected_lanes": 225,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NEXT_CONTRACT_SOURCE_AUDIT_20261001.md"
+    ]
+  },
+  {
+    "instance_id": "nav-standard",
+    "planned_steps": 600,
+    "step_s": 0.01,
+    "physical_states": [
+      "x",
+      "y",
+      "speed",
+      "heading"
+    ],
+    "expected_lanes": 640,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "nav-robust",
+    "planned_steps": 600,
+    "step_s": 0.01,
+    "physical_states": [
+      "x",
+      "y",
+      "speed",
+      "heading"
+    ],
+    "expected_lanes": 25,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "quad-reach",
+    "planned_steps": 1000,
+    "step_s": 0.005,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7",
+      "x8",
+      "x9",
+      "x10",
+      "x11",
+      "x12"
+    ],
+    "expected_lanes": 1024,
+    "contract_sources": [
+      "docs/ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md"
+    ]
+  },
+  {
+    "instance_id": "single-pendulum-reach",
+    "planned_steps": 100,
+    "step_s": 0.01,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_NEXT_CONTRACT_SOURCE_AUDIT_20261001.md",
+      "docs/ARCHCOMP26_SINGLE_PENDULUM_THIRD_STATE_SOURCE_FOLLOWUP_20261003.md"
+    ]
+  },
+  {
+    "instance_id": "tora-remain",
+    "planned_steps": 200,
+    "step_s": 0.1,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 12,
+    "contract_sources": [
+      "docs/ARCHCOMP26_TORA_REMAIN_CONTRACT_20261001.md",
+      "docs/ARCHCOMP26_TORA_REMAIN_NUMERIC_STOP_AUDIT_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "tora-reach-sigmoid",
+    "planned_steps": 500,
+    "step_s": 0.01,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "tora-reach-tanh",
+    "planned_steps": 500,
+    "step_s": 0.01,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md"
+    ]
+  },
+  {
+    "instance_id": "unicycle-reach",
+    "planned_steps": 500,
+    "step_s": 0.02,
+    "physical_states": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ],
+    "expected_lanes": 1,
+    "contract_sources": [
+      "docs/ARCHCOMP26_UNICYCLE_EXECUTION_GATE_20261002.md"
+    ]
+  }
+]

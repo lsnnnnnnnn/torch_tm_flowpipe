@@ -1,44 +1,68 @@
-# ARCH COMP26 四方时间与区间宽度比较报告
+# ARCH COMP26 速度优化与逐状态宽度比较报告
 
-证据截点 2026 年 10 月 5 日　编制于 2026 年 10 月 6 日北京时间　16 个 benchmark × 4 种方法
+2026 年 10 月 6 日北京时间更新　16 个 benchmark × 4 种方法　保存的完整时间和范围证据
 
-当前 P3 已在五个完整实例上记录到保持已保存输出不变的单次时间下降，但还没有做到所有 benchmark 都比 Huan、Xiangru 和原生 Flow* 更快，也没有新增全时全状态紧度优势。论文 QUAD 是最明显的速度短板：新进程 1004.197 秒，Huan / Xiangru 的既存完整进程为 94.583 / 108.018 秒；其高度终点区间也更宽。ACC、Attitude、Unicycle 有保存终点坐标较窄的结果，其他实例要逐态看，不能合成一个“整体更紧”的结论。
+本轮先减少重复计算，再测试区间收紧，已有多个完整实例的单次求解时间下降。QUAD 的联合方案在同一次完整 1024 盒 × 1000 步运行中，把 process 从 1004.197 秒降到 978.067 秒（少 2.60%），高度 x3 终点宽度缩小 2.54%，x11 缩小 4.76%；x9 仍有 8 条极小变宽，不能称全程处处改善。TORA 进一步收紧的收益较小，且比只提速的方案略慢。QUAD 仍未达到 Huan / Xiangru 的完整进程速度或高度终点紧度。
 
-本版重写当前总报告、时间表、宽度表与逐方法失败说明。冻结的 289 条尝试保持原样，另列 13 个优化与资格阶段（12 个新数值候选和 1 个 GPU 资格门）。64 个方法格仍为 38 个本轮数值完整、8 个可复用的同合同历史完整、14 个没有完整数值时域、4 个 Airplane discrete 合同阻塞。五个新完整 P3 结果改进已有格，不增加覆盖格数。本次报告整理没有重跑旧实验或旧数值检查器。
+当前报告按实际采用的结果更新全部时间、逐状态 endpoint / tube 宽度、每个未完成方法的停点和原因。当前矩阵仍为 38 个项目内数值完整、8 个同合同历史完整、14 个无完整数值时域、4 个 Airplane discrete 合同阻塞，共 64 格。新候选改进已有格，不增加覆盖数；旧实验、旧资格检查器和原始 RESULT 未重跑或改写。图形仍全部由 Python 生成。
 
-读数规则：时间单位均为秒；宽度为保存上界减下界。正文按物理状态原单位列数值，不把不同单位加总。宽度保留八位有效数字，时间保留三位小数，完整 binary64 可读数、上下界、逐步范围、路径和行号见 CSV / JSON。“—”表示未保存、无有效全初集前缀或合同未执行；安全前缀不适用时另标注，原因逐节说明，不表示零。
+时间单位为秒，宽度为保存上界减下界，按物理状态原单位列出。宽度显示八位有效数字，完整可读 binary64、上下界、逐步范围和原始路径在 CSV / JSON。不同量纲不合成紧度总分。“—”是缺失或不适用，不表示零。数值完成、保存的性质观察、集合包含和独立端到端 NNCS 浮点证书分开报告。
+
+表中 P3 是我方实现族的沿用列名，不代表所有实例阶数和注入路径相同。具名两态 Single Pendulum 保留 order2 / point1 / validation3、native-f64 和原参考注入，仅使用其已安装的严格 endpoint；其他 P3 合同按各自保存配置说明。
+
+## 本轮完整候选的速度与紧度取舍
+
+所选方案与上一版采用方案的内部 driver 计时见下表；每个新方案仅一次实际运行。旧分支的最快中位数使用不同合同、保留阶数或输出工作量，不能直接移入此表。共享服务器和不同时间的单次测量不能证明稳定加速比。
+
+| 实例 | driver 上一版 → 本轮 | 单次时间下降 | 本轮 process | 宽度依据 |
+| --- | --- | --- | --- | --- |
+| Attitude Control avoid | 8.804 → 6.264 | 28.85% | 10.447 | 比较输出相同 |
+| TORA reach-tanh | 9.305 → 4.963 | 46.66% | 9.242 | 新保存范围 |
+| Docking constraint | 13.239 → 8.538 | 35.51% | 12.700 | 比较输出相同 |
+| Single Pendulum reach | 2.334 → 1.289 | 44.79% | 5.180 | 比较输出相同 |
+| NAV robust | 12.667 → 10.999 | 13.17% | 14.961 | 比较输出相同 |
+| NAV standard | 25.865 → 19.864 | 23.20% | 24.031 | 比较输出相同 |
+| TORA reach-sigmoid | 5.255 → 5.763 | -9.66% | 9.995 | 新保存范围 |
+| QUAD reach | 997.675 → 969.549 | 2.82% | 978.067 | 新保存范围 |
+
+
+![本轮所选方案与上一版内部时间](evidence/results/archcomp26_report_20261006/figures/driver_selected_before_after.png)
+
+TORA tanh 的速度优先版 process / driver 为 8.791 / 4.563 秒；收紧版为 9.242 / 4.963 秒。收紧版四态 500 步 endpoint 和 tube 的 4,000 项宽度均不增加，终点四态仅缩小约 0.023%–0.048%；部分终点区间位置变化，因此更窄不等于都被旧区间包含。
+
+TORA sigmoid 的上一版速度优先结果为 9.392 / 5.255 秒。仅把 cutoff 从 1e-6 改到 1e-8 的完整结果为 9.995 / 5.763 秒，x1 / x2 终点缩小约 0.86% / 0.91%，全 4,000 项保存宽度均不增加且各区间包含于旧区间。高阶候选及其早期变宽项另列于附录，不能凭最后两态的改善声称全程更紧。
 
 ## 全部 benchmark 的完整进程时间
 
-下表仅列已完整覆盖具名时域且有明确外层 process wall 的所选单次进程；五个 P3 新候选使用 10 月 5 日结果，其余保持原所选进程。历史复用注明“历史”。无全程格不填失败耗时，失败进程时间仍完整列入各节和原始时间表。单次、新旧日期、硬件路径与并发不同，因此此表用于查看实际代价，不是稳定速度排行榜。
+仅对覆盖具名全时域的方法填写明确保存的 process wall；历史复用注明“历史”。失败或短前缀耗时列入分节和完整时间索引，不参加全程速度比较。外层进程、wrapper、payload、driver 内部和 driver 调用分别计时，不互相代填。
 
 | 实例 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
 | ACC safe-distance | 8.037 | 8.237 | 7.987 | 7.787 |
 | Airplane continuous | 未全程 | 未全程 | 未全程 | 未全程 |
 | Airplane discrete | 合同缺失 | 合同缺失 | 合同缺失 | 合同缺失 |
-| Attitude Control avoid | 12.952 | 6.884 | 6.884 | 6.182 |
+| Attitude Control avoid | 10.447 | 6.884 | 6.884 | 6.182 |
 | Balancing reach | 未全程 | 未全程 | 未全程 | 未全程 |
-| Docking constraint | 17.412 | 12.699 | 12.668 | 9.139 |
+| Docking constraint | 12.700 | 12.699 | 12.668 | 9.139 |
 | Double Pendulum less-robust | 74.274 | 9.539 | 8.388 | 1107.127 |
 | Double Pendulum more-robust | 未全程 | 未全程 | 未全程 | 未全程 |
-| NAV standard | — | — | — | 1478.866 |
-| NAV robust | 16.616 | — | — | 68.094 历史 |
-| QUAD reach | 1004.197 | 94.583 | 108.018 | 47058.887 |
-| Single Pendulum reach | 6.184 | 5.381 | 5.581 | 4.729 |
+| NAV standard | 24.031 | — | — | 1478.866 |
+| NAV robust | 14.961 | — | — | 68.094 历史 |
+| QUAD reach | 978.067 | 94.583 | 108.018 | 47058.887 |
+| Single Pendulum reach | 5.180 | 5.381 | 5.581 | 4.729 |
 | TORA remain | 10.411 | 未全程 | 未全程 | 8.339 |
-| TORA reach-sigmoid | 9.392 | 13.653 | 13.707 | 8.943 |
-| TORA reach-tanh | 13.457 | — | — | 8.856 历史 |
+| TORA reach-sigmoid | 9.995 | 13.653 | 13.707 | 8.943 |
+| TORA reach-tanh | 9.242 | — | — | 8.856 历史 |
 | Unicycle reach | 11.698 | 9.594 | 9.895 | 10.397 |
 
 
-NAV 旧 P3 的 28.999885 / 18.703898 是 payload wall，不能填入外层 process wall。NAV 与 TORA tanh 的部分历史作者时间是 driver call，另有内部 driver elapsed，两者也不混合。所有可读时间层级在各节展开；未知外层保持空缺。
+NAV 与 TORA tanh 部分历史作者记录没有外层 process，只有 driver call 或内部 elapsed，故主表保留空缺。NAV standard 新方案 process 24.031 秒不能直接对比作者约 13 秒的内部计时；相同层级的完整数据在分节展开。
 
-### 四组既有重复进程计时
+### 既有重复进程计时
 
-以下各格为原 campaign 后五个独立进程的中位数 [最小值, 最大值]，每格 n=5；不包含首进程，不混入新优化单次。原 campaign 在共享服务器轮换执行，不能推出跨机器或独占资源下的稳定排名。
+下面是冻结 campaign 后五个独立进程的中位数 [最小值, 最大值]，每格 n=5，不包含首进程，也不混入本轮单次优化。新旧 campaign 不互相替代。
 
-| 原 campaign | P3 | Huan | Xiangru | 原生 |
+| 冻结 campaign | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
 | ACC safe-distance | 8.741 [8.638, 8.841] | 8.237 [8.138, 8.338] | 7.988 [7.938, 8.087] | 7.736 [7.637, 7.787] |
 | Attitude Control avoid | 12.952 [12.851, 13.154] | 6.835 [6.834, 7.036] | 6.885 [6.783, 6.987] | 6.181 [5.983, 6.182] |
@@ -46,42 +70,23 @@ NAV 旧 P3 的 28.999885 / 18.703898 是 payload wall，不能填入外层 proce
 | TORA reach-sigmoid | 13.905 [13.757, 14.055] | 13.653 [13.507, 13.758] | 13.607 [13.507, 13.707] | 8.943 [8.942, 8.993] |
 
 
-全部首进程、后续进程、四层计时及附加 native / driver-call 时间见 [逐进程 CSV](evidence/results/archcomp26_report_20261005/timing/runs.csv) 与 [分布 CSV](evidence/results/archcomp26_report_20261005/timing/campaign_statistics.csv)。
+### 学到和采用的实现变化
 
-## 五个新 P3 完整结果
+旧 codex/progress-report-20260923 分支中的 engine_linear_leaf_v2 路径已经在现有引擎中，并没有丢失。它当时较快的结果包含不同控制定义、非同等级注入或不保存逐步几何的配置；不能取消现有严格路径和绘图输出来复现那个数字。上一版恢复了私有输出、Horner 绑定和按盒数分块，本轮把原来两轮加权映射放在同一 CUDA 图内，并保留完整条件检查、失败回退和首个真实输入的原实现直接比对。
 
-下表比较同一 driver 内部计时边界的保存参考与新候选。百分比为本次单样本描述性下降，启动路径差异与共享机器负载尚未通过重复、交错实验隔离。新候选没有删除绘图所需逐步输出。
+分块不是越小越快。NAV robust 25 盒用 32 行融合图有收益；NAV standard 640 盒用 256 行分块变慢，512 行融合图才把内部时间降到 19.864 秒。QUAD 1024 盒的融合版没有胜过已选 256 行路径；相同输入 sin/cos 幂复用的全程结果为 process 975.862 / driver 968.516 秒，相比上一版 1004.197 / 997.675 秒分别少 2.82% / 2.92%。1000 条 pooled 观察直接相同。新 GPU 小门的 0.938 秒计入外层，不在 driver 内。最终主选把这个复用与控制余项收紧组合，process / driver 为 978.067 / 969.549 秒，分别比上一版少 2.60% / 2.82%；相比纯提速版付出约 2.205 秒 process，换取自身记录的终点收紧。新联合 GPU 小门为 0.934 秒，仍计在外层。
 
-| 实例 | driver 旧 → 新 | 单次下降 | 新 process | 紧度变化 |
-| --- | --- | --- | --- | --- |
-| ACC safe-distance | 4.720 → 3.982 | 15.65% | 8.037 | 保存宽度相同 |
-| NAV robust | 15.532 → 12.667 | 18.44% | 16.616 | 保存宽度相同 |
-| QUAD reach | 1350.526 → 997.675 | 26.13% | 1004.197 | 保存宽度相同 |
-| TORA reach-sigmoid | 9.794 → 5.255 | 46.34% | 9.392 | 保存宽度相同 |
-| Unicycle reach | 13.617 → 7.652 | 43.80% | 11.698 | 保存宽度相同 |
+Huan / Xiangru 的 QUAD 使用 work / point / validation 阶 2/1/1 与 parity 路径，P3 原选方案为 3/2/4 且保存严格区间误差账本；双方工作量并不相同。本轮借鉴其减少重复工作和更高阶 TORA 配置，但没有移除严格验证。K=20 是每 20 步重算完整保留历史，不是截掉 20 步以前的历史。未做匹配消融，不能给这些差异编造因果百分比。
 
-
-ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.037、1357.555→1004.197、13.959→9.392、17.820→11.698 秒；NAV 没有对应旧外层记录，只比较内部 15.532→12.667 秒。新 NAV payload 把 Torch 导入移出计时，不能拿它和旧 payload 做净加速比例。QUAD 新全程与三条 GPU2 短作业在不同 GPU 上有时间重叠，资源和时间窗均在索引。
-
-“保存宽度相同”指收据实际比过的对象。ACC、NAV、sigmoid、Unicycle 比较了完整保存范围及相应状态/配置字段；QUAD 比较 1000 条 pooled tube/endpoint 观察、接受记录与科学终态字段，未保存可供比较的逐盒全程几何，也没有证明内部 TM/SR 对象逐项相同。它们都不是新取得的独立 NNCS 浮点证书。
-
-![五个完整候选的内部 driver 时间对比](evidence/results/archcomp26_report_20261005/figures/driver_before_after.png)
-
-### 速度改进来自哪里
-
-恢复了历史快分支中已存在的私有输出分配与 Horner 内核绑定；按小批量实际盒数使用 1 / 32 行加权图，减少无效填充；论文 QUAD 使用 256 行加权分块减少图调用。单盒 fused 候选把原本两轮映射纳入同一图，仍要求两轮条件满足并保留原路径回退；首个合格输入与原细化的直接比较耗时计入新进程。ACC fused 外层 8.089 秒没有胜过较简单的 small1 8.037 秒，因此当前 ACC 选择 small1。
-
-已找回的旧快分支是 codex/progress-report-20260923，对应服务器 engine_linear_leaf_v2。它在当时 NAV robust、TORA tanh、旧 sigmoid、旧 Unicycle、ACC 五组保存中位数较低；Attitude 和 Single Pendulum 并非全胜。旧 sigmoid 是 22(f−0.5)，新合同是 11f；旧 Unicycle 扰动方程也不同，且旧计时不含现在的逐步几何导出。因此不能把旧数字直接替换当前主表。[历史时间和合同差异](../research/p3_speed_tightness_20261005/README.md)保留原来源。
-
-论文 QUAD 的已知开销差异包括：Huan / Xiangru 使用 work / point / validation 阶 2/1/1 与 parity 路径，P3 使用 3/2/4、严格区间误差账本和两轮已接受路径细化。四方主配置均是 1024 盒、h=0.005、1000 小步；P3 的 K=20 是每 20 步重算完整保留历史，并非只留 20 步。尚无匹配的分阶段消融，不能给这些差异分配因果百分比。
+控制余项收紧借鉴作者的 hybrid / 双斜率仿射包络思路，同时保留我方原控制多项式与严格注入：把额外包络换算成相对于这个固定多项式的余项约束，再求交。QUAD 全程实际需要 50 次原 NN 调用加 50 次额外调用；原计数器的 50 不能冒充总数。附加浮点 CROWN 包络仍是条件性输入，不因此获得独立端到端证书。
 
 ## 宽度比较口径
 
-每步先对同一方法的全部有效初盒取坐标并集，保存 lo、hi 和 width=hi−lo。endpoint 是传播终点，tube 是整个小步。时钟、保持控制和 Unicycle 常值扰动等辅助量不并入物理态比较，原始记录仍保留。几何源进程与所选计时进程可能不同，各自按源表追溯，不伪装为同一次实验。正文第一张表在四方均覆盖全初集的共同终点时刻比较 endpoint；第二张表取从起点至共同数值时刻各小步 tube 宽度的最大值。后者不是“全时间并集的宽度”：运动距离不被当作单步包络松弛。全时并集、每盒均值/最大值只在对应来源实际保存时另列，不能由 pooled 曲线倒推。
+每步先对相同方法的全部有效初盒取坐标并集，endpoint 是传播终点，tube 是整个小步。正文先列四方共同有效终点的宽度，再列截至该时刻每个单步 tube 宽度的最大值；后者不是全时间并集的宽度。辅助时钟、保持控制及常值扰动不加入物理态评分，原记录保留。只有实际保存过相关方向或逐盒数据才可分析该几何；pooled 坐标盒不能恢复相关八方向包络。
 
-提前停止时共同数值时刻与性质安全时刻分开：Balancing raw4 为 0.415 秒；DP more 数值 0.32 秒、安全 0.30 秒；TORA remain h=0.1 数值 18.9 秒、安全 18.4 秒。各法自身最后记录和完整初集最后记录另外保存，不把不同时间点的宽度互相比。QUAD 作者两法只有终点，故全时 tube 栏明确缺失。
+提前停止的共同数值时刻与安全观察时刻不同：Balancing raw4 为 0.415 秒；DP more 数值 0.32 秒、安全 0.30 秒；TORA remain h=0.1 数值 18.9 秒、安全 18.4 秒。各法自身最后完整初集范围另列，不能用不同时刻的宽度排名。QUAD 作者两法只存终点，全时 tube 缺失。
 
-宽度较小只说明这个保存投影窄，不保证集合包含。[逐态成对差值与包含关系](evidence/results/archcomp26_report_20261005/widths/pairwise_comparisons.csv)另列 P3 对三方的绝对差、相对差和 endpoint 区间包含；没有把不同物理量汇总成一个紧度分数。
+新数值参数的 TORA 宽度从它们自己的 ranges.bin 重算，QUAD 联合方案从自身逐步观察重算；仅在完整保存输出直接比较相同的实现候选上沿用原范围。时间来源与几何来源分别注明，不伪装为同一原始运行。逐态绝对差、相对差和终点包含关系见配套 pairwise_comparisons.csv。
 
 ## 1 ACC safe-distance
 
@@ -102,8 +107,6 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：全部 50 段保存 tube 满足安全半空间；完整 T=5。
 
 原始结果：[P3](../research/p3_speed_tightness_20261005/results/acc_p3_fast1_20261005_001/run_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/acc_fourway_campaign_001/steady05_huan/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/acc_fourway_campaign_001/steady05_xiangru/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/acc_fourway_campaign_001/steady05_native/RESULT.json)。
-
-当前 P3 使用 [acc_p3_fast1_20261005_001](../research/p3_speed_tightness_20261005/results/acc_p3_fast1_20261005_001/run_001/RESULT.json)；以下宽度继承其已直接比对相同的保存参考对象。
 
 ### 所选进程各层时间
 
@@ -153,7 +156,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 共同终点 P3 对 原生 Flow*：较窄 x_lead, v_lead, a_lead, x_ego, v_ego, a_ego；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S033, S035, S037, S039；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S033, S035, S037, S039；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 2 Airplane continuous
 
@@ -201,7 +204,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 64 个二分子盒各完成首个 0.01 秒 plant 步，其中 8 盒保存安全、56 盒 Unknown；高角子盒随后只完成 4/10 小步到 0.04 秒，第 5 步 x/y 自包含失败。这是另列数值诊断，不填主合同的 T=2 格，也不是实际不安全轨迹。
 
-宽度来源编号：无有效主合同范围；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：无有效主合同范围；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 3 Airplane discrete
 
@@ -235,7 +238,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 全部 12 个状态 sx, sy, sz, vx, vy, vz, phi, theta, psi, r, p, q：四方法均无主合同有效 endpoint / tube 宽度，不能填终点或全时数值。逐状态缺失格仍全部列在 summary.csv 和 missing_fields.csv。
 
-宽度来源编号：无有效主合同范围；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：无有效主合同范围；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 4 Attitude Control avoid
 
@@ -255,7 +258,9 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：全部 60 段六维保存 tube 避开修正后的闭危险盒。
 
-原始结果：[P3](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_huan/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_xiangru/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_native/RESULT.json)。
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_huan/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_xiangru/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_native/RESULT.json)。
+
+当前 P3 使用 [attitude_fused1_full60_001](../research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json)；宽度来自原保存参考，候选对完整保存对象有直接比较收据。
 
 ### 所选进程各层时间
 
@@ -263,12 +268,13 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | 12.952 | 6.884 | 6.884 | 6.182 |
-| runner payload | 12.109 | 4.601 | 4.609 | — |
-| 内部 driver | 8.804 | 2.826 | 2.829 | — |
+| 外层 process | 10.447 | 6.884 | 6.884 | 6.182 |
+| 候选 wrapper | 9.643 | — | — | — |
+| runner payload | 8.043 | 4.601 | 4.609 | — |
+| 内部 driver | 6.264 | 2.826 | 2.829 | — |
 
 
-保存资源：P3 CPU=10-13，GPU=2；Huan CPU=10-13，GPU=2；Xiangru CPU=10-13，GPU=2；原生 Flow* CPU=10-13，GPU=2。进程起止、同批并发窗口、字段路径详见时间索引。
+保存资源：P3 CPU=[10, 11, 12, 13]，GPU=2；Huan CPU=10-13，GPU=2；Xiangru CPU=10-13，GPU=2；原生 Flow* CPU=10-13，GPU=2。进程起止、同批并发窗口、字段路径详见时间索引。
 
 ### 全部物理状态宽度
 
@@ -304,7 +310,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 共同终点 P3 对 原生 Flow*：较窄 x1, x2, x3, x4, x5, x6；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S001, S002, S003, S004；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S001, S002, S003, S004；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 5 Balancing reach
 
@@ -383,7 +389,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 | x4 | 16.346639 @0.43 | 26.704665 @0.49 | 26.704665 @0.49 | 16.092615 @0.415 |
 
 
-宽度来源编号：S009, S010, S011, S012；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S009, S010, S011, S012；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 6 Docking constraint
 
@@ -403,7 +409,9 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：完整 T=40 数值流管；四方法性质 UNKNOWN。
 
-原始结果：[P3](evidence/results/archcomp26_20261001/docking_p3_full40_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/docking_huan_full40_001/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/docking_xiangru_full40_001/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/native_docking_full40_001/RESULT.json)。
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/docking_huan_full40_001/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/docking_xiangru_full40_001/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/native_docking_full40_001/RESULT.json)。
+
+当前 P3 使用 [docking_fused1_full400_001](../research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json)；宽度来自原保存参考，候选对完整保存对象有直接比较收据。
 
 ### 所选进程各层时间
 
@@ -411,9 +419,10 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | 17.412 | 12.699 | 12.668 | 9.139 |
-| runner payload | 16.601 | 11.852 | 11.858 | — |
-| 内部 driver | 13.239 | 8.552 | 8.516 | — |
+| 外层 process | 12.700 | 12.699 | 12.668 | 9.139 |
+| 候选 wrapper | 11.894 | — | — | — |
+| runner payload | 10.343 | 11.852 | 11.858 | — |
+| 内部 driver | 8.538 | 8.552 | 8.516 | — |
 
 
 保存资源：P3 CPU=[14, 15, 16, 17]，GPU=3；Huan CPU=[14, 15, 16, 17]，GPU=3；Xiangru CPU=[14, 15, 16, 17]，GPU=3；原生 Flow* CPU=10-13，GPU=2。进程起止、同批并发窗口、字段路径详见时间索引。
@@ -448,7 +457,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 共同终点 P3 对 原生 Flow*：较窄 sx, sy, vx, vy；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S005, S006, S007, S008；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S005, S006, S007, S008；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 7 Double Pendulum less-robust
 
@@ -514,7 +523,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 共同终点 P3 对 原生 Flow*：较窄 theta1_dot, theta2_dot；较宽 theta1, theta2；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S041, S044, S047, S050；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S041, S044, S047, S050；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 8 Double Pendulum more-robust
 
@@ -594,7 +603,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 | theta2_dot | 0.42804178 @0.36 | 0.41904608 @0.36 | 0.41904608 @0.36 | 0.46958845 @0.32 |
 
 
-宽度来源编号：S013, S014, S015, S016；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S013, S014, S015, S016；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 9 NAV standard
 
@@ -614,7 +623,9 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：保存逐盒二维 tube 避开闭障碍，T=6 所有终点盒进入目标；x/y 单轴图本身不能证明二维避障。
 
-原始结果：[P3](evidence/results/archcomp26_20261001/nav_author_standard_working_p3_full30_001/RESULT.json)；[Huan](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_standard_huan/result.json)；[Xiangru](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_standard_xiangru/result.json)；[原生 Flow*](evidence/results/archcomp26_20261001/nav_author_standard_native_full30_001/RESULT.json)。
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json)；[Huan](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_standard_huan/result.json)；[Xiangru](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_standard_xiangru/result.json)；[原生 Flow*](evidence/results/archcomp26_20261001/nav_author_standard_native_full30_001/RESULT.json)。
+
+当前 P3 使用 [nav_standard_fused512_full600_001](../research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json)；宽度来自原保存参考，候选对完整保存对象有直接比较收据。
 
 ### 所选进程各层时间
 
@@ -622,9 +633,10 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | — | — | — | 1478.866 |
-| runner payload | 29.000 | — | — | — |
-| 内部 driver | 25.865 | 13.174 | 13.072 | — |
+| 外层 process | 24.031 | — | — | 1478.866 |
+| 候选 wrapper | 23.168 | — | — | — |
+| runner payload | 21.603 | — | — | — |
+| 内部 driver | 19.864 | 13.174 | 13.072 | — |
 | 调用 driver | — | 14.719 | 14.506 | — |
 
 
@@ -660,7 +672,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 共同终点 P3 对 原生 Flow*：较窄 x, y, speed, heading；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S017, S018, S019, S020；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S017, S018, S019, S020；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 10 NAV robust
 
@@ -680,9 +692,9 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：保存逐盒二维 tube 避障且 T=6 终点入目标。
 
-原始结果：[P3](../research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/RESULT.json)；[Huan](../../../../results/archcomp_review_20260923/evidence_v2/timing_v1/nav_robust_r2_huan/result.json)；[Xiangru](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_robust_xiangru/result.json)；[原生 Flow*](evidence/results/archcomp26_20261001/nav_robust_native_historical_20260923/result.json)。
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json)；[Huan](../../../../results/archcomp_review_20260923/evidence_v2/timing_v1/nav_robust_r2_huan/result.json)；[Xiangru](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_robust_xiangru/result.json)；[原生 Flow*](evidence/results/archcomp26_20261001/nav_robust_native_historical_20260923/result.json)。
 
-当前 P3 使用 [nav_robust_p3_fast32_20261005_001](../research/p3_speed_tightness_20261005/results/nav_robust_p3_fast32_20261005_001/run_001/RESULT.json)；以下宽度继承其已直接比对相同的保存参考对象。
+当前 P3 使用 [nav_robust_fused32_full600_001](../research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json)；宽度来自原保存参考，候选对完整保存对象有直接比较收据。
 
 ### 所选进程各层时间
 
@@ -690,16 +702,16 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | 16.616 | — | — | 68.094 |
-| 候选 wrapper | 15.781 | — | — | — |
-| runner payload | 14.280 | — | — | — |
-| 内部 driver | 12.667 | — | 11.217 | — |
+| 外层 process | 14.961 | — | — | 68.094 |
+| 候选 wrapper | 14.097 | — | — | — |
+| runner payload | 12.617 | — | — | — |
+| 内部 driver | 10.999 | — | 11.217 | — |
 | 调用 driver | — | 11.656 | 12.583 | — |
 | 原生子进程 | — | — | — | 64.868 |
 | 控制器启动 | — | — | — | 3.011 |
 
 
-保存资源：P3 CPU=6-9，GPU=1；Huan CPU=[14, 15, 16, 17]，GPU=3；Xiangru CPU=[14, 15, 16, 17]，GPU=3；原生 Flow* CPU=[14, 15, 16, 17]，GPU=3。进程起止、同批并发窗口、字段路径详见时间索引。
+保存资源：P3 CPU=[6, 7, 8, 9]，GPU=1；Huan CPU=[14, 15, 16, 17]，GPU=3；Xiangru CPU=[14, 15, 16, 17]，GPU=3；原生 Flow* CPU=[14, 15, 16, 17]，GPU=3。进程起止、同批并发窗口、字段路径详见时间索引。
 
 ### 全部物理状态宽度
 
@@ -731,7 +743,7 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 共同终点 P3 对 原生 Flow*：较宽 x, y, speed, heading；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S021, S022, S023, S024；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S021, S022, S023, S024；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 11 QUAD reach
 
@@ -751,11 +763,13 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 **Huan / Xiangru / 原生 Flow*：** 四方均完成论文 ODE 的 1024×1000 盒步；T=5 x3 并集均入 [0.94,1.06]。尚未完成的是权威 reach-and-remain 全时间窗语义/检查、独立 NNCS 证明及 native octagon 生产资格。 取得参与者 reach-and-remain checker 或等价权威记录；Huan/Xiangru 若要画全时曲线需新的逐步坐标记录。原生须在控制构造修正后重新建立 plant、多期与全时包含资格，不能由条件性首批构造门外推。
 
-保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：四方仅有共同终点入带观察。P3/原生保存包络分别约自 3.95/3.87 秒持续入带；Huan/Xiangru 未保存逐步坐标，无法同样扫描。
+保存性质观察（P3）：当前run自己的 pooled x3 tube∪endpoint 保存入[0.94,1.06]后缀从第790步、名义段起点3.945秒开始；driver终点与pooled观察器为不同对象，逐态差值另存。此为保存数值观察，不是完整reach-remain checker或独立证书。 当前payload的T=5终点目标字段为true；没有逐盒全程几何。
 
-原始结果：[P3](../research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/supervisor/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/full50_001/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/native_quad_paper_full50_001/RESULT.json)。
+保存性质观察（Huan / Xiangru / 原生 Flow*）：四方仅有共同终点入带观察。P3/原生保存包络分别约自 3.95/3.87 秒持续入带；Huan/Xiangru 未保存逐步坐标，无法同样扫描。
 
-当前 P3 使用 [quad_paper_p3_private256_full1000_20261005_001](../research/p3_speed_tightness_20261005/results/quad_paper_p3_private256_full1000_20261005_001/run_001/RESULT.json)；以下宽度继承其已直接比对相同的保存参考对象。
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/supervisor/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/full50_001/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/native_quad_paper_full50_001/RESULT.json)。
+
+当前 P3 使用 [quad_paper_joint_full1000_001](../research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json)；宽度来自此候选的新保存范围。
 
 ### 所选进程各层时间
 
@@ -763,14 +777,14 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | 1004.197 | 94.583 | 108.018 | 47058.887 |
-| 候选 wrapper | 1003.063 | — | — | — |
-| runner payload | 1002.996 | — | 107.221 | — |
-| 内部 driver | 997.675 | 90.471 | 103.686 | — |
+| 外层 process | 978.067 | 94.583 | 108.018 | 47058.887 |
+| 候选 wrapper | 976.924 | — | — | — |
+| runner payload | 975.966 | — | 107.221 | — |
+| 内部 driver | 969.549 | 90.471 | 103.686 | — |
 | 调用 driver | — | 91.841 | — | — |
 
 
-保存资源：P3 CPU=14-17，GPU=3；Huan CPU=10-13，GPU=2；Xiangru CPU=14-17，GPU=3；原生 Flow* CPU=6-9，GPU=1。进程起止、同批并发窗口、字段路径详见时间索引。
+保存资源：P3 CPU=[14, 15, 16, 17]，GPU=3；Huan CPU=10-13，GPU=2；Xiangru CPU=14-17，GPU=3；原生 Flow* CPU=6-9，GPU=1。进程起止、同批并发窗口、字段路径详见时间索引。
 
 ### 全部物理状态宽度
 
@@ -780,17 +794,17 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 | 状态 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| x1 | 6.8056716 | 6.6448508 | 6.6448508 | 6.7357008 |
-| x2 | 6.9957243 | 6.8063304 | 6.8063304 | 6.9001884 |
-| x3 | 0.06722575 | 0.047741817 | 0.047741817 | 0.050976637 |
-| x4 | 1.570269 | 1.4706231 | 1.4706231 | 1.5035763 |
-| x5 | 1.6597892 | 1.5462885 | 1.5462885 | 1.5799757 |
-| x6 | 0.17203815 | 0.12013578 | 0.12013578 | 0.12869737 |
-| x7 | 0.011294408 | 0.0075654838 | 0.0075654838 | 0.0081613657 |
-| x8 | 0.0095594515 | 0.0059472759 | 0.0059472759 | 0.0065107337 |
-| x9 | 0.0061435404 | 0.004464788 | 0.004464788 | 0.0046944377 |
-| x10 | 0.15319852 | 0.084982699 | 0.084982699 | 0.094184143 |
-| x11 | 0.12864285 | 0.070101346 | 0.070101346 | 0.077992662 |
+| x1 | 6.7951693 | 6.6448508 | 6.6448508 | 6.7357008 |
+| x2 | 6.9843128 | 6.8063304 | 6.8063304 | 6.9001884 |
+| x3 | 0.065515819 | 0.047741817 | 0.047741817 | 0.050976637 |
+| x4 | 1.5623984 | 1.4706231 | 1.4706231 | 1.5035763 |
+| x5 | 1.6513811 | 1.5462885 | 1.5462885 | 1.5799757 |
+| x6 | 0.16748536 | 0.12013578 | 0.12013578 | 0.12869737 |
+| x7 | 0.010886882 | 0.0075654838 | 0.0075654838 | 0.0081613657 |
+| x8 | 0.009170359 | 0.0059472759 | 0.0059472759 | 0.0065107337 |
+| x9 | 0.0060551231 | 0.004464788 | 0.004464788 | 0.0046944377 |
+| x10 | 0.14630497 | 0.084982699 | 0.084982699 | 0.094184143 |
+| x11 | 0.1225235 | 0.070101346 | 0.070101346 | 0.077992662 |
 | x12 | 4.4501477e-308 | 0 | 0 | 0 |
 
 
@@ -798,17 +812,17 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 | 状态 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| x1 | 6.8056717 | — | — | 6.7357009 |
-| x2 | 6.9960996 | — | — | 6.9001886 |
-| x3 | 0.84963751 | — | — | 0.84953307 |
-| x4 | 1.5703142 | — | — | 1.5035763 |
-| x5 | 1.6598746 | — | — | 1.5799757 |
-| x6 | 1.5946517 | — | — | 1.5888224 |
-| x7 | 0.022972991 | — | — | 0.0228027 |
-| x8 | 0.022121318 | — | — | 0.02194992 |
-| x9 | 0.0061435404 | — | — | 0.0046944377 |
-| x10 | 0.42057242 | — | — | 0.41310917 |
-| x11 | 0.38612086 | — | — | 0.3811292 |
+| x1 | 6.7951694 | — | — | 6.7357009 |
+| x2 | 6.9846904 | — | — | 6.9001886 |
+| x3 | 0.84963598 | — | — | 0.84953307 |
+| x4 | 1.5624439 | — | — | 1.5035763 |
+| x5 | 1.6514668 | — | — | 1.5799757 |
+| x6 | 1.5946309 | — | — | 1.5888224 |
+| x7 | 0.022914217 | — | — | 0.0228027 |
+| x8 | 0.022072739 | — | — | 0.02194992 |
+| x9 | 0.0060551231 | — | — | 0.0046944377 |
+| x10 | 0.41961677 | — | — | 0.41310917 |
+| x11 | 0.38555037 | — | — | 0.3811292 |
 | x12 | 4.4501477e-308 | — | — | 0 |
 
 
@@ -818,13 +832,25 @@ ACC、QUAD、sigmoid、Unicycle 的匹配外层保存样本分别为 8.790→8.0
 
 共同终点 P3 对 原生 Flow*：较宽 x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-P3 主表使用观察器最后 endpoint；另存 driver final_hull，二者 x5 宽度相差约 5.69×10⁻⁶，不能互换。Huan / Xiangru 只有 driver 终态坐标范围，逐步 tube 未保存，因此不能比较其全时紧度。原生已有 SCAN.json 保存了完整 1000 步 × 12 态 pooled 界，本版直接读取该保存扫描补齐；没有重新扫描远端大文件，来源和记录数在补充回执。
+P3 主表使用观察器最后 endpoint；driver final_hull 是另一个保存对象，其坐标宽度不可互换。Huan / Xiangru 只有 driver 终态坐标范围，逐步 tube 未保存，因此不能比较其全时紧度。原生 SCAN.json 保存了完整 1000 步 × 12 态 pooled 界，本版直接读取已保存扫描，没有重新扫描远端大文件。
 
-原生历史终点 VERIFIED 不是参与者 reach-and-remain 全时 checker。保存数值包络的连续入高度带后缀：native 约 3.87 秒，P3 约 3.95 秒；P3 需联合 tube 与 endpoint，不能忽略末位舍入差。它们不补齐 Huan / Xiangru 的逐步数据或独立全时证书。
+本版纠正一处旧文字口径：旧报告约 5.69e-6 指 x5 的单侧界差，实际 driver 与 pooled 宽度差约 −1.1272e-5。新数值候选的差值另从自身两个保存对象计算，逐态列在 geometry_observations.json；原上下界记录不改。
+
+原生历史终点 VERIFIED 不是参与者 reach-and-remain 全时 checker。高度带后缀只作为保存几何观察，需联合 tube 与 endpoint；它不补齐 Huan / Xiangru 的逐步数据或独立全时证书。当前 P3 的相关数值应从其自身新保存范围读取，不能继承旧轨迹的进入时刻。
+
+当前保存的 x3 tube 与 endpoint 联合范围，从第 790 步（名义段起点 3.945 秒）开始，后续全部处于 [0.94,1.06]；这是数据观察，不升级为全时性质证明。[逐态保存对象差异及后缀来源](evidence/results/archcomp26_report_20261006/widths/quad_paper_joint_full1000_001_geometry_observations.json)。
+
+本次主选在同一次完整运行中记录当前时间与新宽度；高度 x3 终点从 0.06722575 缩到 0.065515819，比上一版窄 2.5436%。各态全程细节、微小反向变化及速度优先备选见附录，不声称所有状态每一时刻都严格改善。
+
+![QUAD 当前保存时间高度范围](evidence/results/archcomp26_report_20261006/figures/quad_time_x3.png)
+
+![QUAD 当前轴对齐状态投影](evidence/results/archcomp26_report_20261006/figures/quad_x1_x2.png)
+
+全部 12 态逐步宽度图提供可缩放 PDF：[endpoint](evidence/results/archcomp26_report_20261006/figures/quad_endpoint_widths.pdf)；[tube](evidence/results/archcomp26_report_20261006/figures/quad_tube_widths.pdf)。Huan / Xiangru 仅画真实保存的终态，缺失时段留空；坐标盒投影不代表相关八方向包络。
 
 原生八方向生产门仍关闭。已保存的修补版全 1024 盒首个 h=0.005 plant 条件性门覆盖 20,480 个合成物理态界；lane 0 第二步门只涉及一盒。10 月 4 日控制余项构造回放已检查 1024 盒、3072 输出、196608 个精确仿射顶点，四个阶段 exit 0，但依赖原实数 CROWN 包络有效，未调用 NN/CROWN 或 ODE。它不认证后续控制或整个时域。[已完成回放与限制](evidence/results/archcomp26_20261001/native_quad_allbox_adaptive_remainder_replay_20261004_001/README.md)。
 
-宽度来源编号：S053, S054, S055, S058；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：OCT6_quad_paper_joint_full1000_001, S054, S055, S058；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 12 Single Pendulum reach
 
@@ -844,7 +870,9 @@ P3 主表使用观察器最后 endpoint；另存 driver final_hull，二者 x5 �
 
 保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：具名两态 T=1 完整，t∈[0.5,1] 的保存 x1 tube 在 [0,1] 内；不覆盖未定义的三态执行身份。
 
-原始结果：[P3](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_huan/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_xiangru/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_native/RESULT.json)。
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_huan/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_xiangru/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_native/RESULT.json)。
+
+当前 P3 使用 [sp_two_state_fused1_full100_001](../research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json)；宽度来自原保存参考，候选对完整保存对象有直接比较收据。
 
 ### 所选进程各层时间
 
@@ -852,12 +880,13 @@ P3 主表使用观察器最后 endpoint；另存 driver final_hull，二者 x5 �
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | 6.184 | 5.381 | 5.581 | 4.729 |
-| runner payload | 5.416 | 4.570 | 4.622 | — |
-| 内部 driver | 2.334 | 1.475 | 1.469 | — |
+| 外层 process | 5.180 | 5.381 | 5.581 | 4.729 |
+| 候选 wrapper | 4.410 | — | — | — |
+| runner payload | 2.862 | 4.570 | 4.622 | — |
+| 内部 driver | 1.289 | 1.475 | 1.469 | — |
 
 
-保存资源：P3 CPU=10-13，GPU=2；Huan CPU=10-13，GPU=2；Xiangru CPU=10-13，GPU=2；原生 Flow* CPU=10-13，GPU=2。进程起止、同批并发窗口、字段路径详见时间索引。
+保存资源：P3 CPU=[10, 11, 12, 13]，GPU=2；Huan CPU=10-13，GPU=2；Xiangru CPU=10-13，GPU=2；原生 Flow* CPU=10-13，GPU=2。进程起止、同批并发窗口、字段路径详见时间索引。
 
 ### 全部物理状态宽度
 
@@ -889,7 +918,7 @@ P3 主表使用观察器最后 endpoint；另存 driver final_hull，二者 x5 �
 
 x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两个物理态结果仅为具名两态 profile，不能凭 dx3=1 自行补第三初值和执行入口。
 
-宽度来源编号：S029, S030, S031, S032；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S029, S030, S031, S032；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 13 TORA remain
 
@@ -968,7 +997,7 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 另有 h=0.05 四方全程补充合同，4800/4800 盒步均保存；T=20 的 x4 endpoint 并集宽度 P3/H/X/原生为 0.354314/0.408728/0.408728/0.346793。该步长变体不替换 h=0.1 主格。[独立合同完整四态宽度与时间来源](evidence/results/archcomp26_20261001/tora_remain_h005_fourway_saved_20261002/SUMMARY.md)。
 
-宽度来源编号：S043, S046, S049, S052；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S043, S046, S049, S052；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 14 TORA reach-sigmoid
 
@@ -986,11 +1015,13 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 **P3 / Huan / Xiangru / 原生 Flow*：** 四方均完成官方 sigmoid、u=11f 的 500 步，保存 T=5 目标坐标入目标。三 GPU 明确没有执行性质 checker；不能给它们补写作者 VERIFIED。 若需作者性质标签，需与选定到达语义一致的 checker；终点包含是五秒内到达的充分数值观察。原生终点 VERIFIED 仍不是独立端到端证明。
 
-保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：T=5 保存 x1/x2 终点全盒入目标；三 GPU property_evaluated=false，原生仅终点 VERIFIED。
+保存性质观察（P3）：新候选自己的 T=5 保存 x1/x2 终点全盒入目标；property_evaluated=false，未执行性质checker，也不是独立NNCS证书。
 
-原始结果：[P3](../research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/outer/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/outer/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/RESULT.json)。
+保存性质观察（Huan / Xiangru / 原生 Flow*）：T=5 保存 x1/x2 终点全盒入目标；三 GPU property_evaluated=false，原生仅终点 VERIFIED。
 
-当前 P3 使用 [tora_sigmoid_official_u11_p3_fused1_20261005_001](../research/p3_speed_tightness_20261005/results/tora_sigmoid_official_u11_p3_fused1_20261005_001/run_001/RESULT.json)；以下宽度继承其已直接比对相同的保存参考对象。
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_huan/outer/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_xiangru/outer/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_native/RESULT.json)。
+
+当前 P3 使用 [tora_sigmoid_cutoff1e8_full500_001](../research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json)；宽度来自此候选的新保存范围。
 
 ### 所选进程各层时间
 
@@ -998,13 +1029,13 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | 9.392 | 13.653 | 13.707 | 8.943 |
-| 候选 wrapper | 8.514 | — | — | — |
-| runner payload | 6.997 | 11.159 | 11.393 | — |
-| 内部 driver | 5.255 | 8.845 | 8.973 | — |
+| 外层 process | 9.995 | 13.653 | 13.707 | 8.943 |
+| 候选 wrapper | 9.088 | — | — | — |
+| runner payload | 7.498 | 11.159 | 11.393 | — |
+| 内部 driver | 5.763 | 8.845 | 8.973 | — |
 
 
-保存资源：P3 CPU=10-13，GPU=2；Huan CPU=10-13，GPU=2；Xiangru CPU=10-13，GPU=2；原生 Flow* CPU=10-13，GPU=2。进程起止、同批并发窗口、字段路径详见时间索引。
+保存资源：P3 CPU=[10, 11, 12, 13]，GPU=2；Huan CPU=10-13，GPU=2；Xiangru CPU=10-13，GPU=2；原生 Flow* CPU=10-13，GPU=2。进程起止、同批并发窗口、字段路径详见时间索引。
 
 ### 全部物理状态宽度
 
@@ -1014,19 +1045,19 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 | 状态 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| x1 | 0.026078936 | 0.025817904 | 0.025817904 | 0.026066941 |
-| x2 | 0.025924753 | 0.025520417 | 0.025520417 | 0.025779106 |
-| x3 | 0.10109829 | 0.10103302 | 0.10103302 | 0.10103932 |
-| x4 | 0.026654968 | 0.026648277 | 0.026648277 | 0.026649947 |
+| x1 | 0.025854877 | 0.025817904 | 0.025817904 | 0.026066941 |
+| x2 | 0.025689184 | 0.025520417 | 0.025520417 | 0.025779106 |
+| x3 | 0.1010963 | 0.10103302 | 0.10103302 | 0.10103932 |
+| x4 | 0.026654454 | 0.026648277 | 0.026648277 | 0.026649947 |
 
 
 **截至共同数值时刻的最大单步 tube 绝对宽度**
 
 | 状态 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| x1 | 0.037731774 | 0.037674169 | 0.037674169 | 0.037569798 |
-| x2 | 0.039388185 | 0.039371718 | 0.039371718 | 0.039231633 |
-| x3 | 0.26573041 | 0.26566514 | 0.26566514 | 0.26553819 |
+| x1 | 0.037692302 | 0.037674169 | 0.037674169 | 0.037569798 |
+| x2 | 0.039382909 | 0.039371718 | 0.039371718 | 0.039231633 |
+| x3 | 0.26572842 | 0.26566514 | 0.26566514 | 0.26553819 |
 | x4 | 0.075925002 | 0.075925002 | 0.075925002 | 0.075770625 |
 
 
@@ -1034,9 +1065,13 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 共同终点 P3 对 Xiangru：较宽 x1, x2, x3, x4；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-共同终点 P3 对 原生 Flow*：较宽 x1, x2, x3, x4；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
+共同终点 P3 对 原生 Flow*：较窄 x1, x2；较宽 x3, x4；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S034, S036, S038, S040；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+![sigmoid 四态逐步 endpoint 宽度](evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_endpoint_widths.png)
+
+![sigmoid 四态逐步 tube 宽度](evidence/results/archcomp26_report_20261006/figures/tora_sigmoid_tube_widths.png)
+
+宽度来源编号：OCT6_tora_sigmoid_cutoff1e8_full500_001, S036, S038, S040；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 15 TORA reach-tanh
 
@@ -1054,9 +1089,13 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 **P3 / Huan / Xiangru / 原生 Flow*：** 新 working P3 与三历史作者方法均完成同合同500步，目标终点入带。旧 engine_linear_leaf_v2 我方记录另列，不能当最新 P3。 当前 P3 与历史 GPU 无作者性质 verdict；需按选定到达语义补相应判定才可声称作者检查通过。历史原生仅终点 VERIFIED；混代不作稳定速度排名。
 
-保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：保存 T=5 x1/x2 终点入目标，是五秒内到达的充分数值观察；非独立证书。
+保存性质观察（P3）：新候选自己的 T=5 保存 x1/x2 终点全盒入目标；property_evaluated=false，未执行性质checker，也不是独立NNCS证书。
 
-原始结果：[P3](evidence/results/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001/RESULT.json)；[Huan](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_huan/result.json)；[Xiangru](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_xiangru/result.json)；[原生 Flow*](../../../../results/archcomp_review_20260923/evidence_v2/native_matched/tora_relu_tanh/result.json)。
+保存性质观察（Huan / Xiangru / 原生 Flow*）：保存 T=5 x1/x2 终点入目标，是五秒内到达的充分数值观察；非独立证书。
+
+原始结果：[P3](../research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json)；[Huan](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_huan/result.json)；[Xiangru](../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/tora_relu_tanh_xiangru/result.json)；[原生 Flow*](../../../../results/archcomp_review_20260923/evidence_v2/native_matched/tora_relu_tanh/result.json)。
+
+当前 P3 使用 [tora_tanh_cutoff1e8_full500_001](../research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json)；宽度来自此候选的新保存范围。
 
 ### 所选进程各层时间
 
@@ -1064,15 +1103,16 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 | 计时层级 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| 外层 process | 13.457 | — | — | 8.856 |
-| runner payload | 10.998 | — | — | — |
-| 内部 driver | 9.305 | 8.656 | 8.700 | — |
+| 外层 process | 9.242 | — | — | 8.856 |
+| 候选 wrapper | 8.342 | — | — | — |
+| runner payload | 6.684 | — | — | — |
+| 内部 driver | 4.963 | 8.656 | 8.700 | — |
 | 调用 driver | — | 10.536 | 10.582 | — |
 | 原生子进程 | — | — | — | 5.580 |
 | 控制器启动 | — | — | — | 3.112 |
 
 
-保存资源：P3 CPU=18,19，GPU=3；Huan CPU=[14, 15, 16, 17]，GPU=3；Xiangru CPU=[14, 15, 16, 17]，GPU=3；原生 Flow* CPU=[14, 15, 16, 17]，GPU=3。进程起止、同批并发窗口、字段路径详见时间索引。
+保存资源：P3 CPU=[18, 19]，GPU=3；Huan CPU=[14, 15, 16, 17]，GPU=3；Xiangru CPU=[14, 15, 16, 17]，GPU=3；原生 Flow* CPU=[14, 15, 16, 17]，GPU=3。进程起止、同批并发窗口、字段路径详见时间索引。
 
 ### 全部物理状态宽度
 
@@ -1082,19 +1122,19 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 | 状态 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| x1 | 0.025104282 | 0.025079509 | 0.025079509 | 0.025128069 |
-| x2 | 0.027395303 | 0.02741052 | 0.02741052 | 0.027457535 |
-| x3 | 0.02201493 | 0.021992924 | 0.021992924 | 0.022034824 |
-| x4 | 0.021653477 | 0.021591111 | 0.021591111 | 0.02161695 |
+| x1 | 0.025093803 | 0.025079509 | 0.025079509 | 0.025128069 |
+| x2 | 0.027385937 | 0.02741052 | 0.02741052 | 0.027457535 |
+| x3 | 0.022004428 | 0.021992924 | 0.021992924 | 0.022034824 |
+| x4 | 0.021648419 | 0.021591111 | 0.021591111 | 0.02161695 |
 
 
 **截至共同数值时刻的最大单步 tube 绝对宽度**
 
 | 状态 | P3 | Huan | Xiangru | 原生 |
 | --- | --- | --- | --- | --- |
-| x1 | 0.042046469 | 0.042029268 | 0.042029268 | 0.04188865 |
-| x2 | 0.039451952 | 0.039450551 | 0.039450551 | 0.039275053 |
-| x3 | 0.053019096 | 0.052987402 | 0.052987402 | 0.052848802 |
+| x1 | 0.042037876 | 0.042029268 | 0.042029268 | 0.04188865 |
+| x2 | 0.039449242 | 0.039450551 | 0.039450551 | 0.039275053 |
+| x3 | 0.053018742 | 0.052987402 | 0.052987402 | 0.052848802 |
 | x4 | 0.030401402 | 0.030401402 | 0.030401402 | 0.030205694 |
 
 
@@ -1104,7 +1144,11 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 共同终点 P3 对 原生 Flow*：较窄 x1, x2, x3；较宽 x4；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S025, S026, S027, S028；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+![tanh 四态逐步 endpoint 宽度](evidence/results/archcomp26_report_20261006/figures/tora_tanh_endpoint_widths.png)
+
+![tanh 四态逐步 tube 宽度](evidence/results/archcomp26_report_20261006/figures/tora_tanh_tube_widths.png)
+
+宽度来源编号：OCT6_tora_tanh_cutoff1e8_full500_001, S026, S027, S028；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
 ## 16 Unicycle reach
 
@@ -1125,8 +1169,6 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 保存性质观察（P3 / Huan / Xiangru / 原生 Flow*）：P3/原生最早保存全盒 endpoint 入目标分别约 t=9.72/9.80；H/X 的全部500保存 endpoint 无一次四态同时全入目标。
 
 原始结果：[P3](../research/p3_speed_tightness_20261005/results/unicycle_p3_fused1_20261005_001/run_001/RESULT.json)；[Huan](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/huan_full50_001/RESULT.json)；[Xiangru](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/xiangru_full50_001/RESULT.json)；[原生 Flow*](evidence/results/archcomp26_20261001/native_unicycle_paper_speed_full50_001/RESULT.json)。
-
-当前 P3 使用 [unicycle_p3_fused1_20261005_001](../research/p3_speed_tightness_20261005/results/unicycle_p3_fused1_20261005_001/run_001/RESULT.json)；以下宽度继承其已直接比对相同的保存参考对象。
 
 ### 所选进程各层时间
 
@@ -1172,49 +1214,65 @@ x3 空栏专门保留固定 MATLAB 第三返回量的来源缺口；论文的两
 
 共同终点 P3 对 原生 Flow*：较窄 x1, x2, x3, x4；逐态差值见配套 CSV。该比较不外推到其他时刻或未保存相关方向。
 
-宽度来源编号：S042, S045, S048, S051；[来源路径与大小](evidence/results/archcomp26_report_20261005/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261005/widths/missing_fields.csv)。
+宽度来源编号：S042, S045, S048, S051；[来源路径与大小](evidence/results/archcomp26_report_20261006/widths/sources.json)、[上下界和全部逐步宽度](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)、[缺失逐格说明](evidence/results/archcomp26_report_20261006/widths/missing_fields.csv)。
 
-## 附录 A 新候选全记录与紧度尝试
+## 附录 A 本轮候选和未采用原因
 
-13 个新阶段全部保留，不只展示选中的最快值。以下 driver 与 process 是每阶段单次；短前缀不能估成全程。
+下表保留本轮全部独立尝试。小步完成数与包装资格结果分开：数值算完不代表通过实现门；短试验不外推为完整时域。下表不是不同合同的速度排行榜。
 
-| 新阶段 | 小步数 | driver | process |
-| --- | --- | --- | --- |
-| acc_p3_fast1/run_001 | 50 | 3.982 | 8.037 |
-| acc_p3_fused1/run_001 | 50 | 3.961 | 8.089 |
-| nav_robust_p3_fast32/run_001 | 600 | 12.667 | 16.616 |
-| nav_robust_p3_fast_bindings/run_001 | 600 | 13.689 | 18.064 |
-| quad_paper_p3_private256/run_001 | 40 | 39.289 | 45.708 |
-| quad_paper_p3_private256_full1000/run_001 | 1000 | 997.675 | 1004.197 |
-| quad_paper_p3_private_output/gate_001 | 资格门 无 ODE | — | 20.028 |
-| quad_paper_p3_private_output/run_001 | 40 | 49.709 | 60.936 |
-| quad_paper_p3_two_slope256/run_001 | 40 | 39.435 | 46.007 |
-| tora_sigmoid_official_u11_p3_fast1/run_001 | 500 | 7.759 | 11.952 |
-| tora_sigmoid_official_u11_p3_fused1/run_001 | 500 | 5.255 | 9.392 |
-| unicycle_p3_fast1/run_001 | 500 | 10.016 | 15.864 |
-| unicycle_p3_fused1/run_001 | 500 | 7.652 | 11.698 |
+| 候选及原始 RESULT | 完成小步 | driver | process | 状态 |
+| --- | --- | --- | --- | --- |
+| [Attitude fused1 60](../research/p3_speed_tightness_20261006/results/attitude_fused1_full60_001/RESULT.json) | 60 | 6.264 | 10.447 | 完整 |
+| [Docking fused1 400](../research/p3_speed_tightness_20261006/results/docking_fused1_full400_001/RESULT.json) | 400 | 8.538 | 12.700 | 完整 |
+| [NAV robust fused32 600](../research/p3_speed_tightness_20261006/results/nav_robust_fused32_full600_001/RESULT.json) | 600 | 10.999 | 14.961 | 完整 |
+| [NAV standard fused512 600](../research/p3_speed_tightness_20261006/results/nav_standard_fused512_full600_001/RESULT.json) | 600 | 19.864 | 24.031 | 完整 |
+| [NAV standard private256 600](../research/p3_speed_tightness_20261006/results/nav_standard_private256_full600_001/RESULT.json) | 600 | 30.022 | 34.221 | 完整 |
+| [QUAD anchored control40](../research/p3_speed_tightness_20261006/results/quad_paper_anchored_control40_001/RESULT.json) | 0 | — | 6.886 | 首步前错误 |
+| [QUAD anchored controlv2 40](../research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_40_001/RESULT.json) | 40 | 39.576 | 46.209 | 短测通过 |
+| [QUAD anchored controlv2 1000](../research/p3_speed_tightness_20261006/results/quad_paper_anchored_controlv2_full1000_001/RESULT.json) | 1000 | 1001.431 | 1008.895 | 完整 |
+| [QUAD fused256 40](../research/p3_speed_tightness_20261006/results/quad_paper_fused256_40_001/RESULT.json) | 0 | — | 2.371 | 首步前错误 |
+| [QUAD fused256v2 40](../research/p3_speed_tightness_20261006/results/quad_paper_fused256v2_40_001/RESULT.json) | 40 | 43.136 | 49.669 | 资格未过 |
+| [QUAD joint40](../research/p3_speed_tightness_20261006/results/quad_paper_joint40_001/RESULT.json) | 40 | 38.273 | 45.707 | 短测通过 |
+| [QUAD joint 1000](../research/p3_speed_tightness_20261006/results/quad_paper_joint_full1000_001/RESULT.json) | 1000 | 969.549 | 978.067 | 完整 |
+| [QUAD trigpower40](../research/p3_speed_tightness_20261006/results/quad_paper_trigpower40_001/RESULT.json) | 40 | 38.149 | 45.555 | 短测通过 |
+| [QUAD trigpower 1000](../research/p3_speed_tightness_20261006/results/quad_paper_trigpower_full1000_001/RESULT.json) | 1000 | 968.516 | 975.862 | 完整 |
+| [SP fused1 100](../research/p3_speed_tightness_20261006/results/sp_two_state_fused1_full100_001/RESULT.json) | 100 | 1.289 | 5.180 | 完整 |
+| [TORA sigmoid cutoff1e8 500](../research/p3_speed_tightness_20261006/results/tora_sigmoid_cutoff1e8_full500_001/RESULT.json) | 500 | 5.763 | 9.995 | 完整 |
+| [TORA sigmoid order4 cutoff1e8 500](../research/p3_speed_tightness_20261006/results/tora_sigmoid_order4_cutoff1e8_full500_001/RESULT.json) | 500 | 6.237 | 10.497 | 完整 |
+| [TORA sigmoid order6 cutoff1e8 500](../research/p3_speed_tightness_20261006/results/tora_sigmoid_order6_cutoff1e8_full500_001/RESULT.json) | 500 | 10.696 | 15.511 | 完整 |
+| [TORA tanh cutoff1e8 500](../research/p3_speed_tightness_20261006/results/tora_tanh_cutoff1e8_full500_001/RESULT.json) | 500 | 4.963 | 9.242 | 完整 |
+| [TORA tanh fused1 500](../research/p3_speed_tightness_20261006/results/tora_tanh_fused1_full500_001/RESULT.json) | 500 | 4.563 | 8.791 | 完整 |
 
 
-QUAD two-slope 仅完成 40 步，不是完整 1000 步结果。x5 在 40 步 tube 和 endpoint 均较窄，但 x9 的 tube 有 37/40 步、endpoint 有 39/40 步更宽；最后一步 x1–x6 窄、x7–x11 宽、x12 相等。960 个不同状态/时刻/几何比较只有 392 项区间包含，不把“667 窄、80 相等、213 宽”跨单位求和当作总体优势。当前没有推广为默认，也没有宣称更紧的全程结果。[候选与原始比较](../research/p3_speed_tightness_20261005/README.md)。
+实现候选与数值方法候选分开。以下时间均按 process / driver 秒列示，每项仅一次；保存输出相同不代表隐藏TM/SR逐字节相同，短测和失败耗时不参加全程速度排名。
 
-## 附录 B 图形功能与未闭合证据
+- **已采用实现候选**：Attitude fused1完整60步、Docking fused1完整400步、具名两态SP fused1完整100步、NAV robust fused32完整25×600盒步、NAV standard fused512完整640×600盒步，保存范围和科学观察均直接比较相同。Docking保留UNKNOWN；SP仍order2和原参考注入，不是统一order3或官方三返回量执行。
+- **NAV standard private256**：完整范围同，但driver30.022慢于旧25.865；补行少并不保证更快。新fused512为24.031/19.864，故选后者。没有旧外层process时，不用payload补成比较对象。
+- **TORA tanh**：fused1为8.791/4.563，保留速度优先备选；cutoff1e-8为9.242/4.963，4000项宽度不增，当前折中采用。部分区间移动，不能把较窄说成都包含。
+- **TORA sigmoid**：cutoff1e-8为9.995/5.763，4000项宽度不增，当前采用；上版不变宽度的速度优先版9.392/5.255仍保留。order4为10.497/6.237，order6为15.511/10.696，各完整500步。两高阶各3800项窄、4项等、196项宽；宽项是x3/x4的tube/endpoint在第2–50步，最大绝对增加仅约6.57e-14/1.54e-13，属末位尺度，非实质恶化；全部最终四态更窄。不推广主要因为相较cut多约0.502/5.516秒process、额外收益有限。order4的x1终点可略窄于Huan，x2仍较宽，不能称全面优胜。
+- **QUAD fused256 v1**：prepare的pristine函数守卫误拒绝已有合格metadata包装，0步，2.371秒，不是数值失败。v2数值完成40步，38快路/2合法回退、异常0、首live参考检查1；旧包装门要求全快而失败，原记录保留。事后只读比较保存输出相同，但49.669/43.136比旧private256短测45.708/39.289更慢，不推广。
+- **QUAD trig power**：40步45.555/38.149，短测process改善很小。另立full1000已于2026-10-05 18:04:33.750 UTC完成，975.862/968.516；较上一版完整1004.197/997.675分别下降2.82%/2.92%，仅单样本。1000行、1,216,787字节pooled tube/endpoint观察与原full50直接相同；1024000盒步全部接受，NN刷新50次，最后观察SR1000/0而末尾正常重置0/1000。新GPU门与三项恢复通过。它保留原宽度，不声称逐盒隐藏TM/SR恒等或稳定胜过作者。
+- **QUAD anchored control**：v1误用不存在的SparseEngine.exponents，0步、6.886秒。v2的40步46.209/39.576，878项窄、82等、0宽，实际4次NN。另立full1000完整通过，1008.895/1001.431，略慢于原private256的1004.197/997.675，故作为收紧备选。24000项为21990窄、2002等、8宽；8项仅x9第43–46步的tube/endpoint，最大绝对增加1.1101261e-10、相对0.0007664052%。终点x1–x11窄、x12等，12态均包含于参考；x3/x11终点分别缩小2.543565%/4.756848%。全程有23956项包含，不能称全部时刻更紧或全部包含。实际100次NN、50次注入，完整接受与SR重置均核对。
+- **QUAD joint，当前采用**：40步45.707/38.273，保存同control短测。另立full1000实际978.067/969.549，相较上一版private256的1004.197/997.675，单次process/driver下降2.60%/2.82%；联合自身完整观察、config、宽度CSV与control full直接相同，final_hull同。因此终点收紧和这一时间属于同一次运行，而非拼接。较trig-only process慢2.205秒（0.226%），后者保留为速度优先备选；仍有上述8项早期微小增宽，不称全时全态更紧或稳定胜过作者。1000步全接受、actual100NN、50注入、SR满1000后正常重置、四项恢复、tinyGPUgate及双门均通过，独立外部只读审计已保存。
 
-所有当前出图使用 Python；正式 CLI 能从已有 ranges.bin 或兼容几何导出初盒、tube/endpoint、按时间定义的 Safe/Target、同轴多方法 PNG/PDF 和 JSON/CSV。历史 MATLAB 文件只保留归档身份。本版表格与逐步数据没有删减这些接口所需字段。归档坐标盒只能画轴对齐投影，不能从中恢复相关八方向包络。
+本轮20项均有终态：14项完整时域通过、3项短测通过、1项数值完成但包装门失败、2项首步前失败；所有旧/负候选保留。旧快分支没有丢失，其不同合同和输出工作量不混入当前排名；严格余项、SR历史及绘图输出均未为提速删除。联合只声明保存pooled投影和字段，不声明逐盒隐藏TM/SR身份；独立端到端浮点NNCS证明仍未闭合。
 
-![论文 QUAD 的原始保存粒度](evidence/results/archcomp26_20261001/quad_paper_fourway_saved_20261002/quad_paper_fourway_t_x3_pooled_tube.png)
+10 月 5 日 QUAD two-slope 短试验也保留：40 步中 x5 较窄，但 x9 在大多数步更宽，未作为默认。完整历史候选见 [上一版速度研究](../research/p3_speed_tightness_20261005/README.md)，没有重跑。
 
-![Unicycle 论文合同保存范围](evidence/results/archcomp26_20261001/unicycle_paper_speed_w_constant_v1/plots/fourway_saved_20261002/unicycle_paper_speed_fourway_saved.png)
+## 附录 B 图形功能与尚缺证据
 
-数值完整、作者标签、保存几何观察、独立端到端证书分别报告。Docking 数值全程但性质 UNKNOWN；SP 官方执行材料、Balancing 五特征网络和 Airplane discrete 转移顺序的缺口不能靠猜测补齐。Airplane continuous、Balancing raw4、DP more 和 TORA remain 两作者 h=0.1 的实际停点与原因见各节。当前四方均不据这些保存结果宣称获得独立端到端 NNCS 浮点证明。
+Python 绘图 CLI 继续支持现有 ranges.bin 和兼容几何、初盒、tube / endpoint、按时间定义的 Safe / Target、同轴多方法 PNG / PDF、JSON / CSV。实现提速保留原逐步输出，新 TORA / QUAD 图使用各自新候选范围。当前绘图入口不生成 MATLAB 文件；已有归档保持原样，Python 图、数据和原有输入功能均保留。
 
-## 附录 C 数据与报告入口
+独立 NNCS 浮点端到端证明和原生八方向生产门仍未闭合。TORA endpoint 落入所选目标只是保存几何观察，原 GPU property_evaluated=false 不会变成正式 reach 证书。Docking 完整数值但 UNKNOWN；SP 官方第三态、Balancing 五特征模型、Airplane discrete 权威转换合同仍缺件。其他数值拒绝原因和完整前缀均在对应分节逐方法说明。
 
-本版正文是唯一当前总报告。[前一版正文快照](ARCHCOMP26_REPORT_HISTORY_20261004.md)及旧日期 DOCX/PDF 保留历史身份，原始 START/RESULT 和旧 289 条索引没有被重写。报告数据、现有数值尝试与保存资格门分别列账，没有启动旧求解或旧检查器。
+## 附录 C 当前报告与原始来源
 
-- [完整报告包及可编辑 Word](evidence/results/archcomp26_report_20261005/README.md)
+当前正文与 10 月 6 日报告包同步；[上一版正文快照](ARCHCOMP26_REPORT_HISTORY_20261005.md)和旧日期 Word / PDF 作为历史保留。原 289 条尝试、10 月 5 日 13 个优化资格阶段、本轮新候选分别列账。报告重建只读取已保存证据，不启动求解器、旧检查器或摘要计算。
 
-- [64 方法格状态与具体阻断](evidence/results/archcomp26_report_20261005/blockers/README.zh.md)
+- [Word PDF 和全部数据入口](evidence/results/archcomp26_report_20261006/README.md)
 
-- [全部逐进程时间](evidence/results/archcomp26_report_20261005/timing/runs.csv)；[完整结构和来源字段](evidence/results/archcomp26_report_20261005/timing/timing_index.json)
+- [64 格具体状态与未完成原因](evidence/results/archcomp26_report_20261006/blockers/README.zh.md)
 
-- [364 行逐态宽度概要](evidence/results/archcomp26_report_20261005/widths/summary.csv)；[全部逐步上下界与宽度](evidence/results/archcomp26_report_20261005/widths/widths_long.csv)；[P3 对三方差值](evidence/results/archcomp26_report_20261005/widths/pairwise_comparisons.csv)
+- [逐进程全部时间层](evidence/results/archcomp26_report_20261006/timing/runs.csv)；[完整时间索引](evidence/results/archcomp26_report_20261006/timing/timing_index.json)
+
+- [逐态宽度概要](evidence/results/archcomp26_report_20261006/widths/summary.csv)；[全部逐步范围](evidence/results/archcomp26_report_20261006/widths/widths_long.csv)；[逐态差值与包含](evidence/results/archcomp26_report_20261006/widths/pairwise_comparisons.csv)

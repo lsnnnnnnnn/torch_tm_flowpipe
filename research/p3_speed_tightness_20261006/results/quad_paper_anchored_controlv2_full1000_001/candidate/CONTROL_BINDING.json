@@ -1,0 +1,11 @@
+{
+  "implementation_revision": "v2_real_support_exponent_lookup",
+  "policy": "same-slope polynomial with independent two-slope affine remainder intersection",
+  "scope": "paper QUAD, strict box/native-f64, order 3",
+  "baseline_nn_counter": "canonical nn_calls counts original same-slope calls only",
+  "actual_nn_counter": "base_nn_calls + extra_nn_calls count attempted calls, including a call that raises; completed attempts require every pair to reach injection",
+  "timing": "extra model construction precedes driver timed loop; extra CROWN and contraction are inside it; component wall timers are unsynchronized host timings, not device profiles; outer wall includes all",
+  "certificate_assumption": "both floating affine enclosures concern the same unmodified controller over the exact recorded hull",
+  "end_to_end_strict_certificate": false,
+  "gpu_qualified": false
+}
