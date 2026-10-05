@@ -1,0 +1,80 @@
+{
+  "status": "exception",
+  "end_to_end_strict_certificate": false,
+  "error_type": "RuntimeError",
+  "error": "fused batch qualification failed: {'fast_calls': {'expected': 40, 'actual': 38}, 'fallback_calls': {'expected': 0, 'actual': 2}}",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py\", line 231, in main\n    comparison = (compare_saved(output / \"data\", args.mode) if args.compare == \"equivalent\"\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/speed_v2/run_fused_batch_candidate.py\", line 101, in compare_saved\n    raise RuntimeError(f\"fused batch qualification failed: {checked['differences']}\")\nRuntimeError: fused batch qualification failed: {'fast_calls': {'expected': 40, 'actual': 38}, 'fallback_calls': {'expected': 0, 'actual': 2}}\n",
+  "weighted_binding_restored": true,
+  "binding_restored": true,
+  "exit_code": 1,
+  "wall_s": 48.49865681602387,
+  "ended_utc": "2026-10-05T17:18:12.425788+00:00",
+  "weighted_mode": "fused_batch",
+  "fused_batch_outer_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/speed_v2/run_fused_batch_candidate.py",
+    "--instance",
+    "quad",
+    "--mode",
+    "batch2",
+    "--base-wrapper",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_fused256v2_40_001/candidate"
+  ],
+  "fused_batch_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/speed_v2/run_fused_batch_candidate.py",
+  "base_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+  "dont_write_bytecode": true,
+  "fused_batch_configuration": {
+    "batch": 1024,
+    "rows": 256,
+    "steps": 40
+  },
+  "fused_batch_counters": {
+    "refine_calls": 40,
+    "fast_calls": 38,
+    "fallback_calls": 2,
+    "chunk_size": 256,
+    "graph_replays": 160,
+    "replay_map_calls": 320,
+    "warmup_map_calls": 4,
+    "graph_map_calls": 324,
+    "graph_captures": 1,
+    "candidate_exceptions": 0,
+    "reference_checks": 1,
+    "reference_map_evaluations": 2048,
+    "reference_graph_map_calls": 8,
+    "fallback_graph_map_calls": 16,
+    "original_graph_pool_releases": 3,
+    "replay_target_rows": 81920,
+    "replay_padded_rows": 0
+  },
+  "fused_batch_qualification": {
+    "passed": false,
+    "expected": {
+      "refine_calls": 40,
+      "fast_calls": 40,
+      "fallback_calls": 0,
+      "candidate_exceptions": 0,
+      "reference_checks": 1,
+      "reference_map_evaluations": 2048,
+      "graph_replays": 160,
+      "replay_map_calls": 320,
+      "replay_target_rows": 81920,
+      "replay_padded_rows": 0
+    },
+    "differences": {
+      "fast_calls": {
+        "expected": 40,
+        "actual": 38
+      },
+      "fallback_calls": {
+        "expected": 0,
+        "actual": 2
+      }
+    },
+    "scope": "live fast-path use and first input equivalence; saved-output comparison separately required"
+  },
+  "fused_batch_install_count": 1
+}

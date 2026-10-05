@@ -1,0 +1,90 @@
+{
+  "schema": "archcomp26-nav-working-p3-full30-start-nohash-v1",
+  "started_utc": "2026-10-05T17:05:12.580262+00:00",
+  "run_id": "data",
+  "instance": "nav-robust",
+  "profile": "fixed-2026-official-set-ONNX plus author executable NAV state order",
+  "method": "working P3 order 3 / validation order 4, strict endpoint and injection, box same-slope CROWN, rpc-float32",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_robust.yaml",
+  "source_box_ledger": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_robust_boxes.json",
+  "official_model_copy": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_prep_001/official_nn-nav-set.onnx",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/nav_robust_fused32_full600_001/candidate/data/config.yaml",
+  "saved_initial_boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/nav_robust_fused32_full600_001/candidate/data/initial_boxes.json",
+  "initial_box_count": 25,
+  "initial_partition": [
+    5,
+    5
+  ],
+  "control_periods": 30,
+  "control_period_s": 0.2,
+  "ode_substeps": 600,
+  "ode_step_s": 0.01,
+  "working_order": 3,
+  "validation_order": 4,
+  "physical_state_and_nn_input_order": [
+    "x",
+    "y",
+    "speed",
+    "heading"
+  ],
+  "nn_output_order": [
+    "speed_rate",
+    "heading_rate"
+  ],
+  "all_time_closed_obstacle": "x,y in [1,2]",
+  "terminal_closed_target": "x,y in [-0.5,0.5] at t=6",
+  "unsafe_checker_expressions": [
+    "-x1 + 1",
+    "x1 - 2",
+    "-x2 + 1",
+    "x2 - 2"
+  ],
+  "terminal_checker_expressions": [
+    "-x1 - 0.5",
+    "x1 - 0.5",
+    "-x2 - 0.5",
+    "x2 - 0.5"
+  ],
+  "gpu_visible": "1",
+  "cpu_affinity": [
+    6,
+    7,
+    8,
+    9
+  ],
+  "timeout_s": 3600,
+  "gpu_allocation_cap_bytes": 11811160064,
+  "rpc_port": null,
+  "controller_evaluation": "in-process CROWN",
+  "stop_at_first_numerical_rejection": true,
+  "range_record_format": "little-endian uint32 lane, uint32 step, float64[4,4] [tube_lo,tube_hi,end_lo,end_hi]",
+  "range_record_bytes": 136,
+  "qualification": "full numerical horizon only if all 25x600 accepted; property verdict separately; no independent end-to-end floating-point NNCS proof",
+  "engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center",
+  "shared_driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "cuda_cache": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13",
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/nav_robust_fused32_full600_001/candidate/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--strict",
+    "--order",
+    "3",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/nav_robust_fused32_full600_001/candidate/data/metrics.json"
+  ]
+}

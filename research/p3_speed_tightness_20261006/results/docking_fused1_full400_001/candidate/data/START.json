@@ -1,0 +1,78 @@
+{
+  "schema": "archcomp26-docking-author-radial-nohash-v1",
+  "started_utc": "2026-10-05T17:11:34.018981+00:00",
+  "contract": "2026-paper-Docking-complete-initial-40s-all-time-radial-speed",
+  "method": "p3",
+  "mode": "full",
+  "model": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Docking/model.onnx",
+  "model_identity": "2026 official bytes previously directly compared with this saved participant model",
+  "driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center",
+  "initial_physical_box": [
+    [
+      70.0,
+      106.0
+    ],
+    [
+      70.0,
+      106.0
+    ],
+    [
+      -0.28,
+      0.28
+    ],
+    [
+      -0.28,
+      0.28
+    ]
+  ],
+  "physical_box_count": 1,
+  "physical_state_order": [
+    "sx",
+    "sy",
+    "vx",
+    "vy"
+  ],
+  "controller_input": "raw four-state vector",
+  "controller_output": "physical (Fx,Fy), held for 1s",
+  "property": "sqrt(vx^2+vy^2)-0.2-0.002054*sqrt(sx^2+sy^2) <= 0 for all t in [0,40]",
+  "periods": 40,
+  "period_s": 1.0,
+  "ode_step_s": 0.1,
+  "cpu_affinity": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "cuda_visible_devices": "3",
+  "qualification": "author GPU plant/CROWN diagnostic; radial checker uses outward box intervals; no independent end-to-end NN floating-point certificate",
+  "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/docking_fused1_full400_001/candidate/data/config.yaml",
+  "initial_margin_interval": [
+    -0.5079082336541202,
+    -0.007355828533536612
+  ],
+  "checker": "box interval norms with mathematically nonnegative squared sums",
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/docking_fused1_full400_001/candidate/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--strict",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/docking_fused1_full400_001/candidate/data/metrics.json"
+  ]
+}

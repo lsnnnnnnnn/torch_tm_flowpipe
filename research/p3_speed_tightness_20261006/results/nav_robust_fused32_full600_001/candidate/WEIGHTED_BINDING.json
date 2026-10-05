@@ -1,0 +1,22 @@
+{
+  "policy": "batch25_two_round_weighted_graph_fixed32_success_only",
+  "source_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/weighted_fused_batch.py",
+  "weighted_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/weighted_validation.py",
+  "sparse_exec_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py",
+  "B": 25,
+  "fixed_graph_rows": 32,
+  "rounds": 2,
+  "check_first": 1,
+  "failed_validation_unchanged": true,
+  "recentered_validation_unchanged": true,
+  "trace_uses_original": true,
+  "fallback": "original refine_accepted with original fixed32/fixed256 scratch policy",
+  "commit": "all lanes pass both unchanged interval maps; one packed host flag read",
+  "fused_graph_owner": "eng._weighted_graphs; existing SR-growth reclamation retained",
+  "original_graph_owner": "short-lived eng._weighted_fused_batch_original_graphs; released after each reference/fallback call",
+  "graph_map_calls_definition": "2 per fused replay plus 2*WARMUP per new capture; reference/fallback separate",
+  "timing_qualification": "includes capture and one live-input original byte/statistics check",
+  "qualification": "new candidate; CPU semantics only until a separate GPU qualification",
+  "no_jit": true,
+  "no_digest_operations": true
+}

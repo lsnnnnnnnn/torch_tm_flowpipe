@@ -1,0 +1,40 @@
+{
+  "started_utc": "2026-10-05T17:13:48.333462+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_nav_standard_candidate.py",
+    "--adapters",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/adapters_oct5",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/nav_standard_private256_full600_001/candidate"
+  ],
+  "instance": "nav-standard",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_working_p3_full30_001",
+  "source_snapshot": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_working_p3_full30_source_001",
+  "adapters": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/adapters_oct5",
+  "gpu_physical": 1,
+  "cpu_affinity": [
+    6,
+    7,
+    8,
+    9
+  ],
+  "initial_boxes": 640,
+  "ode_substeps": 600,
+  "expected_range_bytes": 52224000,
+  "changes": [
+    "private output allocation",
+    "preloaded Horner binding",
+    "original two-round weighted refinement with 256-row chunks"
+  ],
+  "fused": false,
+  "non_fused_reason": "qualified single-row fused adapter requires B=1; keep original per-round screening, diagnostics and statistics for B=640",
+  "dispatch_tradeoff": "when all 640 eligible, 256+256+128 padded to 768 total rows per round, versus two 512-row buffers; three graph calls instead of two, so speed is not assumed",
+  "no_jit": true,
+  "no_digest_operations": true,
+  "dont_write_bytecode": true,
+  "old_checker_executed": false,
+  "timing_policy": "wrapper includes staging/imports/gates and direct saved comparison; payload excludes early Torch import; original internal driver loop and new supervisor full-process wall remain separate",
+  "qualification": "new full implementation candidate; no independent floating-point NNCS certificate"
+}

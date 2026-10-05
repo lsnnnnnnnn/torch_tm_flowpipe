@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "checks": [
+    "correlated state cancellation contracts the unchanged zero polynomial",
+    "two-slope ReLU exact breakpoints contained with unchanged anchor",
+    "uninformative envelope leaves original remainder unchanged",
+    "coefficient addition/subtraction roundoff is retained",
+    "disjoint, insufficient-domain and nonfinite cases rejected",
+    "all successful calls preserve input tensors and own the returned subset",
+    "hook uses real strict injection, distinct NN modules and the unchanged polynomial",
+    "hook rejects altered/duplicate certificates and RPC transport; counts extra NN and restores owned hooks",
+    "all helper and hook cases use real frozen SparseEngine, which has no exponents method",
+    "real time-dependent FULL support is rejected before contraction"
+  ],
+  "torch_version": "2.2.2",
+  "device": "cpu",
+  "frozen_interval_backend": "research/gpu_verified_20260930/source/engine/src/flowstar_gpu/interval.py",
+  "exact_reference": "Fraction arithmetic for affine cancellation, ReLU breakpoints and a large-constant rounding case",
+  "implementation_revision": "v2_real_support_exponent_lookup",
+  "real_sparse_engine": true,
+  "gpu_tested": false,
+  "real_nn_tested": false,
+  "new_solver_runs": 0,
+  "old_checkers_executed": 0,
+  "digest_operations": 0,
+  "independent_end_to_end_floating_nncs_certificate": false
+}

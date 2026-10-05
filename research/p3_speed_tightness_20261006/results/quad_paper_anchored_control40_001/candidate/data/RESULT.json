@@ -1,0 +1,13 @@
+{
+  "status": "exception",
+  "mode": "batch2",
+  "completed_substeps": 0,
+  "error_type": "AttributeError",
+  "error": "'SparseEngine' object has no attribute 'exponents'",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_paper_p3_nohash.py\", line 407, in execute\n    driver_return = driver.main()\n                    ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py\", line 220, in main_with_first_refusal\n    return original_main()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_quad_control_candidate.py\", line 54, in main_with_control\n    return original_main()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1394, in main\n    inject_controls_s(st, T, u_min, u_max, u_ids, nn_in)\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_controller_hook.py\", line 95, in inject\n    after, check = contract(torch, iv, sp, eng=state[\"engine\"], sup=st.pre_sup,\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/anchored_control.py\", line 39, in contract\n    exponents = eng.exponents(sup)\n                ^^^^^^^^^^^^^\nAttributeError: 'SparseEngine' object has no attribute 'exponents'\n",
+  "accepted_lane_substeps": 0,
+  "wall_s": 5.922823280008743,
+  "cuda_peak_allocated_bytes": 3280776704,
+  "cuda_peak_reserved_bytes": 3328180224,
+  "peak_rss_kb": 5484980
+}

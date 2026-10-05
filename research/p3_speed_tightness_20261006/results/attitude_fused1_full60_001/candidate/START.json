@@ -1,0 +1,39 @@
+{
+  "started_utc": "2026-10-05T16:59:51.723240+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_b1_candidate.py",
+    "--instance",
+    "attitude",
+    "--adapters",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/attitude_fused1_full60_001/candidate"
+  ],
+  "instance": "attitude",
+  "source_snapshot": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/p3_source",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_corrected_fourway_campaign_20261002_001/later05_ours_p3/payload",
+  "adapter_sources": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001",
+  "gpu_physical": 2,
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "B": 1,
+  "complete_substeps": 60,
+  "changes": [
+    "private output allocation",
+    "preloaded Horner binding",
+    "fused single-row weighted refinement"
+  ],
+  "weighted_mode": "fused",
+  "old_checker_executed": false,
+  "dont_write_bytecode": true,
+  "no_jit": true,
+  "no_digest_operations": true,
+  "timing_policy": "wrapper includes staging/imports/gates; original payload excludes early Torch import; use unchanged internal driver loop separately from full supervisor process wall",
+  "qualification": "new full numerical candidate; no independent floating-point NNCS certificate"
+}

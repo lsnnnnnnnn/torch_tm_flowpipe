@@ -1,0 +1,66 @@
+{
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/data",
+  "saved_bytes_equal": {
+    "ranges.jsonl": 24743,
+    "safety.jsonl": 8387
+  },
+  "equal_fields": {
+    "RESULT.json": [
+      "all_substeps_accepted",
+      "author_safe_bounds_all_nonpositive",
+      "completed_substeps",
+      "driver_return",
+      "end_to_end_floating_point_nn_certificate",
+      "expected_substeps",
+      "independent_window_tube_boxes_safe",
+      "metrics_broken",
+      "mode",
+      "safety_events",
+      "status",
+      "t_endpoint",
+      "window_tube_x1_union"
+    ],
+    "metrics.json": [
+      "B",
+      "alpha_iters",
+      "broken",
+      "compose_parent_assembly",
+      "coupling",
+      "crown_input_layout",
+      "crown_transport",
+      "ctrl_steps",
+      "engine",
+      "final_hull",
+      "final_hull_width_sum_mean",
+      "nvtx_detail",
+      "nvtx_phases",
+      "order",
+      "segment_cuda_kernel_available",
+      "steps",
+      "substeps",
+      "tape_cuda_kernel_available",
+      "valid_cuda_kernel_available"
+    ]
+  },
+  "completed_substeps": 100,
+  "B": 1,
+  "order": 2,
+  "excluded_runtime_fields": [
+    "config",
+    "cuda_graph_captures",
+    "cuda_graph_hits",
+    "cuda_peak_allocated_bytes",
+    "cuda_peak_reserved_bytes",
+    "driver_elapsed_s",
+    "elapsed_s",
+    "peak_allocated_bytes",
+    "peak_reserved_bytes",
+    "wall_s"
+  ],
+  "config_bytes_equal": true,
+  "driver_argv_equal_after_output_path_relocation": true,
+  "property_basis": "original property rows and labels retained; no old checker rerun",
+  "scope": "all saved ranges/property rows and scientific fields; hidden TM/SR not compared",
+  "old_checker_executed": false,
+  "digest_operations": 0
+}

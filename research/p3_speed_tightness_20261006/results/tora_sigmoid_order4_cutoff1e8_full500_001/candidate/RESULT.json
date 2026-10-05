@@ -1,0 +1,92 @@
+{
+  "status": "COMPLETED_NUMERICAL_WIDTH_CANDIDATE",
+  "end_to_end_strict_certificate": false,
+  "end_to_end_floating_point_nn_certificate": false,
+  "B": 1,
+  "completed_substeps": 500,
+  "driver_elapsed_s": 6.237087960995268,
+  "payload_wall_s": 7.96584631598671,
+  "property_record": {
+    "payload_property_evaluated": false,
+    "new_property_checker_executed": false,
+    "terminal_all_states": {
+      "x1": [
+        0.13466624350805642,
+        0.16047112352723925
+      ],
+      "x2": [
+        -0.8762907784730438,
+        -0.8506557741977495
+      ],
+      "x3": [
+        43.89270675722187,
+        43.99380250366619
+      ],
+      "x4": [
+        16.465220938534213,
+        16.491875286957217
+      ]
+    },
+    "target_limits": {
+      "x1": [
+        -0.1,
+        0.2
+      ],
+      "x2": [
+        -0.9,
+        -0.6
+      ]
+    },
+    "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+    "target_contained_saved_endpoint_steps": [
+      496,
+      497,
+      498,
+      499,
+      500
+    ],
+    "terminal_box_in_target": true,
+    "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+  },
+  "weighted_counters": {
+    "refine_calls": 500,
+    "fast_calls": 500,
+    "fallback_calls": 0,
+    "graph_map_calls": 1004,
+    "replay_map_calls": 1000,
+    "warmup_map_calls": 4,
+    "graph_captures": 1,
+    "candidate_exceptions": 0,
+    "reference_checks": 1,
+    "reference_map_evaluations": 2
+  },
+  "bindings_restored": 3,
+  "exit_code": 0,
+  "wall_s": 9.609955197985983,
+  "ended_utc": "2026-10-05T17:30:10.136752+00:00",
+  "working_order": 4,
+  "point_order": 3,
+  "validation_order": 5,
+  "numerical_changes": {
+    "ode_order": [
+      3,
+      4
+    ],
+    "cut_off_threshold": [
+      1e-06,
+      1e-08
+    ]
+  },
+  "order4_outer_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_sigmoid_order4_candidate.py",
+    "--adapters",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/adapters_oct5",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/tora_sigmoid_order4_cutoff1e8_full500_001/candidate"
+  ],
+  "method_parameter_change": true,
+  "benchmark_dynamics_changed": false,
+  "saved_outputs_equal_claim": false
+}

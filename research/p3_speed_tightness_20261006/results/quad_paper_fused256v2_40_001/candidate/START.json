@@ -1,0 +1,62 @@
+{
+  "started_utc": "2026-10-05T17:17:23.927117+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+    "--mode",
+    "batch2",
+    "--weighted-chunk",
+    "256",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_fused256v2_40_001/candidate",
+    "--compare",
+    "equivalent",
+    "--crown-relax",
+    "same-slope"
+  ],
+  "scope": "new fixed-batch two-round fusion; frozen October 5 wrapper and original comparison retained",
+  "mode": "batch2",
+  "gate": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+  "source_runner": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_paper_p3_nohash.py",
+  "archived_adapters": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_p3_nohash",
+  "crown_relax": "same-slope",
+  "weighted_chunk": 256,
+  "comparison": "equivalent",
+  "gpu": "3",
+  "cpu_affinity": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "no_jit": true,
+  "no_digest_operations": true,
+  "weighted_mode": "fused_batch",
+  "fused_batch_outer_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/speed_v2/run_fused_batch_candidate.py",
+    "--instance",
+    "quad",
+    "--mode",
+    "batch2",
+    "--base-wrapper",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_fused256v2_40_001/candidate"
+  ],
+  "fused_batch_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/speed_v2/run_fused_batch_candidate.py",
+  "base_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+  "dont_write_bytecode": true,
+  "fused_batch_configuration": {
+    "batch": 1024,
+    "rows": 256,
+    "steps": 40
+  },
+  "changes": [
+    "private output allocation",
+    "existing Horner/strict bindings retained",
+    "success-only weighted fusion: B=1024, rows=256, two unchanged maps"
+  ]
+}

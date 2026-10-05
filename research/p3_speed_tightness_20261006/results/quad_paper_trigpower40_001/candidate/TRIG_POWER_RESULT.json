@@ -1,0 +1,52 @@
+{
+  "receipt": {
+    "policy": "one_exec_opposite_trig_owned_power_chain_same_direct_variable_metadata",
+    "source_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/trig/trig_power_reuse.py",
+    "sparse_exec_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py",
+    "elementary_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/elementary.py",
+    "inherited_direct_reuse_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_fullbatch_p3_20260928/trig_direct_reuse.py",
+    "original_accumulation_and_tail": true,
+    "original_cache_layout": true,
+    "cross_executor_or_round_reuse": false,
+    "same_op_reuse_retained": true,
+    "counters_scope": "Python eager/warmup/capture construction, not CUDA graph replay counts",
+    "qualification": "new candidate; full tensor/cache/tail and saved-output gates required",
+    "no_jit": true,
+    "no_digest_operations": true
+  },
+  "counters": {
+    "exec_calls": 26,
+    "completed_execs": 26,
+    "failed_execs": 0,
+    "trig_calls": 386,
+    "saved_power_chains": 48,
+    "reused_power_chains": 48,
+    "computed_powers": 182,
+    "reused_powers": 182,
+    "ineligible_calls": 20,
+    "outside_exec_forwarded": 44
+  },
+  "numerical_counter_delta": {
+    "exec_calls": 6,
+    "completed_execs": 6,
+    "failed_execs": 0,
+    "trig_calls": 276,
+    "saved_power_chains": 18,
+    "reused_power_chains": 18,
+    "computed_powers": 72,
+    "reused_powers": 72,
+    "ineligible_calls": 0,
+    "outside_exec_forwarded": 0
+  },
+  "last_plan": {
+    "trig_calls": 46,
+    "unique_power_plans": 3,
+    "opposite_op_pairs": 3,
+    "order": 4,
+    "interval_coefficients": true
+  },
+  "binding_restored": true,
+  "new_gpu_gate_passed": true,
+  "gate_wall_s": 0.9406667599978391,
+  "independent_end_to_end_floating_nncs_certificate": false
+}

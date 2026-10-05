@@ -1,0 +1,41 @@
+{
+  "status": "COMPLETED_SAVED_WIDTH_COMPARISON",
+  "end_to_end_strict_certificate": false,
+  "exit_code": 0,
+  "completed_substeps": 40,
+  "accepted_lane_substeps": 40960,
+  "crown_relax": "same-slope",
+  "weighted_chunk": 256,
+  "weighted_binding_restored": true,
+  "binding_restored": true,
+  "wall_s": 45.17503624400706,
+  "ended_utc": "2026-10-05T17:43:57.391110+00:00",
+  "implementation_revision": "v2_real_support_exponent_lookup",
+  "control_candidate": "same-slope polynomial + extra two-slope affine remainder",
+  "control_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/control_v2/run_quad_control_candidate.py",
+  "base_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+  "control_outer_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/control_v2/run_quad_control_candidate.py",
+    "--mode",
+    "batch2",
+    "--base-wrapper",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_anchored_controlv2_40_001/candidate"
+  ],
+  "control_counters": {
+    "base_nn_calls": 2,
+    "extra_nn_calls": 2,
+    "total_nn_calls": 4,
+    "injected_refreshes": 2,
+    "contracted_rows": 3629,
+    "total_control_rows": 6144,
+    "extra_model_build_wall_s": 0.12734765600180253,
+    "extra_crown_wall_s": 0.18059069899027236,
+    "contraction_wall_s": 0.022557043965207413
+  },
+  "control_binding_restored": true,
+  "width_is_not_containment_or_nncs_certificate": true
+}

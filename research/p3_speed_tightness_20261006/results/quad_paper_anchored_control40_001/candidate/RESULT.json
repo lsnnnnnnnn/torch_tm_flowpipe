@@ -1,0 +1,39 @@
+{
+  "status": "exception",
+  "end_to_end_strict_certificate": false,
+  "error_type": "AttributeError",
+  "error": "'SparseEngine' object has no attribute 'exponents'",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py\", line 226, in main\n    code = baseline.execute(argparse.Namespace(mode=args.mode,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_paper_p3_nohash.py\", line 407, in execute\n    driver_return = driver.main()\n                    ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py\", line 220, in main_with_first_refusal\n    return original_main()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_quad_control_candidate.py\", line 54, in main_with_control\n    return original_main()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1394, in main\n    inject_controls_s(st, T, u_min, u_max, u_ids, nn_in)\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_controller_hook.py\", line 95, in inject\n    after, check = contract(torch, iv, sp, eng=state[\"engine\"], sup=st.pre_sup,\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/anchored_control.py\", line 39, in contract\n    exponents = eng.exponents(sup)\n                ^^^^^^^^^^^^^\nAttributeError: 'SparseEngine' object has no attribute 'exponents'\n",
+  "weighted_binding_restored": true,
+  "binding_restored": true,
+  "exit_code": 1,
+  "wall_s": 5.929593862005277,
+  "ended_utc": "2026-10-05T17:21:46.686200+00:00",
+  "control_candidate": "same-slope polynomial + extra two-slope affine remainder",
+  "control_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_quad_control_candidate.py",
+  "base_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+  "control_outer_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_quad_control_candidate.py",
+    "--mode",
+    "batch2",
+    "--base-wrapper",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_anchored_control40_001/candidate"
+  ],
+  "control_counters": {
+    "base_nn_calls": 1,
+    "extra_nn_calls": 1,
+    "total_nn_calls": 2,
+    "injected_refreshes": 0,
+    "contracted_rows": 0,
+    "total_control_rows": 0,
+    "extra_model_build_wall_s": 0.12595989400870167,
+    "extra_crown_wall_s": 0.10441961398464628,
+    "contraction_wall_s": 0.0
+  },
+  "control_binding_restored": true,
+  "width_is_not_containment_or_nncs_certificate": true
+}

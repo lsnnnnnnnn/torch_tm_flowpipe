@@ -1,0 +1,54 @@
+{
+  "started_utc": "2026-10-05T17:01:51.158003+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_sigmoid_cutoff_candidate.py",
+    "--instance",
+    "tora-sigmoid",
+    "--weighted-mode",
+    "fused",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/tora_sigmoid_cutoff1e8_full500_001/candidate"
+  ],
+  "instance": "tora-sigmoid",
+  "source_snapshot": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_ours_p3/payload",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_ours_p3/payload",
+  "gate": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+  "physical_gpu": 2,
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "B": 1,
+  "working_order": 3,
+  "complete_substeps": 500,
+  "contract": "official TORA sigmoid u=11f; 10 periods x .5s / 500 substeps, T=5 endpoint target",
+  "changes": [
+    "private output allocation",
+    "preloaded Horner remainder binding",
+    "single-row two-round graph, success-only commit and original fallback"
+  ],
+  "weighted_mode": "fused",
+  "fused_reference_check": "first successful input: direct output bytes and full statistics; included in timers",
+  "reference_outer_result": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_ours_p3/outer/RESULT.json",
+  "reference_outer_wall_s": 13.95858941692859,
+  "reference_driver_elapsed_s": 9.793604707345366,
+  "timing_policy": "wrapper wall includes staging/imports/preloads/checks; payload wall excludes early Torch import; driver elapsed excludes setup/preload/engine creation and includes lazy graph capture; supervisor outer wall is recorded separately",
+  "timing_qualification": "old/new payload wall alone is not matched timing; no speed claim from a single candidate",
+  "payload_profile_note": "TORA keeps its frozen inherited profile label; this outer START identifies the new candidate",
+  "runtime_guards": "all digests and compilation prohibited; script decorators remain eager Python",
+  "no_jit": true,
+  "no_digest_operations": true,
+  "dont_write_bytecode": true,
+  "numerical_change": {
+    "cut_off_threshold": [
+      1e-06,
+      1e-08
+    ]
+  },
+  "optimization_source": "plant cutoff loses small coefficients; retain more at unchanged order/step/validation",
+  "comparison_policy": "new full numerical trajectory compared to saved old ranges; no equality claim"
+}

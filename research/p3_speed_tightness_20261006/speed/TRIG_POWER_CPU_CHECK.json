@@ -1,0 +1,163 @@
+{
+  "status": "PASSED_NEW_TRIG_POWER_GATE",
+  "torch_version": "2.2.2",
+  "device": "cpu",
+  "cases": [
+    {
+      "order": 3,
+      "batch": 1,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 3,
+      "batch": 1,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": false,
+      "indirect_input": false,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": false,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": false,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": true,
+      "variant": 0,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    },
+    {
+      "order": 4,
+      "batch": 3,
+      "interval_coefficients": true,
+      "indirect_input": true,
+      "variant": 1,
+      "compared_fields": [
+        "coefficients",
+        "remainder",
+        "range_cache",
+        "strict_tails",
+        "bad_mask"
+      ],
+      "eager_byte_equal": true,
+      "graph_byte_equal": false,
+      "input_bytes_unchanged": true
+    }
+  ],
+  "counter_delta": {
+    "exec_calls": 8,
+    "completed_execs": 8,
+    "failed_execs": 0,
+    "trig_calls": 44,
+    "saved_power_chains": 12,
+    "reused_power_chains": 12,
+    "computed_powers": 44,
+    "reused_powers": 44,
+    "ineligible_calls": 8,
+    "outside_exec_forwarded": 44
+  },
+  "cuda_graph_captures": 0,
+  "scope": "new small direct/indirect point/interval inputs, changed-value replay; no trajectory qualification",
+  "no_jit": true,
+  "digest_operations": 0,
+  "old_checker_runs": 0,
+  "duplicate_install_refused": true,
+  "both_bindings_restored": true,
+  "runtime_admission_fixture": "only the install version string was mocked; arithmetic used real CPU Torch"
+}

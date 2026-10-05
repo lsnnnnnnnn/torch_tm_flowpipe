@@ -1,0 +1,40 @@
+{
+  "started_utc": "2026-10-05T17:10:16.233792+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_b1_more_candidate.py",
+    "--instance",
+    "single-pendulum",
+    "--adapters",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/sp_two_state_fused1_full100_001/candidate"
+  ],
+  "instance": "single-pendulum",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/sp_two_state_fourway_campaign_20261002_001/later05_ours_p3/data",
+  "adapters": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001",
+  "gpu_physical": 2,
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "B": 1,
+  "complete_substeps": 100,
+  "working_order": 2,
+  "contract": "named two-physical-state SP, native-f64, original injection; closed [.5,1] window",
+  "changes": [
+    "private output allocation",
+    "preloaded Horner binding",
+    "fused single-row weighted refinement"
+  ],
+  "weighted_mode": "fused",
+  "no_jit": true,
+  "no_digest_operations": true,
+  "dont_write_bytecode": true,
+  "old_checker_executed": false,
+  "timing_policy": "wrapper includes staging/imports/gates; payload excludes early Torch import; compare unchanged internal driver and separate full supervisor wall",
+  "qualification": "new full implementation candidate; no independent floating-point NNCS certificate"
+}

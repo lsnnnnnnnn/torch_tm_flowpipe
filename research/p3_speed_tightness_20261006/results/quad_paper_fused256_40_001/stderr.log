@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py", line 226, in main
+    code = baseline.execute(argparse.Namespace(mode=args.mode,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_paper_p3_nohash.py", line 219, in execute
+    postwarm, prune, horner, eager, cap_bytes) = prepare(batch)
+                                                 ^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py", line 197, in prepare
+    weighted_override = install_weighted(torch, weighted_validation, prepared[2])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_fused_batch_candidate.py", line 90, in install_candidate
+    binding = install(torch, wv, se, batch=batch, rows=rows, check_first=1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/weighted_fused_batch.py", line 103, in install
+    raise RuntimeError("fused-batch requires pristine weighted functions")
+RuntimeError: fused-batch requires pristine weighted functions
+

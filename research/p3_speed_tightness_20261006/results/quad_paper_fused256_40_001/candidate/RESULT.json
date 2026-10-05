@@ -1,0 +1,93 @@
+{
+  "status": "exception",
+  "end_to_end_strict_certificate": false,
+  "error_type": "RuntimeError",
+  "error": "fused-batch requires pristine weighted functions",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py\", line 226, in main\n    code = baseline.execute(argparse.Namespace(mode=args.mode,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_paper_p3_nohash.py\", line 219, in execute\n    postwarm, prune, horner, eager, cap_bytes) = prepare(batch)\n                                                 ^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py\", line 197, in prepare\n    weighted_override = install_weighted(torch, weighted_validation, prepared[2])\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_fused_batch_candidate.py\", line 90, in install_candidate\n    binding = install(torch, wv, se, batch=batch, rows=rows, check_first=1)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/weighted_fused_batch.py\", line 103, in install\n    raise RuntimeError(\"fused-batch requires pristine weighted functions\")\nRuntimeError: fused-batch requires pristine weighted functions\n",
+  "binding_restored": true,
+  "exit_code": 1,
+  "wall_s": 1.8515589050075505,
+  "ended_utc": "2026-10-05T17:07:42.015132+00:00",
+  "weighted_mode": "fused_batch",
+  "fused_batch_outer_argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_fused_batch_candidate.py",
+    "--instance",
+    "quad",
+    "--mode",
+    "batch2",
+    "--base-wrapper",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/quad_paper_fused256_40_001/candidate"
+  ],
+  "fused_batch_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_fused_batch_candidate.py",
+  "base_wrapper": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private256_full1000_20261005_001/run_quad_candidate.py",
+  "dont_write_bytecode": true,
+  "fused_batch_configuration": {
+    "batch": 1024,
+    "rows": 256,
+    "steps": 40
+  },
+  "fused_batch_counters": {},
+  "fused_batch_qualification": {
+    "passed": false,
+    "expected": {
+      "refine_calls": 40,
+      "fast_calls": 40,
+      "fallback_calls": 0,
+      "candidate_exceptions": 0,
+      "reference_checks": 1,
+      "reference_map_evaluations": 2048,
+      "graph_replays": 160,
+      "replay_map_calls": 320,
+      "replay_target_rows": 81920,
+      "replay_padded_rows": 0
+    },
+    "differences": {
+      "refine_calls": {
+        "expected": 40,
+        "actual": null
+      },
+      "fast_calls": {
+        "expected": 40,
+        "actual": null
+      },
+      "fallback_calls": {
+        "expected": 0,
+        "actual": null
+      },
+      "candidate_exceptions": {
+        "expected": 0,
+        "actual": null
+      },
+      "reference_checks": {
+        "expected": 1,
+        "actual": null
+      },
+      "reference_map_evaluations": {
+        "expected": 2048,
+        "actual": null
+      },
+      "graph_replays": {
+        "expected": 160,
+        "actual": null
+      },
+      "replay_map_calls": {
+        "expected": 320,
+        "actual": null
+      },
+      "replay_target_rows": {
+        "expected": 81920,
+        "actual": null
+      },
+      "replay_padded_rows": {
+        "expected": 0,
+        "actual": null
+      }
+    },
+    "scope": "live fast-path use and first input equivalence; saved-output comparison separately required"
+  },
+  "fused_batch_install_count": 0
+}

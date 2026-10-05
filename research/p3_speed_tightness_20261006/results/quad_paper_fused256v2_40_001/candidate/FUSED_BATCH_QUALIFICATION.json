@@ -1,0 +1,26 @@
+{
+  "passed": false,
+  "expected": {
+    "refine_calls": 40,
+    "fast_calls": 40,
+    "fallback_calls": 0,
+    "candidate_exceptions": 0,
+    "reference_checks": 1,
+    "reference_map_evaluations": 2048,
+    "graph_replays": 160,
+    "replay_map_calls": 320,
+    "replay_target_rows": 81920,
+    "replay_padded_rows": 0
+  },
+  "differences": {
+    "fast_calls": {
+      "expected": 40,
+      "actual": 38
+    },
+    "fallback_calls": {
+      "expected": 0,
+      "actual": 2
+    }
+  },
+  "scope": "live fast-path use and first input equivalence; saved-output comparison separately required"
+}

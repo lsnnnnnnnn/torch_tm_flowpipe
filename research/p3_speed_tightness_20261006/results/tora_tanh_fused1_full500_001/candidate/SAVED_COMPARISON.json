@@ -1,0 +1,59 @@
+{
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_tanh_official2026_mat_u11_workingp3_full500_20261002_001",
+  "saved_bytes_equal": {
+    "ranges.bin": 76000,
+    "observations.jsonl": 29392
+  },
+  "B": 1,
+  "completed_substeps": 500,
+  "equal_fields": {
+    "RESULT.json": [
+      "accepted_substeps",
+      "driver_return",
+      "full_horizon_completed",
+      "method",
+      "observed_substeps",
+      "profile",
+      "property_evaluated",
+      "status"
+    ],
+    "metrics.json": [
+      "B",
+      "alpha_iters",
+      "broken",
+      "compose_parent_assembly",
+      "coupling",
+      "crown_input_layout",
+      "crown_transport",
+      "ctrl_steps",
+      "engine",
+      "final_hull",
+      "final_hull_width_sum_mean",
+      "nvtx_detail",
+      "nvtx_phases",
+      "order",
+      "segment_cuda_kernel_available",
+      "steps",
+      "substeps",
+      "tape_cuda_kernel_available",
+      "valid_cuda_kernel_available"
+    ]
+  },
+  "excluded_runtime_fields": [
+    "config",
+    "cuda_graph_captures",
+    "cuda_graph_hits",
+    "cuda_peak_allocated_bytes",
+    "cuda_peak_reserved_bytes",
+    "driver_elapsed_s",
+    "elapsed_s",
+    "peak_allocated_bytes",
+    "peak_reserved_bytes",
+    "wall_s"
+  ],
+  "config_and_driver_argv_equal_after_path_relocation": true,
+  "property_basis": "same original labels and complete saved observations; no new checker",
+  "scope": "saved physical ranges and scientific observations/fields; hidden TM/SR not compared",
+  "digest_operations": 0,
+  "old_checker_executed": false
+}

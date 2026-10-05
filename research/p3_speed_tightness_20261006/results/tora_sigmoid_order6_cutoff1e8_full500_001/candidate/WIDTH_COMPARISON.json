@@ -1,0 +1,201 @@
+{
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_u11_fourway_campaign_20261003_002/later05_ours_p3/payload",
+  "candidate": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/data",
+  "B": 1,
+  "completed_substeps": 500,
+  "changed_parameters": {
+    "ode_order": [
+      3,
+      6
+    ],
+    "cut_off_threshold": [
+      1e-06,
+      1e-08
+    ]
+  },
+  "working_order": 6,
+  "point_order": 5,
+  "validation_order": 7,
+  "contract_equal_except_method_parameters_and_artifact_paths": true,
+  "comparison": "exact rational widths of saved binary64 bounds; no old property label inherited",
+  "old_checker_executed": false,
+  "digest_operations": 0,
+  "end_to_end_floating_point_nn_certificate": false,
+  "full_state_full_step_widths": [
+    {
+      "state": "x1",
+      "geometry": "tube",
+      "steps": 500,
+      "narrower": 500,
+      "equal": 0,
+      "wider": 0,
+      "subset": 500,
+      "old_final_width": 0.03470652343753686,
+      "new_final_width": 0.034430664534936234,
+      "final_width_ratio": 0.992051669966394,
+      "old_max_width": 0.0377317741575183,
+      "new_max_width": 0.03768730026503195,
+      "old_mean_width": 0.03147943609241919,
+      "new_mean_width": 0.03139606842195528
+    },
+    {
+      "state": "x1",
+      "geometry": "endpoint",
+      "steps": 500,
+      "narrower": 500,
+      "equal": 0,
+      "wider": 0,
+      "subset": 500,
+      "old_final_width": 0.026078935706504824,
+      "new_final_width": 0.02580309268784739,
+      "final_width_ratio": 0.9894227654931244,
+      "old_max_width": 0.029496009082424446,
+      "new_max_width": 0.029348110787279835,
+      "old_mean_width": 0.02630046066563509,
+      "new_mean_width": 0.02621709451452211
+    },
+    {
+      "state": "x2",
+      "geometry": "tube",
+      "steps": 500,
+      "narrower": 500,
+      "equal": 0,
+      "wider": 0,
+      "subset": 500,
+      "old_final_width": 0.027813565606699786,
+      "new_final_width": 0.02752173449484585,
+      "final_width_ratio": 0.9895075979836386,
+      "old_max_width": 0.03938818524020185,
+      "new_max_width": 0.03938192534437429,
+      "old_mean_width": 0.03267505439293409,
+      "new_mean_width": 0.032585374453540004
+    },
+    {
+      "state": "x2",
+      "geometry": "endpoint",
+      "steps": 500,
+      "narrower": 500,
+      "equal": 0,
+      "wider": 0,
+      "subset": 500,
+      "old_final_width": 0.025924753105813436,
+      "new_final_width": 0.02563270509252058,
+      "final_width_ratio": 0.9887347813072377,
+      "old_max_width": 0.03023747341430627,
+      "new_max_width": 0.030180019372985534,
+      "old_mean_width": 0.02650296556899131,
+      "new_mean_width": 0.026413244603376622
+    },
+    {
+      "state": "x3",
+      "geometry": "tube",
+      "steps": 500,
+      "narrower": 450,
+      "equal": 1,
+      "wider": 49,
+      "subset": 451,
+      "old_final_width": 0.26573041338127723,
+      "new_final_width": 0.2657278628677986,
+      "final_width_ratio": 0.9999904018759231,
+      "old_max_width": 0.26573041338127723,
+      "new_max_width": 0.2657278628677986,
+      "old_mean_width": 0.15406979818577127,
+      "new_mean_width": 0.1540687924550759
+    },
+    {
+      "state": "x3",
+      "geometry": "endpoint",
+      "steps": 500,
+      "narrower": 450,
+      "equal": 1,
+      "wider": 49,
+      "subset": 451,
+      "old_final_width": 0.10109829279863902,
+      "new_final_width": 0.10109574257394627,
+      "final_width_ratio": 0.9999747747996316,
+      "old_max_width": 0.10109829279863902,
+      "new_max_width": 0.10109574257394627,
+      "old_mean_width": 0.06719415763725813,
+      "new_mean_width": 0.0671931520461144
+    },
+    {
+      "state": "x4",
+      "geometry": "tube",
+      "steps": 500,
+      "narrower": 450,
+      "equal": 1,
+      "wider": 49,
+      "subset": 451,
+      "old_final_width": 0.05732713506314724,
+      "new_final_width": 0.057326514109384163,
+      "final_width_ratio": 0.9999891682400944,
+      "old_max_width": 0.0759250023337521,
+      "new_max_width": 0.07592500233390576,
+      "old_mean_width": 0.059787216129008156,
+      "new_mean_width": 0.059786732844459824
+    },
+    {
+      "state": "x4",
+      "geometry": "endpoint",
+      "steps": 500,
+      "narrower": 450,
+      "equal": 1,
+      "wider": 49,
+      "subset": 451,
+      "old_final_width": 0.02665496836973702,
+      "new_final_width": 0.026654347415973945,
+      "final_width_ratio": 0.9999767040142588,
+      "old_max_width": 0.02700246742049206,
+      "new_max_width": 0.027002200410923827,
+      "old_mean_width": 0.02625011984578702,
+      "new_mean_width": 0.02624963661899542
+    }
+  ],
+  "absolute_widths_csv": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/tora_sigmoid_order6_cutoff1e8_full500_001/candidate/ABSOLUTE_WIDTHS.csv",
+  "absolute_width_rows": 4000,
+  "all_widths_nonincreasing": false,
+  "strictly_narrower_observations": 3800,
+  "subset_observations": 3804,
+  "property_record": {
+    "payload_property_evaluated": false,
+    "new_property_checker_executed": false,
+    "terminal_all_states": {
+      "x1": [
+        0.13466713732175153,
+        0.16047023000959892
+      ],
+      "x2": [
+        -0.8762896376106758,
+        -0.8506569325181552
+      ],
+      "x3": [
+        43.89270675910603,
+        43.99380250167997
+      ],
+      "x4": [
+        16.46522093902449,
+        16.491875286440465
+      ]
+    },
+    "target_limits": {
+      "x1": [
+        -0.1,
+        0.2
+      ],
+      "x2": [
+        -0.9,
+        -0.6
+      ]
+    },
+    "target_source": "docs/ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md",
+    "target_contained_saved_endpoint_steps": [
+      496,
+      497,
+      498,
+      499,
+      500
+    ],
+    "terminal_box_in_target": true,
+    "basis": "direct candidate endpoint-box observations; sufficient endpoint evidence only, no inherited label or independent NNCS proof"
+  }
+}

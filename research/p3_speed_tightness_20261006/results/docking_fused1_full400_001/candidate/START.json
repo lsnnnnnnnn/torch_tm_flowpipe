@@ -1,0 +1,40 @@
+{
+  "started_utc": "2026-10-05T17:11:32.545189+00:00",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/run_b1_more_candidate.py",
+    "--instance",
+    "docking",
+    "--adapters",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001",
+    "--gate",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_private_output_20261005_001/gate_001/data",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_speed_tightness_20261006_001/docking_fused1_full400_001/candidate"
+  ],
+  "instance": "docking",
+  "reference": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_p3_full40_001/detail",
+  "adapters": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_sigmoid_official_u11_p3_fused1_20261005_001",
+  "gpu_physical": 3,
+  "cpu_affinity": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "B": 1,
+  "complete_substeps": 400,
+  "working_order": 3,
+  "contract": "Docking full initial box, strict injection, rpc-float32; radial UNKNOWN retained",
+  "changes": [
+    "private output allocation",
+    "preloaded Horner binding",
+    "fused single-row weighted refinement"
+  ],
+  "weighted_mode": "fused",
+  "no_jit": true,
+  "no_digest_operations": true,
+  "dont_write_bytecode": true,
+  "old_checker_executed": false,
+  "timing_policy": "wrapper includes staging/imports/gates; payload excludes early Torch import; compare unchanged internal driver and separate full supervisor wall",
+  "qualification": "new full implementation candidate; no independent floating-point NNCS certificate"
+}
