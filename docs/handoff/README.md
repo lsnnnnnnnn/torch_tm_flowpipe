@@ -2,7 +2,12 @@
 
 This project computes enclosures of the trajectories of a physical system controlled by a neural network. The selected Unicycle implementation completed the schedule in 4.30 seconds, compared with 4.80 seconds for Huan, and attained the smallest endpoint and maximum tube width on each of the four physical states among the methods admitted to that comparison. The less-robust Double Pendulum also had narrower bounds on all four states, at a higher time cost. Quadrotor completed all 1,000 steps at the selected degree and remained slower and generally wider than Huan. These measurements describe the selected implementations.
 
-- Present the [English slides](slides.pdf) using the [speaker script](speaker_script.docx). The editable [Beamer source](slides.tex) and the [legacy Word version](speaker_script.doc) accompany them. Run `xelatex slides.tex` twice to rebuild the slides.
+## Research talk for Huan and his group
+
+The [English slides](slides.pdf) and [Chinese speaker script](speaker_script.docx) work through the differences between the two implementations on identical teaching inputs. The comparisons cover control polynomial construction, residual refinement, local validation and accumulated error. The final part connects the calculations with the observed benchmark widths and runtimes. The [editable Beamer source](slides.tex) and [Word 97 script](speaker_script.doc) accompany the talk.
+
+## Code and experiment records
+
 - Consult the [numerical source guide](../../research/handoff_method/README.md) for the controller, validation and history operations, their dependencies and the scope of the local check.
 - Use the [selected results](results.json) to look up all 24 instances and 114 physical state entries. Each case gives the selected configuration, completion, run identifiers, timing boundary, number of samples, per-method width counts and individual widths when available.
 
