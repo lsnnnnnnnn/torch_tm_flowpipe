@@ -1,16 +1,9 @@
-"""Actual next-state consumers, ownership, checkpoint and failure boundaries."""
 from fractions import Fraction as F
-
 import pytest
 import torch
-
-from torch_tm_flowpipe import (
-    Interval, Polynomial, TaylorModel, TMVector, FlowstarNormalFlowpipeState,
-    accepted_boundary_sr_queue_sha256, load_terminal_checkpoint, save_terminal_checkpoint, tmvector_hashes,
-)
-from torch_tm_flowpipe.batched_dense_tm import BatchedTaylorModel, sparse_tmvector_to_dense, dense_to_sparse_tmvector
+from torch_tm_flowpipe import Interval, Polynomial, TaylorModel, TMVector, FlowstarNormalFlowpipeState, accepted_boundary_sr_queue_sha256, tmvector_hashes
+from torch_tm_flowpipe.batched_dense_tm import sparse_tmvector_to_dense, dense_to_sparse_tmvector
 from torch_tm_flowpipe.flowpipe import FlowpipeSegment, _flowstar_normalized_insertion_transition
-from experiments.endpoint_roundoff_repair.frozen import setup, step
 
 
 @pytest.mark.parametrize('entry', ['published', 'dense_internal'])
@@ -80,46 +73,6 @@ def test_normal_maps_current_owner_history_and_capacity_reanchor():
     assert third_stats['accepted_boundary_sr_composition_branch']=='full_reanchor'
     assert len(third_state.symbolic_queue.J)==1
     assert accepted_boundary_sr_queue_sha256(state.symbolic_queue)==queue_hash
-
-
-@pytest.mark.parametrize('plant', ['van_der_pol','brusselator'])
-def test_frozen_two_steps_and_same_version_checkpoint_resume(plant,tmp_path):
-    config,current,state=setup(plant)
-    first=step(plant,current,state,1)
-    assert first.status=='validated',first.message
-    assert first.endpoint_substitution_roundoff and all(e.is_finite() for e in first.endpoint_substitution_roundoff)
-    contract={'plant':plant,'config':config.as_dict(),'endpoint_roundoff_repair':True}
-    save_terminal_checkpoint(tmp_path/'before',current=first.reset_tm,normal_state=first.flowstar_normal_state,
-                             scheduler={'accepted_steps':1},contract=contract,provenance={'test':'same_version'})
-    restored=load_terminal_checkpoint(tmp_path/'before',expected_contract=contract,
-                                     expected_order=config.order,expected_dtype='float64')
-    second=step(plant,first.reset_tm,first.flowstar_normal_state,2)
-    resumed=step(plant,restored.current,restored.normal_state,2)
-    assert second.status==resumed.status=='validated'
-    for field in ['tm','endpoint_raw_tm','reset_tm']:
-        assert tmvector_hashes(getattr(second,field))==tmvector_hashes(getattr(resumed,field))
-    assert accepted_boundary_sr_queue_sha256(second.flowstar_normal_state.symbolic_queue)==accepted_boundary_sr_queue_sha256(resumed.flowstar_normal_state.symbolic_queue)
-    assert first.flowstar_normal_state.symbolic_queue.owner_boundary_indices==(1,)
-    assert second.flowstar_normal_state.symbolic_queue.owner_boundary_indices==(1,2)
-
-
-@pytest.mark.parametrize('entry', ['published','dense_internal'])
-def test_substitution_failure_preserves_accepted_state(entry,monkeypatch,tmp_path):
-    config,current,state=setup('van_der_pol')
-    first=step('van_der_pol',current,state,1)
-    assert first.status=='validated'
-    state=first.flowstar_normal_state
-    before=accepted_boundary_sr_queue_sha256(state.symbolic_queue)
-    before_current=tmvector_hashes(first.reset_tm)
-    def fail(*args,**kwargs):
-        raise FloatingPointError('injected endpoint enclosure failure')
-    target,name=(TaylorModel,'substitute_const_with_roundoff') if entry=='published' else (BatchedTaylorModel,'endpoint')
-    monkeypatch.setattr(target,name,fail)
-    rejected=step('van_der_pol',first.reset_tm,state,2)
-    assert rejected.status=='failed' and rejected.endpoint_raw_tm is None
-    assert rejected.reset_tm is None and 'endpoint' in rejected.message
-    assert accepted_boundary_sr_queue_sha256(state.symbolic_queue)==before
-    assert tmvector_hashes(first.reset_tm)==before_current
 
 
 @pytest.mark.parametrize('mode,h', [

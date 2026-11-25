@@ -5,32 +5,30 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "torch-tm-flowpipe"
 version = "0.1.0"
-description = "Minimal PyTorch-native Taylor model flowpipe prototype for polynomial NNCS plant dynamics."
+description = "PyTorch Taylor models and validated flowpipes for polynomial plant dynamics."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["torch", "PyYAML", "matplotlib", "pypdf>=5"]
+dependencies = ["torch"]
 
 [project.optional-dependencies]
-test = ["pytest", "pandas"]
-
-[tool.pytest.ini_options]
-pythonpath = [".", "src"]
-testpaths = ["tests"]
-markers = [
-    "unit: fast isolated unit tests",
-    "property: invariant and property-style tests",
-    "regression: regression tests for confirmed historical defects",
-    "integration: multi-module or subprocess integration tests",
-    "protocol: experiment schema, eligibility, timing, and reporting contracts",
-    "flowstar: requires the pinned external Flowstar checkout and build",
-    "diffreach: requires the pinned external DiffReach checkout and JAX environment",
-    "cuda: requires an NVIDIA CUDA device",
-    "slow: intentionally long-running checks",
-    "formal_run: validates a frozen formal experiment artifact",
-]
+test = ["pytest", "matplotlib"]
+plot = ["matplotlib"]
+method = ["numpy", "mpmath", "PyYAML"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 torch_tm_flowpipe = ["*.cu"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+markers = [
+    "unit: isolated numerical unit tests",
+    "property: numerical invariants",
+    "regression: regression tests for numerical behavior",
+    "integration: multi-module numerical tests",
+    "cuda: requires an NVIDIA CUDA device",
+    "slow: longer running numerical tests",
+]

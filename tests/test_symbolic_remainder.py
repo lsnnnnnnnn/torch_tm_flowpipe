@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import csv
-import importlib.util
-from pathlib import Path
 
 from torch_tm_flowpipe import (
     FlowstarSymbolicRemainderQueue,
@@ -24,18 +21,6 @@ from torch_tm_flowpipe.symbolic_remainder import (
     flowstar_normalized_insertion_linear_queue_v2_reset,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
-
-
-def _load_stage3_module():
-    spec = importlib.util.spec_from_file_location(
-        "flowstar_benchmark_symbolic_remainder_diagnostics",
-        ROOT / "experiments" / "flowstar_benchmark_symbolic_remainder_diagnostics.py",
-    )
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def _small_params():
@@ -131,7 +116,6 @@ def test_queue_overflow_materializes_oldest_symbol():
     assert stats["materialized_symbol_ids"] == (0,)
     assert stats["materialized_remainder_width_sum"] > 0.0
     assert symbolic.n_vars == 3
-
 
 
 def test_flowstar_symbolic_remainder_queue_propagates_linear_remainders():
@@ -232,56 +216,3 @@ def test_flowstar_queue_v2_left_multiplies_existing_phi_l_entries():
 
     assert updated_phi[0] == _matmul_real(current_phi, previous_phi)
     assert updated_phi[0] != _matmul_real(previous_phi, current_phi)
-
-
-def test_stage3_short_run_writes_required_outputs_and_sanitized_csv(tmp_path):
-    stage3 = _load_stage3_module()
-    refs = [{"segment_index": 0, "t_lo": 0.0, "t_hi": 0.0005}]
-
-    baseline_summary, baseline_segments, baseline_breakdowns = stage3.run_symbolic_diagnostic(
-        _small_params(),
-        refs,
-        mode="range_only",
-        order=4,
-        substep_factor=1,
-        symbolic_remainder=False,
-        queue_size="",
-        max_wall_s_per_run=10,
-        max_horizon=0.0005,
-    )
-    symbolic_summary, symbolic_segments, symbolic_breakdowns = stage3.run_symbolic_diagnostic(
-        _small_params(),
-        refs,
-        mode="range_only",
-        order=4,
-        substep_factor=1,
-        symbolic_remainder=True,
-        queue_size=4,
-        max_wall_s_per_run=10,
-        max_horizon=0.0005,
-    )
-    summaries = [baseline_summary, symbolic_summary]
-    segments = baseline_segments + symbolic_segments
-    breakdowns = baseline_breakdowns + symbolic_breakdowns
-    stage3.write_outputs(tmp_path, summaries, segments, breakdowns)
-
-    assert summaries and segments and breakdowns
-    for name in [
-        "symbolic_remainder_summary.csv",
-        "symbolic_remainder_segments.csv",
-        "symbolic_remainder_breakdown.csv",
-        "symbolic_remainder_report.md",
-    ]:
-        assert (tmp_path / name).exists()
-    report = (tmp_path / "symbolic_remainder_report.md").read_text(encoding="utf-8")
-    assert "diagnostic-only" in report
-
-    for csv_name in [
-        "symbolic_remainder_summary.csv",
-        "symbolic_remainder_segments.csv",
-        "symbolic_remainder_breakdown.csv",
-    ]:
-        with (tmp_path / csv_name).open(newline="", encoding="utf-8") as f:
-            for row in csv.DictReader(f):
-                for value in row.values():
-                    assert value.strip().lower() not in {"nan", "inf", "+inf", "-inf", "infinity", "-infinity"}

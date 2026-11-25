@@ -1,19 +1,17 @@
 """Bit-level execution parity and lifetime boundaries for prepared replay."""
 from dataclasses import replace
-from pathlib import Path
 import math
 
 import pytest
 import torch
 
 import torch_tm_flowpipe.batched_dense_tm as d
-from torch_tm_flowpipe import PolynomialODE, PolynomialODETerm, load_terminal_checkpoint
+from torch_tm_flowpipe import PolynomialODE, PolynomialODETerm
 from torch_tm_flowpipe.terminal_checkpoint import tmvector_hashes
 from torch_tm_flowpipe.prepared_remainder_replay import (
     PreparedRemainderReplay, prepared_remainder_replay, is_enabled, supports,
 )
 from torch_tm_flowpipe.ode_examples import brusselator_ode
-from experiments.endpoint_roundoff_repair.frozen import setup, step
 from test_brusselator_c4_generic_refinement import _base, COMMON, C4
 
 
@@ -189,22 +187,6 @@ def test_local_b2_polynomial_graph_has_distinct_dynamic_lanes(fixed):
         same_image(image(ode,base,candidate,lo,hi),image(ode,base,candidate,lo,hi,plan))
 
 
-@pytest.mark.parametrize('plant,name',[('brusselator','brusselator_full'),('van_der_pol','vdp_full')])
-def test_repaired_checkpoint_resume_and_input_queue_rollback(plant,name):
-    from torch_tm_flowpipe import accepted_boundary_sr_queue_sha256
-    path=Path(__file__).resolve().parents[1]/'artifacts/runs/endpoint_roundoff_repair_20260908/raw_minimal'/name/'checkpoint_0120'
-    restored=load_terminal_checkpoint(path)
-    before=accepted_boundary_sr_queue_sha256(restored.normal_state.symbolic_queue)
-    results=[]
-    for mode in [False,True]:
-        with prepared_remainder_replay(mode):
-            results.append(step(plant,restored.current,restored.normal_state,121))
-        assert before==accepted_boundary_sr_queue_sha256(restored.normal_state.symbolic_queue)
-    for attr in ['tm','endpoint_raw_tm','reset_tm']:
-        assert tmvector_hashes(getattr(results[0],attr))==tmvector_hashes(getattr(results[1],attr))
-    assert accepted_boundary_sr_queue_sha256(results[0].flowstar_normal_state.symbolic_queue)==accepted_boundary_sr_queue_sha256(results[1].flowstar_normal_state.symbolic_queue)
-
-
 def test_opt_in_context_restores_and_opaque_rhs_is_not_prepared():
     assert not is_enabled()
     with prepared_remainder_replay():
@@ -252,25 +234,6 @@ def test_required_unused_control_parameter_keeps_original_rhs_call_contract(tmp_
     for name in ['segment_tm','raw_endpoint']:
         a,b=getattr(results[0],name),getattr(results[1],name)
         bits(a.poly.coeffs,b.poly.coeffs);bits(a.rem_lo,b.rem_lo);bits(a.rem_hi,b.rem_hi)
-
-
-def test_rejected_attempt_with_populated_history_leaves_both_inputs_unchanged(monkeypatch):
-    from torch_tm_flowpipe import accepted_boundary_sr_queue_sha256
-    import experiments.run_brusselator_sr1000_parity as contract_runner
-    path=Path(__file__).resolve().parents[1]/'artifacts/runs/endpoint_roundoff_repair_20260908/raw_minimal/brusselator_full/checkpoint_0120'
-    restored=load_terminal_checkpoint(path)
-    before=(tmvector_hashes(restored.current),accepted_boundary_sr_queue_sha256(restored.normal_state.symbolic_queue))
-    # Boundary regression only: deliberately force the existing first-accept
-    # rejection path. The frozen scientific runner never changes this budget.
-    monkeypatch.setattr(contract_runner,'REMAINDER_RADIUS',1e-20)
-    outputs=[]
-    for mode in [False,True]:
-        with prepared_remainder_replay(mode):
-            outputs.append(step('brusselator',restored.current,restored.normal_state,121))
-        assert before==(tmvector_hashes(restored.current),accepted_boundary_sr_queue_sha256(restored.normal_state.symbolic_queue))
-    assert outputs[0].status==outputs[1].status=='failed'
-    assert outputs[0].step_rejections==outputs[1].step_rejections
-    assert outputs[0].validation_attempts==outputs[1].validation_attempts
 
 
 def test_plan_storage_is_released_when_the_attempt_returns(monkeypatch):

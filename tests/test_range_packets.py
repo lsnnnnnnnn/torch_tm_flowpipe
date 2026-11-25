@@ -7,7 +7,7 @@ import time
 import pytest
 import torch
 
-from experiments.range_batch_device.oracle import check
+from range_oracle import check
 from test_range_requests import bits, requests
 from torch_tm_flowpipe import Interval
 from torch_tm_flowpipe.live_range_service import LiveRangeService, RangeCancelled
@@ -22,7 +22,7 @@ from torch_tm_flowpipe.range_packets import (
 from torch_tm_flowpipe.range_requests import RangeRequest, evaluate_range_requests, structure_key
 
 
-pytestmark = pytest.mark.cuda
+pytestmark = [pytest.mark.cuda, pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable")]
 
 
 @pytest.fixture(scope="module", autouse=True)

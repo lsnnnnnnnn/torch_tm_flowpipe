@@ -14,7 +14,7 @@ from torch_tm_flowpipe.range_requests import (
     RangeRequest, certified_scalar_power, compute_cpu_group, evaluate_range_requests,
     prepare_range_requests, range_request_execution, structure_key,
 )
-from experiments.range_batch_device.oracle import check
+from range_oracle import check
 
 
 def requests(batch=32, n=3, order=6, kind="standard", outputs=2):

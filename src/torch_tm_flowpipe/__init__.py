@@ -1,7 +1,6 @@
 """PyTorch-native Taylor-model flowpipe research prototype.
 
-Public solver objects are loaded lazily so metadata and protocol-only consumers
-do not need PyTorch installed merely to import ``torch_tm_flowpipe.protocol``.
+Public solver objects are loaded lazily to defer importing PyTorch until a solver is used.
 """
 from __future__ import annotations
 

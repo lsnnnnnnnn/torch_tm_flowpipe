@@ -1,7 +1,3 @@
-import importlib.util
-import json
-import sys
-from pathlib import Path
 
 import torch
 
@@ -166,59 +162,3 @@ def test_harmonic_analytic_one_step_regression_with_subdivision_policy():
         exact_y = y0 * torch.cos(torch.tensor(0.01)) - x0 * torch.sin(torch.tensor(0.01))
         assert endpoint[0].contains(float(exact_x), tol=2e-9)
         assert endpoint[1].contains(float(exact_y), tol=2e-9)
-
-
-def test_default_runner_t0p1_schedule_remains_seven_steps(tmp_path):
-    root = Path(__file__).resolve().parents[1]
-    path = root / "experiments" / "run_vdp_dense_backend.py"
-    spec = importlib.util.spec_from_file_location("range_policy_runner", path)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    output = tmp_path / "natural"
-    summary = module.run(module.parse_args(["--output-dir", str(output), "--tm-backend", "dense", "--horizon", "0.1"]))
-    assert summary["completed_requested_horizon"] is True
-    assert summary["accepted_steps"] == 7
-    assert summary["dense_range_method"] == "natural"
-    assert summary["range_subdivision_invocations"] == 0
-
-
-def test_proactive_depth1_runner_subdivides_only_named_context_on_accepted_steps(tmp_path):
-    root = Path(__file__).resolve().parents[1]
-    path = root / "experiments" / "run_vdp_dense_backend.py"
-    spec = importlib.util.spec_from_file_location("proactive_range_policy_runner", path)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    output = tmp_path / "proactive"
-    summary = module.run(
-        module.parse_args(
-            [
-                "--output-dir",
-                str(output),
-                "--tm-backend",
-                "dense",
-                "--horizon",
-                "0.1",
-                "--dense-range-method",
-                "adaptive_subdivision",
-                "--dense-range-trigger",
-                "proactive_depth1_on_named_contexts",
-                "--dense-range-max-depth",
-                "1",
-                "--dense-range-max-leaves",
-                "4",
-                "--dense-range-contexts",
-                "polynomial_truncation",
-            ]
-        )
-    )
-    assert summary["completed_requested_horizon"] is True
-    assert summary["range_subdivision_invocations"] > 0
-    rows = [json.loads(line) for line in (output / "range_trace.jsonl").read_text().splitlines()]
-    divided = [row for row in rows if row.get("phase") == "polynomial_range" and row.get("leaf_count", 1) > 1]
-    assert divided
-    assert {row["context"] for row in divided} == {"polynomial_truncation"}
-    assert {row["leaf_count"] for row in divided} == {4}

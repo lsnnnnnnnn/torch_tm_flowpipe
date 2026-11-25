@@ -56,7 +56,7 @@ def test_diffreach_descriptor_slot_order_routes_and_hash_are_frozen():
     assert support.support_sha256 == EXPECTED_DR7_SHA256
     assert json.dumps(support.manifest(), sort_keys=True)
     frozen_manifest = json.loads(
-        (Path(__file__).parents[1] / "benchmarks" / "diffreach_fixed_support_dr7_20260810.json").read_text(
+        (Path(__file__).parent / "fixtures" / "fixed_support_dr7.json").read_text(
             encoding="utf-8"
         )
     )

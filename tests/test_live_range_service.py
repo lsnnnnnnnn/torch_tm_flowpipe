@@ -12,7 +12,7 @@ from torch_tm_flowpipe.live_range_service import (
     LiveRangeService, RangeCancelled, StaleRangeResponse,
 )
 from torch_tm_flowpipe.range_requests import RangeRequest, evaluate_range_requests, structure_key
-from experiments.range_batch_device.oracle import check
+from range_oracle import check
 
 
 def request(value=2., *, exponents=((3,),)):
@@ -29,7 +29,7 @@ def lane(task, r):
     return result
 
 
-@pytest.mark.parametrize("backend", ["cpu", "cuda"])
+@pytest.mark.parametrize("backend", ["cpu", pytest.param("cuda", marks=pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable"))])
 def test_ready_group_exact_identity_and_private_storage(backend):
     rows = [request(1.), request(2.), request(3.), request(4.)]
     with LiveRangeService(backend, max_wait_s=.1) as service:
@@ -159,6 +159,7 @@ def test_retry_uses_new_attempt_and_only_consumed_predecessor():
     assert task.generation == 1
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable")
 @pytest.mark.parametrize("fallback", [False, True])
 def test_explicit_hardware_failure_policy(fallback):
     def broken(rows, **kwargs):
@@ -179,7 +180,7 @@ def test_explicit_hardware_failure_policy(fallback):
         assert service.counts["gpu_completed_requests"] == 0
 
 
-@pytest.mark.parametrize("backend", ["cpu", "cuda"])
+@pytest.mark.parametrize("backend", ["cpu", pytest.param("cuda", marks=pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable"))])
 def test_worker_context_and_external_power_table_explicit_fallback(backend):
     events = []
     with LiveRangeService(backend, trace=events.append) as service:
@@ -214,9 +215,11 @@ def test_second_outstanding_request_is_rejected():
 
 def test_live_checkpoint_preserves_private_diagnostics_and_mapping_order(tmp_path):
     from torch_tm_flowpipe.live_range_checkpoint import save_live_range_checkpoint, load_live_range_checkpoint
-    from experiments.live_range_solver.runner import initial
-    from experiments.boundary_execution.state_equivalence import canonical
-    current, state = initial("van_der_pol", 0)
+    from fractions import Fraction
+    from torch_tm_flowpipe import FlowstarNormalFlowpipeState
+    from state_values import canonical
+    state = FlowstarNormalFlowpipeState.from_exact_decimal_box([(Fraction(1), Fraction(5, 4)), (Fraction(0), Fraction(1, 4))], 4)
+    current = state.normalized_initial_tm(4)
     state = replace(state, diagnostics={"z":.125, "_private":[("preserved", torch.tensor([.25], dtype=torch.float64))], "a":7})
     with LiveRangeService() as service:
         task = service.register("checkpoint", (current, state))

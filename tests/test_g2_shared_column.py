@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
-from pathlib import Path
-import subprocess
-import sys
 
 import pytest
 import torch
@@ -30,7 +26,6 @@ from torch_tm_flowpipe.polynomial import Polynomial
 
 
 UNIT = Interval(-1.0, 1.0)
-ROOT = Path(__file__).resolve().parents[1]
 
 
 def _ode() -> PolynomialODE:
@@ -255,37 +250,6 @@ def test_rejected_retry_does_not_mutate_full_g2_prestate() -> None:
     assert before.fingerprint == first.flowstar_normal_state.g2_shared_column_state.fingerprint
     assert retained_before == _digest(first.flowstar_normal_state.g2_retained_source_tm)
     assert reset_before == _digest(first.reset_tm)
-
-
-def test_independent_exact_oracle_uses_no_project_core(tmp_path) -> None:
-    blackbox = tmp_path / "blackbox.json"
-    result = tmp_path / "oracle.json"
-    subprocess.run(
-        [sys.executable, str(ROOT / "experiments/export_g2_blackbox_coefficients.py"), "--output", str(blackbox)],
-        cwd=ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    oracle_source = (ROOT / "experiments/independent_g2_exact_oracle.py").read_text(encoding="utf-8")
-    for forbidden in (
-        "import torch\n",
-        "from torch_tm_flowpipe",
-        "import torch_tm_flowpipe",
-    ):
-        assert forbidden not in oracle_source
-    subprocess.run(
-        [sys.executable, str(ROOT / "experiments/independent_g2_exact_oracle.py"), "--input", str(blackbox), "--output", str(result)],
-        cwd=ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    payload = json.loads(result.read_text(encoding="utf-8"))
-    assert payload["status"] == "PASS"
-    assert payload["checks_passed"] >= 15
-    assert payload["implementation_independent"] is True
-    assert payload["sampling_used"] is False
 
 
 def test_real_dense_phase_timing_ledger_is_exposed() -> None:

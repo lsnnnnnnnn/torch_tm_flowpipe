@@ -234,8 +234,6 @@ def test_c3_checkpoint_resume_is_bit_exact(tmp_path):
 def test_c3_off_preserves_endpoint_repaired_c2_two_step_binary64_hashes():
     current, state = _initial()
     # Scientific baseline 196a50e9131336d68df07ad0af353deca0092d19.
-    # Independent Fraction endpoint inclusion preceded this update; see
-    # docs/endpoint_roundoff_repair/ENDPOINT_CONTRACT.md.
     expected = (
         (
             "1974ff34a4021987de9aac9ad093f7a2701b713819de14ed9a5cdfe299bee286",

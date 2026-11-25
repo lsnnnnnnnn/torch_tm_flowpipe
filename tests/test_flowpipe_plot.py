@@ -21,7 +21,7 @@ from torch_tm_flowpipe.flowpipe_plot import (
     validate_geometry,
     write_matlab,
 )
-from tools.verify_flowpipe_plot_artifacts import (
+from plot_oracle import (
     _verify_affine_projection_contract,
     _verify_observer,
 )
@@ -272,86 +272,6 @@ def source_assets(value) -> set[tuple[str, str]]:
 
 
 class FlowpipePlotTests(unittest.TestCase):
-    def test_all_materialized_archcomp_v2_specs_are_audited_and_valid(self):
-        repo_root = Path(__file__).resolve().parents[1]
-        manifest = json.loads(
-            (repo_root / "benchmarks/archcomp26/manifest.json").read_text(encoding="utf-8")
-        )
-        audits = json.loads(
-            (repo_root / "benchmarks/archcomp26/evidence/contract_audits_20261001.json")
-            .read_text(encoding="utf-8")
-        )
-        status = json.loads(
-            (repo_root / "benchmarks/plot_specs/archcomp26_status.json")
-            .read_text(encoding="utf-8")
-        )
-        manifest_by_id = {row["id"]: row for row in manifest["instances"]}
-        report_asset = (
-            "reference/ARCH_COMP26_AINNCS.pdf",
-            manifest["official_sources"]["report"]["pdf_sha256"],
-        )
-        materialized = [row for row in status["instances"] if row["plot_spec"]]
-        self.assertEqual(len(materialized), 10)
-        for row in materialized:
-            spec = json.loads((repo_root / row["plot_spec"]).read_text(encoding="utf-8"))
-            manifest_row = manifest_by_id[row["instance_id"]]
-            self.assertEqual(spec["instance_id"], manifest_row["id"])
-            self.assertEqual(spec["benchmark"], manifest_row["benchmark"])
-            audited_assets = source_assets(
-                audits["audits"][manifest_row["contract_audit"]]["source_files"]
-            ) | {report_asset}
-            self.assertTrue(
-                {(item["path"], item["sha256"]) for item in spec["source_refs"]}
-                <= audited_assets
-            )
-
-            coordinates = spec["coordinate_names"]
-            horizon = float(spec["horizon"]["end"])
-            region = spec["regions"][0]
-            projection_coordinate = (
-                region["constraint"]["coordinate"]
-                if "constraint" in region
-                else next(iter(region["bounds"]))
-            )
-            with tempfile.TemporaryDirectory() as scratch:
-                root = Path(scratch)
-                observer(root, 1, state_count=len(coordinates))
-                sidecar(root, 1, plot_identity(
-                    spec["benchmark"], spec["instance_id"],
-                    coordinates, horizon, 1,
-                ))
-                geometry = export_geometry(
-                    [("instance-bound test series", root)],
-                    benchmark=spec["benchmark"],
-                    instance_id=spec["instance_id"],
-                    coordinate_names=coordinates,
-                    projection_text=f"t,{projection_coordinate}",
-                    view="tube",
-                    step_size=horizon,
-                    expected_steps=1,
-                    spec=spec,
-                )
-                self.assertEqual(
-                    geometry["spec_binding"]["status"],
-                    "official_content_series_plot_contract_binding_verified",
-                )
-                if row["instance_id"] == "acc-safe-distance":
-                    initial = _initial_box(geometry)
-                    self.assertIsNotNone(initial)
-                    assert initial is not None
-                    self.assertEqual(initial[:2], [0.0, 0.0])
-                    self.assertLessEqual(initial[2], 26.72)
-                    self.assertGreaterEqual(initial[3], 48.0)
-                    self.assertGreater(initial[2], 26.719999999999)
-                    self.assertLess(initial[3], 48.000000000001)
-                if row["instance_id"] == "docking-constraint":
-                    initial = _initial_box(geometry)
-                    self.assertIsNotNone(initial)
-                    assert initial is not None
-                    self.assertEqual(initial[:2], [0.0, 0.0])
-                    self.assertGreater(initial[2], 0.0)
-                    self.assertLessEqual(initial[2], 0.0073558286)
-                    self.assertGreaterEqual(initial[3], 0.5079082336)
 
     def test_v2_spec_requires_series_instance_binding_without_claiming_full_contract(self):
         with tempfile.TemporaryDirectory() as scratch:

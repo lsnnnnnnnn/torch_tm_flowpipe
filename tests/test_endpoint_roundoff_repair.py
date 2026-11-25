@@ -7,7 +7,7 @@ import torch
 
 from torch_tm_flowpipe import Interval, Polynomial, TaylorModel, TMVector
 from torch_tm_flowpipe.batched_dense_tm import BatchedTaylorModel, BatchedPolynomial, sparse_tmvector_to_dense, dense_to_sparse_tmvector
-from experiments.endpoint_roundoff_repair.local_oracles import CASES, check_case, assert_model_contains, exact_coefficients
+from endpoint_oracle import CASES, check_case, assert_model_contains, exact_coefficients
 
 
 def test_mixed_precision_preserves_actual_h_and_never_narrows_enclosure():
@@ -144,6 +144,6 @@ def test_time_variable_position_and_severe_same_term_cancellation(index):
     dense=sparse_tmvector_to_dense(TMVector([source]),order=4)
     for result in [source.substitute_const(index,1.).drop_variable(index),
                    dense_to_sparse_tmvector(dense.endpoint(index,1.))[0]]:
-        from experiments.endpoint_roundoff_repair.local_oracles import exact_error_range
+        from endpoint_oracle import exact_error_range
         lo,hi=exact_error_range(exact,result.polynomial,result.domain)
         assert F(float(result.remainder.lo))<=lo<=hi<=F(float(result.remainder.hi))

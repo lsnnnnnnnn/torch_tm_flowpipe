@@ -7,7 +7,7 @@ import threading
 import pytest
 import torch
 
-from experiments.resident_tm_block.exact_oracle import verify_result
+from resident_oracle import verify_result
 from torch_tm_flowpipe import Interval, Polynomial, TaylorModel, TMVector
 from torch_tm_flowpipe.flowpipe import insert_ctrunc_normal_dependency_preserving
 from torch_tm_flowpipe.live_range_service import LiveRangeService, RangeCancelled

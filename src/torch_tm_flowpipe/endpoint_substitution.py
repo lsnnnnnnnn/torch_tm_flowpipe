@@ -3,7 +3,6 @@
 All tensor entries denote their stored floating-point values as exact reals.
 Only basic IEEE addition/multiplication and nextafter are used for enclosure;
 in particular, neither pow nor a colliding scatter reduction is an oracle.
-See docs/endpoint_roundoff_repair/ENDPOINT_CONTRACT.md.
 """
 from __future__ import annotations
 

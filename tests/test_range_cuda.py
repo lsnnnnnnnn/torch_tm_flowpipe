@@ -7,11 +7,11 @@ import torch
 
 from torch_tm_flowpipe.range_requests import RangeRequest, evaluate_range_requests, prepare_range_requests
 from torch_tm_flowpipe.range_cuda import get_module, prepare_cuda_group, primitive_probe, run_resident
-from experiments.range_batch_device.oracle import check
+from range_oracle import check
 from test_range_requests import requests,bits
 
 
-pytestmark=pytest.mark.cuda
+pytestmark = [pytest.mark.cuda, pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable")]
 
 
 @pytest.mark.parametrize("batch",[1,2,8,32])
